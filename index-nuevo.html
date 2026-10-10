@@ -1475,6 +1475,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
   }
 
+  // true si el día es hoy y ese horario ya empezó (no se puede reservar)
+  function isPastToday(day, time){
+    const now = new Date();
+    if (!day || day.key !== localDateKey(now)) return false;
+    const [h, m] = time.split(':').map(Number);
+    return h*60 + m <= now.getHours()*60 + now.getMinutes();
+  }
+
   function buildDays(){
     const days = [];
     const dowShort = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
@@ -1603,14 +1611,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       return;
     }
 
-    if (taken.size >= times.length){
+    // Si el día elegido es hoy, no se ofrecen los horarios que ya empezaron.
+    const upcoming = times.filter(t => !isPastToday(state.date, t));
+    if (upcoming.filter(t => !taken.has(t)).length === 0){
       timeHint.style.display = 'block';
-      timeHint.textContent = 'No quedan horarios disponibles ese día con este barbero — probá otra fecha.';
+      timeHint.textContent = upcoming.length === 0
+        ? 'Ya no quedan horarios para hoy con ' + state.barber.name + ' — probá otro día.'
+        : 'No quedan horarios disponibles ese día con este barbero — probá otra fecha.';
       return;
     }
     timeHint.style.display = 'none';
 
-    times.forEach(t => {
+    upcoming.forEach(t => {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'chip-time';
@@ -1741,8 +1753,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       // evita que la segunda reserva pise a la primera (condición de carrera).
       const taken = await getStoredBooked(state.barber.id, state.date.key);
 
-      if (taken.has(state.time)) {
-        showFormError('Justo se ocupó ese horario. Elegí otro disponible en la grilla.');
+      if (taken.has(state.time) || isPastToday(state.date, state.time)) {
+        showFormError(isPastToday(state.date, state.time)
+          ? 'Ese horario ya pasó. Elegí otro disponible en la grilla.'
+          : 'Justo se ocupó ese horario. Elegí otro disponible en la grilla.');
         state.time = null;
         await renderTimeGrid();
         updateTicket();
@@ -1773,9 +1787,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
       await renderTimeGrid();
 
+      // El horario recién reservado ya está ocupado: se limpia la selección
+      // para que el botón no quede listo para reservar lo mismo otra vez.
+      state.time = null;
       isSubmitting = false;
       submitBtn.textContent = 'Confirmar turno';
       checkReady();
+      bookingJustConfirmed = true;
+      scheduleConfirmHide();
 
       setTimeout(() => {
         confirmMsg.scrollIntoView({behavior:'smooth', block:'nearest'});
@@ -1788,6 +1807,35 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       checkReady();
     }
   });
+
+  // El aviso de "turno confirmado" (y el de agendarlo en el calendario) se va
+  // solo a los 15 segundos. Si la persona empieza a sacar otro turno, se va en
+  // el momento y el ticket vuelve a quedar en blanco para la nueva reserva.
+  let bookingJustConfirmed = false;
+  let confirmHideTimer = null;
+  function hideConfirmation(){
+    clearTimeout(confirmHideTimer);
+    confirmMsg.classList.remove('show');
+    const calBox = document.getElementById('calBox');
+    if (calBox) calBox.classList.remove('show');
+  }
+  function scheduleConfirmHide(){
+    clearTimeout(confirmHideTimer);
+    confirmHideTimer = setTimeout(hideConfirmation, 15000);
+  }
+  function startNewBooking(){
+    if (!bookingJustConfirmed) return;
+    bookingJustConfirmed = false;
+    hideConfirmation();
+    hideFormError();
+    ticketNum.textContent = 'TICKET · #— — —';
+    document.getElementById('ticket').classList.remove('confirmed');
+    updateTicket();
+  }
+  form.addEventListener('click', (e) => {
+    if (e.target.closest('.chip-barber, .chip-date, .chip-time, .chip-service')) startNewBooking();
+  }, true);
+  form.addEventListener('input', startNewBooking, true);
 
   renderTimeGrid();
   updateTicket();
