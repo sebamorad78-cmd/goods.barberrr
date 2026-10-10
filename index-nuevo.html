@@ -422,6 +422,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .chip-date:hover{border-color:var(--blue-accent);}
   .chip-date.active{background:var(--ink); border-color:var(--ink); color:var(--paper);}
   .chip-date.active .d{opacity:0.6;}
+  .chip-date.closed{opacity:0.35; cursor:not-allowed;}
+  .chip-date.closed .n{text-decoration:line-through;}
 
   .time-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:8px;}
   .chip-time{
@@ -1581,6 +1583,43 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     datePicker.appendChild(el);
   });
 
+  // ---- Horarios y días bloqueados que el dueño carga desde el panel ----
+  // Si no se pudieran leer, quedan los horarios escritos más arriba.
+  let BLOCKED = []; // [{date:'AAAA-MM-DD', barber_id: null (todo el local) | 'nicolas' ...}]
+  function isBlockedDay(key, barberId){
+    return BLOCKED.some(b => b.date === key && (!b.barber_id || (barberId && b.barber_id === barberId)));
+  }
+  function markClosedDays(){
+    datePicker.querySelectorAll('.chip-date').forEach(el => {
+      const closed = isBlockedDay(el.dataset.key, null);
+      el.classList.toggle('closed', closed);
+      el.disabled = closed;
+      el.title = closed ? 'Cerrado' : '';
+    });
+  }
+  async function loadOwnerSettings(){
+    try {
+      const { data, error } = await supabase.from('goods_settings').select('schedule').limit(1);
+      if (!error && data && data[0] && data[0].schedule && typeof data[0].schedule === 'object'){
+        Object.keys(SCHEDULE).forEach(k => delete SCHEDULE[k]);
+        Object.assign(SCHEDULE, data[0].schedule);
+      }
+    } catch(e){ console.error('Goods: no se pudieron leer los horarios del panel:', e); }
+    try {
+      const { data, error } = await supabase.from('blocked_days').select('date,barber_id')
+        .gte('date', DAYS[0].key).lte('date', DAYS[DAYS.length-1].key);
+      if (!error) BLOCKED = data || [];
+    } catch(e){ console.error('Goods: no se pudieron leer los días bloqueados:', e); }
+    markClosedDays();
+    if (state.barber && state.date) renderTimeGrid();
+  }
+  let settingsTries = 0;
+  const settingsTimer = setInterval(() => {
+    settingsTries++;
+    if (supabase){ clearInterval(settingsTimer); loadOwnerSettings(); }
+    else if (settingsTries > 32){ clearInterval(settingsTimer); }
+  }, 500);
+
   const timeGrid = document.getElementById('timeGrid');
   const timeHint = document.getElementById('timeHint');
 
@@ -1592,7 +1631,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       return;
     }
 
-    const times = getTimesForBarberDay(state.barber.id, state.date.dow);
+    if (isBlockedDay(state.date.key, null)){
+      timeHint.style.display = 'block';
+      timeHint.textContent = 'Ese día el local está cerrado — elegí otra fecha.';
+      return;
+    }
+    const times = isBlockedDay(state.date.key, state.barber.id) ? [] : getTimesForBarberDay(state.barber.id, state.date.dow);
     if (times.length === 0){
       timeHint.style.display = 'block';
       timeHint.textContent = state.barber.name + ' no atiende ese día — probá otro día o elegí otro barbero.';
@@ -1800,8 +1844,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         confirmMsg.scrollIntoView({behavior:'smooth', block:'nearest'});
       }, 100);
     } catch(err) {
-      // 3) Si algo falla de forma inesperada, avisamos en vez de fallar en silencio
-      showFormError('No pudimos confirmar el turno por un error de conexión. Probá de nuevo o escribinos por WhatsApp.');
+      // 3) Si algo falla de forma inesperada, avisamos en vez de fallar en silencio.
+      // Si la base de datos rechazó el horario (día bloqueado, fuera de horario o ya
+      // pasado), se avisa eso y se actualiza la grilla.
+      if (/ya pasó|no hay atención|no está disponible/.test((err && err.message) || '')){
+        showFormError('Ese horario ya no está disponible. Elegí otro de la grilla.');
+        state.time = null;
+        loadOwnerSettings();
+        updateTicket();
+      } else {
+        showFormError('No pudimos confirmar el turno por un error de conexión. Probá de nuevo o escribinos por WhatsApp.');
+      }
       isSubmitting = false;
       submitBtn.textContent = 'Confirmar turno';
       checkReady();

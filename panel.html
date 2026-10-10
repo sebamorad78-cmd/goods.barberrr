@@ -274,6 +274,29 @@
   .manual-actions .btn.ghost{color:var(--ink); border-color:var(--line);}
   .admin-flash{margin-bottom:18px; padding:12px 14px; border-radius:6px; font-size:13.5px; background:rgba(76,175,80,0.14); color:#2e7d32; border:1px solid rgba(46,125,50,0.35);}
 
+
+  /* ---------- Horarios y días bloqueados ---------- */
+  .settings{margin-bottom:26px; padding:22px; border:1px solid var(--line); border-radius:8px; background:var(--paper);}
+  .settings h4{font-size:20px;}
+  .settings h5{font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--blue-accent); margin:26px 0 10px;}
+  .settings .manual-sub{margin-bottom:6px;}
+  .sched-wrap{overflow-x:auto;}
+  .sched-table{width:100%; border-collapse:collapse; min-width:520px;}
+  .sched-table th{font-size:11.5px; text-transform:uppercase; letter-spacing:0.06em; color:#57627a; text-align:left; padding:6px 6px;}
+  .sched-table td{padding:6px; border-top:1px solid var(--line); vertical-align:middle;}
+  .sched-table td.day{font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--ink); font-weight:600; width:52px;}
+  .sched-cell{display:flex; gap:4px; align-items:center; flex-wrap:wrap;}
+  .sched-cell select{padding:7px 6px; border:1px solid var(--line); border-radius:4px; background:var(--paper); font-family:'JetBrains Mono',monospace; font-size:13px;}
+  .sched-cell label{display:flex; align-items:center; gap:4px; font-size:12px; color:#57627a; width:100%;}
+  .sched-cell.off select{opacity:0.35;}
+  .block-form{display:grid; grid-template-columns:1fr 1fr 1.4fr auto; gap:10px; align-items:end;}
+  .block-list{display:flex; flex-direction:column; gap:8px; margin-top:14px;}
+  .block-item{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--line); border-radius:6px; font-size:13.5px;}
+  .block-item .when{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--blue-accent); font-weight:600; margin-right:8px;}
+  .block-item .why{color:#57627a;}
+  .today-col .today-blocked{font-size:12px; color:#f0b8b4; padding:4px 0 8px;}
+  @media (max-width:640px){ .block-form{grid-template-columns:1fr;} }
+
   /* ---------- Recordatorio por WhatsApp ---------- */
   .admin-btn.wa{border-color:#25D366; color:#128C4B; display:inline-flex; align-items:center; gap:6px;}
   .admin-btn.wa:hover{background:#25D366; color:#fff; border-color:#25D366;}
@@ -334,6 +357,7 @@
       </div>
       <div class="admin-header-actions">
         <button class="btn dark" id="adminNew" type="button">+ Cargar turno</button>
+        <button class="btn ghost" id="adminSettings" type="button">Horarios</button>
         <button class="btn ghost" id="adminRefresh" type="button">Actualizar</button>
         <button class="btn ghost" id="adminExport" type="button">Descargar Excel</button>
         <button class="btn ghost danger-outline" id="adminDeleteDone" type="button">Borrar atendidos</button>
@@ -360,6 +384,29 @@
         <button type="button" class="btn ghost" id="mCancel">Cancelar</button>
       </div>
     </form>
+
+    <section class="settings" id="settingsPanel" hidden>
+      <h4>Horarios y días bloqueados</h4>
+      <p class="manual-sub">Lo que guardes acá se aplica en la página al instante: los clientes solo ven los horarios en que cada barbero atiende.</p>
+
+      <h5>Horario de cada barbero</h5>
+      <div class="sched-wrap"><table class="sched-table" id="schedTable"></table></div>
+      <p class="manual-hint" id="schedHint"></p>
+      <div class="manual-actions">
+        <button type="button" class="btn dark" id="schedSave">Guardar horarios</button>
+      </div>
+
+      <h5>Bloquear un día</h5>
+      <p class="manual-sub">Feriados, vacaciones o un barbero que falta. Ese día no se va a poder reservar.</p>
+      <div class="block-form">
+        <div class="field"><label for="bDate">Día</label><input type="date" id="bDate"></div>
+        <div class="field"><label for="bBarber">Quién</label><select id="bBarber"></select></div>
+        <div class="field"><label for="bReason">Motivo (solo lo ves vos)</label><input id="bReason" maxlength="60" placeholder="Ej: feriado, vacaciones"></div>
+        <button type="button" class="btn dark" id="bSave" style="justify-content:center;">Bloquear</button>
+      </div>
+      <p class="manual-hint" id="blockHint"></p>
+      <div class="block-list" id="blockList"></div>
+    </section>
 
     <section class="today" id="adminToday" aria-label="Agenda de hoy"></section>
 
@@ -575,6 +622,7 @@
   async function loadAndRenderBookings(silent){
     if (!silent) adminList.innerHTML = '<p class="admin-empty">Cargando turnos…</p>';
     try {
+      await loadOwnerSettings();
       adminBookingsCache = await fetchAllBookings();
     } catch(err){
       if (!silent){
@@ -936,7 +984,9 @@
       const mine = todays.filter(b => b.barberId === br.id);
       const nextMine = mine.find(b => b.status === 'confirmed' && toMin(b.time) + STEP_MIN > nowMin);
       html += '<div class="today-col"><h5><span>' + escapeHtml(br.name) + '</span><span>' + mine.length + '</span></h5>';
-      if (!mine.length){
+      if (isBlockedDay(todayKey, br.id)){
+        html += '<p class="today-blocked">Día bloqueado</p>';
+      } else if (!mine.length){
         html += '<p class="today-empty">' + (getTimesForBarberDay(br.id, DOW_SHORT[now.getDay()]).length ? 'Sin turnos' : 'Hoy no atiende') + '</p>';
       }
       mine.forEach(b => {
@@ -983,6 +1033,7 @@
     if (!mDate.value){ setHint('Elegí el día.'); return; }
     const d = keyToDate(mDate.value);
     const barber = BARBERS.find(b => b.id === mBarber.value);
+    if (isBlockedDay(mDate.value, barber.id)){ setHint('Ese día está bloqueado para ' + barber.name + ' (' + dateLabelFor(d) + '). Si querés cargarlo igual, primero quitá el bloqueo en "Horarios".', true); return; }
     const times = getTimesForBarberDay(barber.id, DOW_SHORT[d.getDay()]);
     if (!times.length){ setHint(barber.name + ' no atiende ese día (' + dateLabelFor(d) + ').', true); return; }
     setHint('Buscando horarios libres…');
@@ -1055,6 +1106,152 @@
       mSave.textContent = 'Guardar turno';
       if (!manualForm.hidden && mTime.value) mSave.disabled = false;
     }
+  });
+
+  /* ================= HORARIOS Y DÍAS BLOQUEADOS ================= */
+  const SCHED_DAYS = ['Lun','Mar','Mié','Jue','Vie','Sáb'];
+  let BLOCKS = []; // días bloqueados de hoy en adelante: {id, date, barber_id, reason}
+  function isBlockedDay(key, barberId){
+    return BLOCKS.some(b => b.date === key && (!b.barber_id || b.barber_id === barberId));
+  }
+  // Lee los horarios guardados y los días bloqueados. Si fallara, quedan los horarios escritos arriba.
+  async function loadOwnerSettings(){
+    try {
+      const { data, error } = await supabase.from('goods_settings').select('schedule').limit(1);
+      if (!error && data && data[0] && data[0].schedule && typeof data[0].schedule === 'object'){
+        Object.keys(SCHEDULE).forEach(k => delete SCHEDULE[k]);
+        Object.assign(SCHEDULE, data[0].schedule);
+      }
+    } catch(e){ console.error('Goods: no se pudieron leer los horarios:', e); }
+    try {
+      const { data, error } = await supabase.from('blocked_days').select('id,date,barber_id,reason')
+        .gte('date', localDateKey(new Date())).order('date', {ascending:true});
+      if (!error) BLOCKS = data || [];
+    } catch(e){ console.error('Goods: no se pudieron leer los días bloqueados:', e); }
+  }
+
+  const settingsPanel = document.getElementById('settingsPanel');
+  const schedTable = document.getElementById('schedTable');
+  const schedHint = document.getElementById('schedHint');
+  const schedSave = document.getElementById('schedSave');
+  const bDate = document.getElementById('bDate');
+  const bBarber = document.getElementById('bBarber');
+  const bReason = document.getElementById('bReason');
+  const bSave = document.getElementById('bSave');
+  const blockHint = document.getElementById('blockHint');
+  const blockList = document.getElementById('blockList');
+  const HOUR_OPTIONS = buildTimesRange('08:00', '23:30').concat(['23:30']);
+  function hintIn(el, msg, isErr){ el.textContent = msg || ''; el.classList.toggle('err', !!isErr); }
+
+  function timeSelect(value){
+    return '<select>' + HOUR_OPTIONS.map(t => '<option' + (t === value ? ' selected' : '') + '>' + t + '</option>').join('') + '</select>';
+  }
+  function renderSchedTable(){
+    let html = '<tr><th></th>' + BARBERS.map(b => '<th>' + escapeHtml(b.name) + '</th>').join('') + '</tr>';
+    SCHED_DAYS.forEach(day => {
+      html += '<tr><td class="day">' + day + '</td>';
+      BARBERS.forEach(b => {
+        const r = (SCHEDULE[day] || {})[b.id];
+        html += '<td><div class="sched-cell' + (r ? '' : ' off') + '" data-day="' + day + '" data-barber="' + b.id + '">' +
+          '<label><input type="checkbox"' + (r ? ' checked' : '') + '> Atiende</label>' +
+          timeSelect(r ? r[0] : '09:30') + '<span>a</span>' + timeSelect(r ? r[1] : '17:30') + '</div></td>';
+      });
+      html += '</tr>';
+    });
+    schedTable.innerHTML = html;
+    schedTable.querySelectorAll('.sched-cell input[type=checkbox]').forEach(cb => {
+      cb.addEventListener('change', () => cb.closest('.sched-cell').classList.toggle('off', !cb.checked));
+    });
+  }
+  schedSave.addEventListener('click', async () => {
+    const next = {};
+    let bad = null;
+    schedTable.querySelectorAll('.sched-cell').forEach(cell => {
+      const day = cell.dataset.day, id = cell.dataset.barber;
+      next[day] = next[day] || {};
+      if (!cell.querySelector('input').checked) return;
+      const [from, to] = Array.from(cell.querySelectorAll('select')).map(s => s.value);
+      if (from >= to && !bad) bad = day + ' · ' + BARBERS.find(b => b.id === id).name;
+      next[day][id] = [from, to];
+    });
+    if (bad){ hintIn(schedHint, 'Revisá ' + bad + ': la hora de salida tiene que ser después de la de entrada.', true); return; }
+    schedSave.disabled = true; schedSave.textContent = 'Guardando…';
+    try {
+      const { error } = await supabase.from('goods_settings').upsert({ id: true, schedule: next, updated_at: new Date().toISOString() });
+      if (error) throw error;
+      Object.keys(SCHEDULE).forEach(k => delete SCHEDULE[k]);
+      Object.assign(SCHEDULE, next);
+      hintIn(schedHint, '✓ Horarios guardados. Ya se ven en la página.');
+      renderToday();
+    } catch(err){
+      console.error('Goods: no se pudieron guardar los horarios:', err);
+      hintIn(schedHint, 'No se pudieron guardar los horarios. Revisá tu conexión e intentá de nuevo.', true);
+    } finally {
+      schedSave.disabled = false; schedSave.textContent = 'Guardar horarios';
+    }
+  });
+
+  bBarber.innerHTML = '<option value="">Todo el local</option>' + BARBERS.map(b => '<option value="' + b.id + '">Solo ' + escapeHtml(b.name) + '</option>').join('');
+  function renderBlockList(){
+    if (!BLOCKS.length){ blockList.innerHTML = '<p class="admin-empty" style="padding:10px 0;">No hay días bloqueados.</p>'; return; }
+    blockList.innerHTML = '';
+    BLOCKS.forEach(b => {
+      const who = b.barber_id ? 'Solo ' + ((BARBERS.find(x => x.id === b.barber_id) || {}).name || b.barber_id) : 'Todo el local';
+      const row = document.createElement('div');
+      row.className = 'block-item';
+      row.innerHTML = '<span><span class="when">' + escapeHtml(dateLabelFor(keyToDate(b.date))) + '</span>' + escapeHtml(who) +
+        (b.reason ? ' <span class="why">· ' + escapeHtml(b.reason) + '</span>' : '') + '</span>';
+      const del = document.createElement('button');
+      del.type = 'button'; del.className = 'admin-btn danger'; del.textContent = 'Quitar';
+      del.addEventListener('click', async () => {
+        del.disabled = true;
+        try {
+          const { error } = await supabase.from('blocked_days').delete().eq('id', b.id);
+          if (error) throw error;
+          BLOCKS = BLOCKS.filter(x => x.id !== b.id);
+          renderBlockList(); renderToday();
+        } catch(err){ del.disabled = false; alert('No se pudo quitar el bloqueo. Probá de nuevo.'); }
+      });
+      row.appendChild(del);
+      blockList.appendChild(row);
+    });
+  }
+  bSave.addEventListener('click', async () => {
+    const key = bDate.value, barberId = bBarber.value || null;
+    if (!key){ hintIn(blockHint, 'Elegí el día que querés bloquear.', true); return; }
+    if (key < localDateKey(new Date())){ hintIn(blockHint, 'Ese día ya pasó.', true); return; }
+    if (BLOCKS.some(b => b.date === key && (!b.barber_id || b.barber_id === barberId))){
+      hintIn(blockHint, 'Ese día ya está bloqueado.', true); return;
+    }
+    // Avisar si ya hay turnos reservados ese día (no se cancelan solos)
+    const affected = adminBookingsCache.filter(b => b.date === key && b.status === 'confirmed' && (!barberId || b.barberId === barberId));
+    if (affected.length){
+      const list = affected.map(b => b.time + ' ' + (b.customerName || '') + ' (' + (b.barberName || '') + ')').join('\n');
+      if (!confirm('Ese día ya hay ' + affected.length + ' turno(s) reservado(s):\n\n' + list +
+        '\n\nEl bloqueo no los cancela: avisales a esos clientes y cancelalos desde la lista. ¿Bloquear igual?')) return;
+    }
+    bSave.disabled = true;
+    try {
+      const { data, error } = await supabase.from('blocked_days').insert({ date: key, barber_id: barberId, reason: bReason.value.trim() || null }).select('id,date,barber_id,reason');
+      if (error) throw error;
+      BLOCKS = BLOCKS.concat(data || []).sort((a, b) => a.date < b.date ? -1 : 1);
+      bReason.value = '';
+      hintIn(blockHint, '✓ Día bloqueado. Ya no se puede reservar en la página.');
+      renderBlockList(); renderToday();
+    } catch(err){
+      console.error('Goods: no se pudo bloquear el día:', err);
+      hintIn(blockHint, 'No se pudo bloquear el día. Revisá tu conexión e intentá de nuevo.', true);
+    } finally { bSave.disabled = false; }
+  });
+
+  document.getElementById('adminSettings').addEventListener('click', () => {
+    if (!settingsPanel.hidden){ settingsPanel.hidden = true; return; }
+    bDate.min = localDateKey(new Date());
+    if (!bDate.value) bDate.value = localDateKey(new Date());
+    hintIn(schedHint, ''); hintIn(blockHint, '');
+    renderSchedTable(); renderBlockList();
+    settingsPanel.hidden = false;
+    settingsPanel.scrollIntoView({behavior:'smooth', block:'start'});
   });
 
   // Al abrir el panel: si ya hay sesión iniciada va directo a los turnos,

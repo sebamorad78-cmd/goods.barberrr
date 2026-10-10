@@ -1,0 +1,13 @@
+-- =====================================================================
+-- GOODS — Horarios editables y días bloqueados (aplicado el 10/10/2026;
+-- este archivo queda como registro, no hace falta volver a correrlo)
+-- =====================================================================
+-- goods_settings: una fila con los horarios de cada barbero por día
+--   (JSON: {"Lun": {"nicolas": ["09:30","17:30"], ...}, ...}).
+--   La página la lee; solo el dueño (cuenta autenticada) la modifica.
+-- blocked_days: días bloqueados (barber_id vacío = todo el local).
+--   La página solo ve fecha y barbero; el motivo lo ve solo el dueño.
+-- El control de cada reserva nueva (trigger bookings_bloquear_horarios_pasados):
+--   clientes: no horarios pasados, no días bloqueados, solo dentro del horario;
+--   dueño: puede cargar el turno en curso y fuera de horario, no en días bloqueados.
+-- Ver la migración "horarios_y_dias_bloqueados" en Supabase para el detalle.
