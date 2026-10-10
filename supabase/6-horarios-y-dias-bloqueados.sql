@@ -11,3 +11,8 @@
 --   clientes: no horarios pasados, no días bloqueados, solo dentro del horario;
 --   dueño: puede cargar el turno en curso y fuera de horario, no en días bloqueados.
 -- Ver la migración "horarios_y_dias_bloqueados" en Supabase para el detalle.
+
+-- Un mismo barbero no puede tener dos turnos activos en el mismo día y horario
+-- (aplicado el 10/10/2026; los cancelados no cuentan).
+-- create unique index bookings_un_turno_por_horario
+--   on public.bookings (barber_id, date, time) where status <> 'cancelled';

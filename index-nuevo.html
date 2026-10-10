@@ -1514,6 +1514,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     return days;
   }
   const DAYS = buildDays();
+  // Si la página quedó abierta de un día para el otro, al volver a mirarla se
+  // recarga: así los días y horarios siempre arrancan desde hoy.
+  const PAGE_DAY = localDateKey(new Date());
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && localDateKey(new Date()) !== PAGE_DAY) location.reload();
+  });
 
   let state = { barber: null, date: null, time: null };
 
@@ -1631,7 +1637,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   const timeGrid = document.getElementById('timeGrid');
   const timeHint = document.getElementById('timeHint');
 
+  // Cada vez que se redibuja la grilla se numera el pedido: si mientras se consultaba
+  // la disponibilidad la persona eligió otro barbero o día, la respuesta vieja se descarta
+  // (con internet lento podía mezclar horarios de dos barberos).
+  let gridRequest = 0;
   async function renderTimeGrid(){
+    const req = ++gridRequest;
     timeGrid.innerHTML = '';
     if (!state.barber || !state.date){
       timeHint.style.display = 'block';
@@ -1658,10 +1669,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     try {
       taken = await getStoredBooked(state.barber.id, state.date.key);
     } catch(err){
+      if (req !== gridRequest) return;
       timeHint.style.display = 'block';
       timeHint.textContent = 'No pudimos consultar los horarios disponibles. Revisá tu conexión y volvé a intentar.';
       return;
     }
+
+    if (req !== gridRequest) return; // llegó tarde: ya se pidió otra grilla
 
     // Si el día elegido es hoy, no se ofrecen los horarios que ya empezaron.
     const upcoming = times.filter(t => !isPastToday(state.date, t));
@@ -1855,7 +1869,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       // 3) Si algo falla de forma inesperada, avisamos en vez de fallar en silencio.
       // Si la base de datos rechazó el horario (día bloqueado, fuera de horario o ya
       // pasado), se avisa eso y se actualiza la grilla.
-      if (/ya pasó|no hay atención|no está disponible/.test((err && err.message) || '')){
+      if (/ya pasó|no hay atención|no está disponible|duplicate key|bookings_un_turno_por_horario/.test((err && err.message) || '')){
         showFormError('Ese horario ya no está disponible. Elegí otro de la grilla.');
         state.time = null;
         loadOwnerSettings();
