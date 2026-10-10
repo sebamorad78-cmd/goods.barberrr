@@ -1468,6 +1468,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     return buildTimesRange(range[0], range[1]);
   }
 
+  // Fecha AAAA-MM-DD según la hora de Argentina (la del dispositivo).
+  // No usar toISOString(): esa da la fecha en hora UTC y después de las
+  // 21 h ya marca el día siguiente.
+  function localDateKey(d){
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
   function buildDays(){
     const days = [];
     const dowShort = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
@@ -1479,7 +1486,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       cursor++;
       if (cand.getDay() === 0) continue; // domingo cerrado
       days.push({
-        key: cand.toISOString().slice(0,10),
+        key: localDateKey(cand),
         dow: dowShort[cand.getDay()],
         day: cand.getDate(),
         month: cand.toLocaleDateString('es-AR', {month:'short'})

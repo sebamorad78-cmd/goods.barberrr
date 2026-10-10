@@ -363,11 +363,18 @@
     {id:'chino', name:'Chino'},
   ];
 
+  // Fecha AAAA-MM-DD según la hora de Argentina (la del dispositivo).
+  // No usar toISOString(): esa da la fecha en hora UTC y después de las
+  // 21 h ya marca el día siguiente.
+  function localDateKey(d){
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
   // Trae TODOS los datos de los turnos (incluye nombre y teléfono) —
   // solo funciona si el dueño inició sesión, por las reglas de seguridad
   // configuradas en Supabase (Row Level Security).
   async function fetchAllBookings(){
-    const todayKey = new Date().toISOString().slice(0,10);
+    const todayKey = localDateKey(new Date());
     const { data, error } = await supabase
       .from('bookings')
       .select('*')
@@ -685,7 +692,7 @@
       XLSX.utils.book_append_sheet(wb, buildSheet(mine), b.name.slice(0,31));
     });
 
-    const todayStr = new Date().toISOString().slice(0,10);
+    const todayStr = localDateKey(new Date());
     XLSX.writeFile(wb, `turnos-goods-barber-studio-${todayStr}.xlsx`);
   }
 
