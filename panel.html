@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel del dueño — Goods Barber Studio</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0A1930">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;0,6..96,700;0,6..96,800;1,6..96,500&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A1930;
+    --ink-2:#122642;
+    --paper:#EEF2F7;
+    --paper-2:#E1E8F0;
+    --blue-deep:#14345C;
+    --blue-accent:#4E8FD6;
+    --blue-light:#A9CBEE;
+    --charcoal:#10192A;
+    --line:#D2DCE7;
+    --line-dark:rgba(238,242,247,0.16);
+    --ok:#4E8FD6;
+    --shadow: 0 20px 50px -20px rgba(10,25,48,0.4);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--charcoal);
+    font-family:'Manrope', sans-serif;
+    font-weight:400;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;display:block;}
+  a{color:inherit;text-decoration:none;}
+  h1,h2,h3,h4{font-family:'Bodoni Moda', serif;margin:0;font-weight:600;letter-spacing:-0.01em;}
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--blue-accent);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--blue-accent);display:inline-block;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px;}
+  section{position:relative;}
+  button{font-family:inherit;cursor:pointer;}
+  :focus-visible{outline:2px solid var(--blue-accent);outline-offset:3px;}
+  ::selection{background:var(--blue-accent);color:#fff;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
+  }
+
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* ---------- LOGO ---------- */
+  .brand{display:inline-flex; align-items:center; gap:10px;}
+  .brand-icon{width:30px;height:40px;flex-shrink:0;}
+  .brand-text{display:flex; flex-direction:column; line-height:1;}
+  .brand-word{
+    font-family:'Baloo 2', sans-serif; font-weight:800; font-size:24px; color:var(--paper);
+    letter-spacing:0.01em;
+  }
+  .brand-sub{
+    font-family:'JetBrains Mono', monospace; font-size:8.5px; letter-spacing:0.28em;
+    color:var(--blue-light); text-transform:uppercase; margin-top:2px;
+  }
+  footer .brand-word{color:var(--paper);}
+
+  /* ---------- NAV ---------- */
+  header.nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:rgba(10,25,48,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line-dark);
+  }
+  .nav-inner{
+    max-width:1180px;margin:0 auto;padding:16px 28px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .nav-links{display:flex;gap:34px;align-items:center;}
+  .nav-links a{
+    color:var(--paper); opacity:0.8; font-size:14px; letter-spacing:0.02em;
+    position:relative; padding:4px 0;
+  }
+  .nav-links a:hover{opacity:1;}
+  .nav-links a::after{
+    content:"";position:absolute;bottom:0;left:0;width:0;height:1px;background:var(--blue-accent);
+    transition:width .25s ease;
+  }
+  .nav-links a:hover::after{width:100%;}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:12px 22px;
+    background:var(--blue-accent);
+    color:#fff;
+    border:1px solid var(--blue-accent);
+    font-size:13px; font-weight:600; letter-spacing:0.04em;
+    text-transform:uppercase;
+    border-radius:2px;
+    transition:background .25s ease, color .25s ease, transform .2s ease;
+  }
+  .btn:hover{background:transparent;color:var(--blue-accent);transform:translateY(-1px);}
+  .btn.ghost{background:transparent;color:var(--paper);border-color:var(--line-dark);}
+  .btn.ghost:hover{border-color:var(--blue-accent);color:var(--blue-accent);}
+  .btn.dark{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  .btn.dark:hover{background:transparent;color:var(--ink);}
+  .btn:disabled{opacity:0.35;cursor:not-allowed;transform:none;}
+  .btn:disabled:hover{background:var(--blue-accent);color:#fff;}
+
+  .burger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:6px;}
+  .burger span{width:22px;height:1.5px;background:var(--paper);display:block;}
+  .mobile-menu{
+    display:none; position:fixed; top:0; right:0; bottom:0; width:78%; max-width:320px;
+    background:var(--ink); z-index:200; padding:100px 30px 30px;
+    transform:translateX(100%); transition:transform .35s ease;
+    flex-direction:column; gap:26px;
+    border-left:1px solid var(--line-dark);
+  }
+  .mobile-menu.open{transform:translateX(0);}
+  .mobile-menu a{color:var(--paper); font-size:18px; font-family:'Fraunces',serif;}
+  .menu-close{position:absolute;top:26px;right:26px;background:none;border:none;color:var(--paper);font-size:26px;}
+  .scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:150;}
+  .scrim.open{display:block;}
+
+  .form-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .form-grid .full{grid-column:1/-1;}
+  .field label{font-size:12px; text-transform:uppercase; letter-spacing:0.06em; color:#57627a; display:block; margin-bottom:6px;}
+  .field input, .field textarea{
+    width:100%; padding:12px 14px; border:1px solid var(--line); background:var(--paper);
+    font-family:'Manrope',sans-serif; font-size:16px; border-radius:4px;
+  }
+  .field input:focus, .field textarea:focus{border-color:var(--blue-accent);}
+  .field input.invalid, .field textarea.invalid{border-color:#B3261E;}
+  .field-error{display:none; font-size:12px; color:#B3261E; margin-top:6px;}
+  .field-error.show{display:block;}
+  .form-error{
+    display:none; margin-top:16px; padding:14px 16px; font-size:13.5px;
+    background:rgba(179,38,30,0.08); border:1px solid #B3261E; color:#8f1f18; border-radius:6px;
+  }
+  .form-error.show{display:block;}
+
+  /* ---------- ADMIN / PANEL DEL DUEÑO ---------- */
+  .admin-scrim{
+    display:none; position:fixed; inset:0; z-index:400;
+    background:rgba(10,25,48,0.55); backdrop-filter:blur(3px);
+  }
+  .admin-scrim.open{display:block;}
+  .admin-panel{
+    display:none; position:fixed; z-index:401;
+    top:50%; left:50%; transform:translate(-50%,-50%);
+    width:min(92vw, 720px); max-height:86vh; overflow-y:auto;
+    background:var(--paper); border-radius:10px; box-shadow:var(--shadow);
+  }
+  .admin-panel.open{display:block;}
+  .admin-pin-screen{
+    display:flex; flex-direction:column; align-items:center; text-align:center;
+    padding:56px 40px; position:relative;
+  }
+  .admin-close{
+    position:absolute; top:18px; right:18px; background:none; border:none;
+    font-size:24px; color:#8a93a5; line-height:1;
+  }
+  .admin-pin-input{
+    width:180px; margin-top:22px; padding:14px; text-align:center;
+    font-size:26px; letter-spacing:0.5em; border:1px solid var(--line); border-radius:6px;
+    font-family:'JetBrains Mono',monospace; background:var(--paper);
+  }
+  .admin-pin-input:focus{border-color:var(--blue-accent);}
+  #adminPinError{margin-top:10px;}
+  .admin-dashboard{padding:32px 32px 40px;}
+  .admin-header{display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; margin-bottom:22px;}
+  .admin-header-actions{display:flex; gap:10px; align-items:center; position:relative; padding-right:34px; flex-wrap:wrap;}
+  .admin-header-actions .admin-close{position:absolute; top:-8px; right:-6px;}
+  .btn.ghost.danger-outline{border-color:#B3261E; color:#B3261E;}
+  .btn.ghost.danger-outline:hover{background:#B3261E; color:#fff;}
+  .admin-filters{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px;}
+  .admin-chip{
+    padding:7px 14px; font-size:12.5px; border:1px solid var(--line); border-radius:30px;
+    background:var(--paper);
+  }
+  .admin-chip.active{background:var(--ink); color:var(--paper); border-color:var(--ink);}
+  .admin-list{display:flex; flex-direction:column; gap:10px;}
+  .admin-empty{font-size:14px; color:#7a8496; font-style:italic; padding:30px 0; text-align:center;}
+  .admin-item{
+    border:1px solid var(--line); border-radius:8px; padding:16px 18px;
+    display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; align-items:center;
+  }
+  .admin-item-main{display:flex; flex-direction:column; gap:3px;}
+  .admin-item-when{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--blue-accent); font-weight:600;}
+  .admin-item-name{font-size:15.5px; font-weight:600;}
+  .admin-item-meta{font-size:12.5px; color:#57627a;}
+  .admin-item-meta a{color:var(--blue-accent); text-decoration:underline;}
+  .admin-badge{
+    font-size:11px; text-transform:uppercase; letter-spacing:0.06em; padding:4px 10px;
+    border-radius:20px; font-weight:600;
+  }
+  .admin-badge.confirmed{background:rgba(78,143,214,0.14); color:var(--blue-deep);}
+  .admin-badge.done{background:rgba(76,175,80,0.14); color:#2e7d32;}
+  .admin-badge.cancelled{background:rgba(179,38,30,0.1); color:#8f1f18;}
+  .admin-badge.overdue{background:rgba(230,145,29,0.16); color:#8a5416;}
+  .admin-item-actions{display:flex; gap:8px; flex-wrap:wrap;}
+  .admin-btn{
+    font-size:12px; padding:7px 12px; border-radius:5px; border:1px solid var(--line);
+    background:var(--paper);
+  }
+  .admin-btn:hover{border-color:var(--blue-accent);}
+  .admin-btn.danger:hover{border-color:#B3261E; color:#B3261E;}
+  .admin-note-banner{
+    font-size:12px; color:#57627a; background:var(--paper-2); border:1px solid var(--line);
+    border-radius:6px; padding:12px 14px; margin-bottom:20px;
+  }
+  .admin-tab.active{color:var(--ink); border-bottom-color:var(--blue-accent); font-weight:600;}
+
+
+  /* ---------- Panel como página propia ---------- */
+  body{background:var(--paper-2); min-height:100vh;}
+  .panel-top{background:var(--ink); border-bottom:1px solid var(--line-dark);}
+  .panel-top .nav-inner{padding:16px 28px;}
+  .panel-back{color:var(--paper); opacity:0.75; font-size:13.5px;}
+  .panel-back:hover{opacity:1; color:var(--blue-light);}
+  .admin-panel.open{position:static; transform:none; margin:40px auto 60px; max-height:none; overflow:visible; width:min(94vw, 760px);}
+  .admin-pin-screen{display:none;}
+  /* los botones del panel van sobre fondo claro: texto oscuro para que se lean */
+  .admin-header-actions .btn.ghost:not(.danger-outline){color:var(--ink); border-color:var(--line);}
+  .admin-header-actions .btn.ghost:not(.danger-outline):hover{color:var(--blue-accent); border-color:var(--blue-accent);}
+  @media (max-width:640px){
+    .admin-panel.open{margin:20px auto 40px;}
+    .admin-dashboard{padding:24px 18px 30px;}
+    .admin-pin-screen{padding:44px 24px;}
+    .admin-item{flex-direction:column; align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+
+<header class="panel-top">
+  <div class="nav-inner">
+    <a href="index.html" class="brand" aria-label="Goods Barber Studio">
+      <svg class="brand-icon" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="9" y="3" width="42" height="23" rx="7" fill="#EEF2F7"/>
+        <rect x="15" y="21" width="4" height="6" fill="#0A1930"/>
+        <rect x="23" y="21" width="4" height="6" fill="#0A1930"/>
+        <rect x="31" y="21" width="4" height="6" fill="#0A1930"/>
+        <rect x="39" y="21" width="4" height="6" fill="#0A1930"/>
+        <circle cx="30" cy="40" r="13" fill="#EEF2F7"/>
+        <text x="30" y="45" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="14" fill="#0A1930">8</text>
+        <rect x="13" y="52" width="34" height="26" rx="9" fill="#EEF2F7"/>
+        <rect x="18" y="62" width="24" height="2.5" rx="1.25" fill="#0A1930" opacity="0.5"/>
+        <rect x="18" y="68" width="16" height="2.5" rx="1.25" fill="#0A1930" opacity="0.5"/>
+      </svg>
+      <span class="brand-text">
+        <span class="brand-word">goods</span>
+        <span class="brand-sub">Barber Studio</span>
+      </span>
+    </a>
+    <a class="panel-back" href="index.html">← Ver la página</a>
+  </div>
+</header>
+
+<!-- ================= PANEL DEL DUEÑO ================= -->
+<main class="admin-panel open" id="adminPanel">
+
+  <div class="admin-pin-screen" id="adminPinScreen">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="width:34px;height:34px;stroke:var(--blue-accent);margin-bottom:18px;"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+    <h3 id="adminPinTitle" style="font-size:24px;">Panel del dueño</h3>
+    <p id="adminPinSub" style="font-size:13.5px; color:#57627a; margin-top:8px; max-width:280px;">Ingresá con tu cuenta para ver los turnos reservados.</p>
+    <div style="width:100%; max-width:280px; margin-top:22px; display:flex; flex-direction:column; gap:12px; text-align:left;">
+      <div class="field">
+        <label for="adminEmail">Email</label>
+        <input type="email" id="adminEmail" placeholder="dueno@goodsbarberstudio.com.ar" autocomplete="username">
+      </div>
+      <div class="field">
+        <label for="adminPassword">Contraseña</label>
+        <input type="password" id="adminPassword" placeholder="••••••••" autocomplete="current-password">
+      </div>
+    </div>
+    <p class="field-error" id="adminPinError">Email o contraseña incorrectos.</p>
+    <button class="btn dark" id="adminPinSubmit" style="width:100%; max-width:280px; justify-content:center; margin-top:14px;">Entrar</button>
+  </div>
+
+  <div class="admin-dashboard" id="adminDashboard" hidden>
+    <div class="admin-header">
+      <div>
+        <h3 style="font-size:24px;">Turnos reservados</h3>
+        <p class="eyebrow" id="adminStats" style="margin-top:6px;"></p>
+      </div>
+      <div class="admin-header-actions">
+        <button class="btn ghost" id="adminRefresh" type="button">Actualizar</button>
+        <button class="btn ghost" id="adminExport" type="button">Descargar Excel</button>
+        <button class="btn ghost danger-outline" id="adminDeleteDone" type="button">Borrar atendidos</button>
+        <button class="btn ghost" id="adminLock" type="button">Bloquear</button>
+      </div>
+    </div>
+    <div class="admin-filters" id="adminFilters"></div>
+    <div class="admin-list" id="adminList"></div>
+  </div>
+</main>
+
+<!-- Cliente de Supabase: conecta esta página a tu base de datos real -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+  onerror="var s=document.createElement('script'); s.src='https://unpkg.com/@supabase/supabase-js@2'; document.head.appendChild(s);"></script>
+<!-- Generador de archivos Excel (.xlsx) reales, con hojas, anchos de columna y encabezado con estilo -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  // ============================================================
+  // ⚠️ CONFIGURACIÓN OBLIGATORIA — completar antes de publicar
+  // Reemplazá estos dos valores con los de TU proyecto de Supabase.
+  // Los encontrás en: Project Settings → API (en supabase.com)
+  // ============================================================
+  const SUPABASE_URL = 'https://vsnnetxorvzindxrgzjn.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_BbjQNyqvm6P6jjTSAKyurw_kgPpijZH';
+
+  // Si la librería de Supabase no llega a cargar a tiempo (bloqueador de
+  // anuncios, corte de red momentáneo, CDN lento), esto evita que se rompa
+  // TODA la página, y además REINTENTA solo durante unos segundos en vez
+  // de quedar roto hasta que la persona recargue manualmente.
+  let supabase = null;
+  function trySupabaseInit(){
+    try {
+      if (window.supabase && typeof window.supabase.createClient === 'function'){
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+          auth: { persistSession: false } // el dueño inicia sesión cada vez que abre el panel — más simple y más seguro
+        });
+        return true;
+      }
+    } catch(e){
+      console.error('Goods: error inicializando Supabase:', e);
+    }
+    return false;
+  }
+  if (!trySupabaseInit()){
+    console.error('Goods: Supabase no cargó a la primera. Reintentando durante unos segundos…');
+    let supabaseRetryAttempts = 0;
+    const supabaseRetryTimer = setInterval(() => {
+      supabaseRetryAttempts++;
+      const ok = trySupabaseInit();
+      if (ok){
+        console.info('Goods: Supabase conectó tras reintentar. Ya está todo funcionando.');
+        clearInterval(supabaseRetryTimer);
+      } else if (supabaseRetryAttempts >= 30){ // ~15 segundos de reintentos, para conexiones lentas
+        console.error('Goods: no se pudo conectar con Supabase tras varios intentos.');
+        clearInterval(supabaseRetryTimer);
+      }
+    }, 500);
+  }
+
+  const BARBERS = [
+    {id:'nicolas', name:'Nicolás'},
+    {id:'tula', name:'Tula'},
+    {id:'chino', name:'Chino'},
+  ];
+
+  // Trae TODOS los datos de los turnos (incluye nombre y teléfono) —
+  // solo funciona si el dueño inició sesión, por las reglas de seguridad
+  // configuradas en Supabase (Row Level Security).
+  async function fetchAllBookings(){
+    const todayKey = new Date().toISOString().slice(0,10);
+    const { data, error } = await supabase
+      .from('bookings')
+      .select('*')
+      .gte('date', todayKey)
+      .order('date', {ascending:true})
+      .order('time', {ascending:true});
+    if (error) throw error;
+    return (data || []).map(row => ({
+      id: row.id,
+      barberId: row.barber_id,
+      barberName: row.barber_name,
+      date: row.date,
+      dateLabel: row.date_label,
+      time: row.time,
+      customerName: row.customer_name,
+      phone: row.phone,
+      note: row.note,
+      status: row.status,
+      ticketNum: row.ticket_num
+    }));
+  }
+
+  async function updateBookingStatusRemote(id, newStatus){
+    const { error } = await supabase.from('bookings').update({status:newStatus}).eq('id', id);
+    if (error) throw error;
+  }
+
+  /* ================= PANEL DEL DUEÑO (login real con Supabase Auth) ================= */
+  // El acceso queda protegido por un usuario y contraseña reales, creados
+  // por vos en el panel de Supabase (no acá). Row Level Security en la base
+  // de datos garantiza que solo una cuenta autenticada puede leer los
+  // nombres y teléfonos de los clientes — ver la guía de configuración.
+
+  const adminPinScreen = document.getElementById('adminPinScreen');
+  const adminDashboard = document.getElementById('adminDashboard');
+  const adminEmail = document.getElementById('adminEmail');
+  const adminPassword = document.getElementById('adminPassword');
+  const adminPinSubmit = document.getElementById('adminPinSubmit');
+  const adminPinError = document.getElementById('adminPinError');
+  const adminStats = document.getElementById('adminStats');
+  const adminFilters = document.getElementById('adminFilters');
+  const adminList = document.getElementById('adminList');
+  const adminExport = document.getElementById('adminExport');
+  const adminRefresh = document.getElementById('adminRefresh');
+  const adminDeleteDone = document.getElementById('adminDeleteDone');
+  const adminLock = document.getElementById('adminLock');
+
+  let adminBarberFilter = 'all';
+  let adminBookingsCache = [];
+
+  function showLoginScreen(){
+    adminDashboard.hidden = true;
+    adminPinScreen.style.display = 'flex';
+    adminPassword.value = '';
+    adminPinError.classList.remove('show');
+    setTimeout(() => adminEmail.focus(), 100);
+  }
+
+  async function handleLogin(){
+    const email = adminEmail.value.trim();
+    const password = adminPassword.value;
+    if (!email || !password){
+      adminPinError.textContent = 'Completá email y contraseña.';
+      adminPinError.classList.add('show');
+      return;
+    }
+    adminPinSubmit.disabled = true;
+    adminPinSubmit.textContent = 'Entrando…';
+
+    let error;
+    try {
+      if (!supabase) throw new Error('Supabase no disponible');
+      ({ error } = await supabase.auth.signInWithPassword({ email, password }));
+    } catch(err){
+      adminPinSubmit.disabled = false;
+      adminPinSubmit.textContent = 'Entrar';
+      adminPinError.textContent = 'No pudimos conectar. Revisá tu conexión e intentá de nuevo.';
+      adminPinError.classList.add('show');
+      return;
+    }
+    adminPinSubmit.disabled = false;
+    adminPinSubmit.textContent = 'Entrar';
+
+    if (error){
+      adminPinError.textContent = 'Email o contraseña incorrectos.';
+      adminPinError.classList.add('show');
+      return;
+    }
+    adminPinError.classList.remove('show');
+    await openDashboard();
+  }
+
+  let adminPollTimer = null;
+  function startAdminPolling(){
+    stopAdminPolling();
+    adminPollTimer = setInterval(() => {
+      // no molesta si la pestaña del navegador no está a la vista
+      if (!document.hidden) loadAndRenderBookings(true);
+    }, 20000);
+  }
+  function stopAdminPolling(){
+    if (adminPollTimer){ clearInterval(adminPollTimer); adminPollTimer = null; }
+  }
+
+  async function openDashboard(){
+    adminPinScreen.style.display = 'none';
+    adminDashboard.hidden = false;
+    await loadAndRenderBookings();
+    startAdminPolling();
+  }
+
+  function isBookingOverdue(b){
+    if (b.status !== 'confirmed') return false;
+    const dt = new Date(b.date + 'T' + (b.time || '00:00'));
+    return dt.getTime() < Date.now();
+  }
+
+  function renderAdminFilters(){
+    adminFilters.innerHTML = '';
+    const allChip = document.createElement('button');
+    allChip.type = 'button';
+    allChip.className = 'admin-chip' + (adminBarberFilter === 'all' ? ' active' : '');
+    allChip.textContent = 'Todos';
+    allChip.addEventListener('click', () => { adminBarberFilter = 'all'; renderAdminFilters(); renderAdminList(); });
+    adminFilters.appendChild(allChip);
+    BARBERS.forEach(b => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'admin-chip' + (adminBarberFilter === b.id ? ' active' : '');
+      chip.textContent = b.name;
+      chip.addEventListener('click', () => { adminBarberFilter = b.id; renderAdminFilters(); renderAdminList(); });
+      adminFilters.appendChild(chip);
+    });
+  }
+
+  async function loadAndRenderBookings(silent){
+    if (!silent) adminList.innerHTML = '<p class="admin-empty">Cargando turnos…</p>';
+    try {
+      adminBookingsCache = await fetchAllBookings();
+    } catch(err){
+      if (!silent){
+        adminList.innerHTML = '';
+        const errBox = document.createElement('p');
+        errBox.className = 'admin-empty';
+        errBox.textContent = 'No pudimos cargar los turnos. Revisá tu conexión o los datos de configuración de Supabase.';
+        adminList.appendChild(errBox);
+      }
+      return;
+    }
+    renderAdminFilters();
+    renderAdminList();
+  }
+
+  function renderAdminList(){
+    const filtered = adminBookingsCache.filter(b => adminBarberFilter === 'all' || b.barberId === adminBarberFilter);
+    const confirmedCount = filtered.filter(b => b.status === 'confirmed' && !isBookingOverdue(b)).length;
+    const overdueCount = adminBookingsCache.filter(isBookingOverdue).length;
+    adminStats.textContent = filtered.length + ' turno(s) — ' + confirmedCount + ' confirmado(s) próximos' + (overdueCount ? ' · ' + overdueCount + ' sin marcar' : '');
+
+    adminList.innerHTML = '';
+
+    if (filtered.length === 0){
+      const empty = document.createElement('p');
+      empty.className = 'admin-empty';
+      empty.textContent = 'Todavía no hay turnos reservados para este filtro.';
+      adminList.appendChild(empty);
+      return;
+    }
+
+    filtered.forEach(b => {
+      const item = document.createElement('div');
+      item.className = 'admin-item';
+
+      const waPhone = (b.phone || '').replace(/[^0-9]/g, '');
+      const overdue = isBookingOverdue(b);
+      const statusLabel = overdue ? 'Sin marcar' : (b.status === 'done' ? 'Atendido' : (b.status === 'cancelled' ? 'Cancelado' : 'Confirmado'));
+
+      const main = document.createElement('div');
+      main.className = 'admin-item-main';
+      main.innerHTML =
+        '<span class="admin-item-when">' + escapeHtml(b.dateLabel || b.date) + ' · ' + escapeHtml(b.time) + ' · ' + escapeHtml(b.barberName || '') + '</span>' +
+        '<span class="admin-item-name">' + escapeHtml(b.customerName || 'Sin nombre') + '</span>' +
+        '<span class="admin-item-meta">' +
+          (b.phone ? '<a href="tel:'+escapeHtml(b.phone)+'">'+escapeHtml(b.phone)+'</a> · <a href="https://wa.me/'+encodeURIComponent(waPhone)+'" target="_blank" rel="noopener">WhatsApp</a>' : 'Sin teléfono') +
+          (b.note ? ' · Nota: ' + escapeHtml(b.note) : '') +
+        '</span>';
+
+      const badge = document.createElement('span');
+      badge.className = 'admin-badge ' + (overdue ? 'overdue' : b.status);
+      badge.textContent = statusLabel;
+      main.querySelector('.admin-item-when').appendChild(badge);
+
+      const actions = document.createElement('div');
+      actions.className = 'admin-item-actions';
+
+      if (b.status === 'confirmed'){
+        const doneBtn = document.createElement('button');
+        doneBtn.type = 'button'; doneBtn.className = 'admin-btn'; doneBtn.textContent = 'Marcar atendido';
+        doneBtn.addEventListener('click', () => updateBookingStatus(b, 'done'));
+        const cancelBtn = document.createElement('button');
+        cancelBtn.type = 'button'; cancelBtn.className = 'admin-btn danger'; cancelBtn.textContent = 'Cancelar';
+        cancelBtn.addEventListener('click', () => updateBookingStatus(b, 'cancelled'));
+        actions.appendChild(doneBtn);
+        actions.appendChild(cancelBtn);
+      } else {
+        const reactivateBtn = document.createElement('button');
+        reactivateBtn.type = 'button'; reactivateBtn.className = 'admin-btn'; reactivateBtn.textContent = 'Reactivar';
+        reactivateBtn.addEventListener('click', () => updateBookingStatus(b, 'confirmed'));
+        actions.appendChild(reactivateBtn);
+      }
+
+      item.appendChild(main);
+      item.appendChild(actions);
+      adminList.appendChild(item);
+    });
+  }
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
+
+  async function updateBookingStatus(booking, newStatus){
+    try {
+      await updateBookingStatusRemote(booking.id, newStatus);
+    } catch(err){
+      alert('No se pudo actualizar el turno. Probá de nuevo.');
+      return;
+    }
+    await loadAndRenderBookings();
+  }
+
+  const STATUS_LABEL = { confirmed: 'Confirmado', done: 'Atendido', cancelled: 'Cancelado' };
+
+  function bookingRow(b){
+    return [b.dateLabel || b.date, b.date, b.time, b.barberName || '', b.customerName || '', b.phone || '', b.note || '', STATUS_LABEL[b.status] || b.status, b.ticketNum || ''];
+  }
+  const EXCEL_HEADERS = ['Fecha', 'Fecha (AAAA-MM-DD)', 'Hora', 'Barbero', 'Cliente', 'Teléfono', 'Nota', 'Estado', 'N° Ticket'];
+  const EXCEL_COL_WIDTHS = [{wch:13},{wch:15},{wch:8},{wch:14},{wch:24},{wch:16},{wch:28},{wch:13},{wch:11}];
+
+  function styleHeaderRow(ws, numCols){
+    for (let c = 0; c < numCols; c++){
+      const ref = XLSX.utils.encode_cell({r:0, c});
+      if (!ws[ref]) continue;
+      ws[ref].s = {
+        font: { bold: true, color: { rgb: 'FFFFFF' } },
+        fill: { fgColor: { rgb: '0A1930' } },
+        alignment: { vertical: 'center' }
+      };
+    }
+  }
+
+  function buildSheet(rows){
+    const data = [EXCEL_HEADERS, ...rows.map(bookingRow)];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = EXCEL_COL_WIDTHS;
+    ws['!autofilter'] = { ref: XLSX.utils.encode_range({s:{r:0,c:0}, e:{r:data.length-1, c:EXCEL_HEADERS.length-1}}) };
+    styleHeaderRow(ws, EXCEL_HEADERS.length);
+    return ws;
+  }
+
+  function buildSummarySheet(rows){
+    const total = rows.length;
+    const confirmed = rows.filter(b => b.status === 'confirmed').length;
+    const done = rows.filter(b => b.status === 'done').length;
+    const cancelled = rows.filter(b => b.status === 'cancelled').length;
+
+    const data = [
+      ['Resumen de turnos — Goods Barber Studio'],
+      ['Generado el', new Date().toLocaleString('es-AR')],
+      [],
+      ['Total de turnos', total],
+      ['Confirmados', confirmed],
+      ['Atendidos', done],
+      ['Cancelados', cancelled],
+      [],
+      ['Por barbero', 'Confirmados', 'Atendidos', 'Cancelados', 'Total'],
+    ];
+    BARBERS.forEach(b => {
+      const mine = rows.filter(r => r.barberId === b.id);
+      data.push([
+        b.name,
+        mine.filter(r => r.status === 'confirmed').length,
+        mine.filter(r => r.status === 'done').length,
+        mine.filter(r => r.status === 'cancelled').length,
+        mine.length
+      ]);
+    });
+
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{wch:18},{wch:14},{wch:12},{wch:12},{wch:10}];
+    // título en negrita
+    if (ws['A1']) ws['A1'].s = { font:{ bold:true, sz:14, color:{rgb:'0A1930'} } };
+    // encabezado de la tabla por barbero, fila 9 (índice 8)
+    ['A9','B9','C9','D9','E9'].forEach(ref => {
+      if (ws[ref]) ws[ref].s = { font:{bold:true, color:{rgb:'FFFFFF'}}, fill:{fgColor:{rgb:'4E8FD6'}} };
+    });
+    return ws;
+  }
+
+  async function downloadExcel(){
+    if (typeof XLSX === 'undefined'){
+      alert('No se pudo cargar el generador de Excel. Revisá tu conexión e intentá de nuevo.');
+      return;
+    }
+
+    const filtered = adminBookingsCache.filter(b => adminBarberFilter === 'all' || b.barberId === adminBarberFilter);
+    const wb = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(wb, buildSummarySheet(filtered), 'Resumen');
+    XLSX.utils.book_append_sheet(wb, buildSheet(filtered), 'Todos los turnos');
+    BARBERS.forEach(b => {
+      const mine = filtered.filter(r => r.barberId === b.id);
+      if (mine.length === 0) return;
+      // el nombre de hoja no puede tener más de 31 caracteres ni ciertos símbolos
+      XLSX.utils.book_append_sheet(wb, buildSheet(mine), b.name.slice(0,31));
+    });
+
+    const todayStr = new Date().toISOString().slice(0,10);
+    XLSX.writeFile(wb, `turnos-goods-barber-studio-${todayStr}.xlsx`);
+  }
+
+  async function deleteAllDoneBookings(){
+    const doneCount = adminBookingsCache.filter(b => b.status === 'done').length;
+    if (doneCount === 0){
+      alert('No hay turnos marcados como "Atendido" para borrar.');
+      return;
+    }
+    const sure = confirm(
+      `Esto borra PERMANENTEMENTE los ${doneCount} turno(s) marcados como "Atendido". ` +
+      `No se puede deshacer. ¿Confirmás?`
+    );
+    if (!sure) return;
+
+    adminDeleteDone.disabled = true;
+    adminDeleteDone.textContent = 'Borrando…';
+    try {
+      const { error } = await supabase.from('bookings').delete().eq('status', 'done');
+      if (error) throw error;
+      await loadAndRenderBookings();
+    } catch(err){
+      alert('No se pudieron borrar los turnos. Es posible que falte habilitar el permiso de borrado en Supabase (revisá la guía).');
+    } finally {
+      adminDeleteDone.disabled = false;
+      adminDeleteDone.textContent = 'Borrar atendidos';
+    }
+  }
+
+  adminPinSubmit.addEventListener('click', handleLogin);
+  adminPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
+  adminExport.addEventListener('click', async () => {
+    adminExport.disabled = true;
+    const original = adminExport.textContent;
+    adminExport.textContent = 'Generando…';
+    try {
+      await downloadExcel();
+    } finally {
+      adminExport.disabled = false;
+      adminExport.textContent = original;
+    }
+  });
+  adminRefresh.addEventListener('click', async () => {
+    adminRefresh.disabled = true;
+    const original = adminRefresh.textContent;
+    adminRefresh.textContent = 'Actualizando…';
+    await loadAndRenderBookings();
+    adminRefresh.disabled = false;
+    adminRefresh.textContent = original;
+  });
+  adminDeleteDone.addEventListener('click', deleteAllDoneBookings);
+  adminLock.addEventListener('click', async () => {
+    stopAdminPolling();
+    try { if (supabase) await supabase.auth.signOut(); } catch(err){ /* igual mostramos el login */ }
+    showLoginScreen();
+  });
+
+
+  // Al abrir el panel: si ya hay sesión iniciada va directo a los turnos,
+  // si no, muestra el login. Espera a que Supabase termine de conectar.
+  (async () => {
+    for (let i = 0; i < 32 && !supabase; i++) await new Promise(r => setTimeout(r, 500));
+    try {
+      if (!supabase) throw new Error('Supabase no disponible');
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session){ await openDashboard(); } else { showLoginScreen(); }
+    } catch(err){
+      showLoginScreen();
+      adminPinError.textContent = 'No pudimos conectar con la base de datos. Revisá tu conexión.';
+      adminPinError.classList.add('show');
+    }
+  })();
+
+})();
+</script>
+</body>
+</html>
