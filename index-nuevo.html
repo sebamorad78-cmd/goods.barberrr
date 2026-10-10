@@ -1625,8 +1625,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       if (!error) BLOCKED = data || [];
     } catch(e){ console.error('Goods: no se pudieron leer los días bloqueados:', e); }
     markClosedDays();
-    if (state.barber && state.date) renderTimeGrid();
+    if (state.barber && state.date) renderTimeGrid(true);
   }
+  // La página se mantiene al día con lo que se cambia en el panel (días bloqueados,
+  // horarios, turnos cancelados o tomados) sin tener que recargarla: cada 30 segundos
+  // mientras está a la vista, y apenas se vuelve a mirar.
+  function refreshFromPanel(){
+    if (!supabase || document.visibilityState !== 'visible' || isSubmitting) return;
+    loadOwnerSettings();
+  }
+  setInterval(refreshFromPanel, 30000);
+  document.addEventListener('visibilitychange', refreshFromPanel);
   let settingsTries = 0;
   const settingsTimer = setInterval(() => {
     settingsTries++;
@@ -1640,38 +1649,52 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   // Cada vez que se redibuja la grilla se numera el pedido: si mientras se consultaba
   // la disponibilidad la persona eligió otro barbero o día, la respuesta vieja se descarta
   // (con internet lento podía mezclar horarios de dos barberos).
+  // Suelta el horario elegido. Si el turno se acaba de confirmar, el ticket queda
+  // como comprobante (no se borra).
+  function releaseTime(){
+    if (!state.time) return;
+    state.time = null;
+    if (!bookingJustConfirmed) updateTicket();
+    checkReady();
+  }
   let gridRequest = 0;
-  async function renderTimeGrid(){
+  // quiet = true: actualización en segundo plano (no borra la grilla mientras consulta,
+  // así no parpadea) y conserva el horario que la persona ya había elegido.
+  async function renderTimeGrid(quiet){
     const req = ++gridRequest;
-    timeGrid.innerHTML = '';
-    if (!state.barber || !state.date){
+    if (!quiet) timeGrid.innerHTML = '';
+    function showHint(msg){
+      timeGrid.innerHTML = '';
       timeHint.style.display = 'block';
-      timeHint.textContent = 'Seleccioná primero un barbero y un día.';
+      timeHint.textContent = msg;
+      releaseTime(); // si había un horario elegido y ya no está disponible, se suelta
+    }
+    if (!state.barber || !state.date){
+      showHint('Seleccioná primero un barbero y un día.');
       return;
     }
 
     if (isBlockedDay(state.date.key, null)){
-      timeHint.style.display = 'block';
-      timeHint.textContent = 'Ese día el local está cerrado — elegí otra fecha.';
+      showHint('Ese día el local está cerrado — elegí otra fecha.');
       return;
     }
     const times = isBlockedDay(state.date.key, state.barber.id) ? [] : getTimesForBarberDay(state.barber.id, state.date.dow);
     if (times.length === 0){
-      timeHint.style.display = 'block';
-      timeHint.textContent = state.barber.name + ' no atiende ese día — probá otro día o elegí otro barbero.';
+      showHint(state.barber.name + ' no atiende ese día — probá otro día o elegí otro barbero.');
       return;
     }
 
-    timeHint.style.display = 'block';
-    timeHint.textContent = 'Buscando horarios disponibles…';
+    if (!quiet){
+      timeHint.style.display = 'block';
+      timeHint.textContent = 'Buscando horarios disponibles…';
+    }
 
     let taken;
     try {
       taken = await getStoredBooked(state.barber.id, state.date.key);
     } catch(err){
-      if (req !== gridRequest) return;
-      timeHint.style.display = 'block';
-      timeHint.textContent = 'No pudimos consultar los horarios disponibles. Revisá tu conexión y volvé a intentar.';
+      if (req !== gridRequest || quiet) return; // en segundo plano, si falla se deja lo que había
+      showHint('No pudimos consultar los horarios disponibles. Revisá tu conexión y volvé a intentar.');
       return;
     }
 
@@ -1680,18 +1703,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     // Si el día elegido es hoy, no se ofrecen los horarios que ya empezaron.
     const upcoming = times.filter(t => !isPastToday(state.date, t));
     if (upcoming.filter(t => !taken.has(t)).length === 0){
-      timeHint.style.display = 'block';
-      timeHint.textContent = upcoming.length === 0
+      showHint(upcoming.length === 0
         ? 'Ya no quedan horarios para hoy con ' + state.barber.name + ' — probá otro día.'
-        : 'No quedan horarios disponibles ese día con este barbero — probá otra fecha.';
+        : 'No quedan horarios disponibles ese día con este barbero — probá otra fecha.');
       return;
     }
     timeHint.style.display = 'none';
 
+    // El horario elegido sigue marcado si todavía está libre; si se ocupó, se suelta.
+    if (state.time && (taken.has(state.time) || !upcoming.includes(state.time))) releaseTime();
+    const frag = document.createDocumentFragment();
     upcoming.forEach(t => {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'chip-time';
+      btn.className = 'chip-time' + (t === state.time ? ' active' : '');
       btn.textContent = t;
       if (taken.has(t)) btn.disabled = true;
       btn.addEventListener('click', () => {
@@ -1701,8 +1726,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         updateTicket();
         checkReady();
       });
-      timeGrid.appendChild(btn);
+      frag.appendChild(btn);
     });
+    timeGrid.innerHTML = '';
+    timeGrid.appendChild(frag);
   }
 
   const ticketNum = document.getElementById('ticketNum');
@@ -1849,6 +1876,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       tStatus.textContent = 'Confirmado ✓';
       confirmMsg.classList.add('show');
       submitBtn.textContent = 'Turno confirmado';
+      bookingJustConfirmed = true;
       playThankYouCinematic();
 
       await renderTimeGrid();
