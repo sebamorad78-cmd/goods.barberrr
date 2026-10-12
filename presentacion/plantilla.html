@@ -196,6 +196,31 @@
   footer .wrap{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
 
 
+
+  /* ---------- Video del panel ---------- */
+  .video-grid{display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr); gap:56px; align-items:center}
+  .vphone{position:relative; width:min(320px,100%); justify-self:center; border-radius:34px; padding:10px; background:#151616; box-shadow:var(--shadow)}
+  .vphone video{display:block; width:100%; height:auto; aspect-ratio:600/1298; border-radius:25px; background:#0A1930}
+  .vcontrols{display:flex; align-items:center; gap:10px; margin:14px auto 0; width:min(320px,100%)}
+  .vbtn{flex-shrink:0; width:36px; height:36px; border-radius:50%; border:1px solid var(--line); background:var(--surface); color:var(--ink); display:inline-flex; align-items:center; justify-content:center; cursor:pointer}
+  .vbtn:hover{border-color:var(--muted)}
+  .vbtn svg{width:14px; height:14px}
+  .vbar{position:relative; flex:1; height:4px; border-radius:2px; background:var(--line); overflow:hidden}
+  .vbar i{position:absolute; inset:0 auto 0 0; width:0; background:var(--accent)}
+  .vtime{font:500 12.5px/1 var(--mono); color:var(--muted); font-variant-numeric:tabular-nums; min-width:36px; text-align:right}
+  .video-copy p.muted{margin-top:14px; max-width:52ch}
+  .chapters{list-style:none; margin:26px 0 0; padding:0; border-top:1px solid var(--line)}
+  .chapters li{border-bottom:1px solid var(--line)}
+  .chapters button{all:unset; box-sizing:border-box; width:100%; display:grid; grid-template-columns:52px 1fr; gap:12px; padding:13px 8px; cursor:pointer; border-radius:8px}
+  .chapters button:hover{background:var(--sunken)}
+  .chapters button:focus-visible{outline:2px solid var(--accent); outline-offset:-2px}
+  .chapters .ts{font:500 13px/1.6 var(--mono); color:var(--faint); font-variant-numeric:tabular-nums}
+  .chapters b{display:block; font-weight:600; font-size:15.5px}
+  .chapters span.d{display:block; color:var(--muted); font-size:14.5px; margin-top:1px}
+  .chapters li.on button{background:var(--accent-soft)}
+  .chapters li.on .ts{color:var(--accent)}
+  @media (max-width:920px){ .video-grid{grid-template-columns:1fr; gap:32px} }
+
   /* ---------- Confiabilidad ---------- */
   .reliab{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 40px}
   .reliab div{padding:18px 0; border-top:1px solid var(--line); min-width:0}
@@ -275,6 +300,7 @@
     <a class="mark" href="#">Sebastián Morad<small>Mar del Plata</small></a>
     <nav class="nav" aria-label="Secciones">
       <a href="#incluye">Qué incluye</a>
+      <a href="#panel">Panel</a>
       <a href="#goods">Goods</a>
       <a href="#precio">Precio</a>
       <a href="#contacto">Contacto</a>
@@ -364,6 +390,33 @@
     </div>
   </section>
 
+  <section class="block" id="panel" aria-labelledby="panel-title">
+    <div class="wrap video-grid">
+      <div>
+        <div class="vphone">
+          <video id="panelVideo" poster="IMG_POSTER" muted playsinline loop preload="metadata" width="600" height="1298" aria-label="Grabación del panel del dueño de goods.ar en el celular"><source src="VIDEO_PANEL" type="video/mp4"><source src="VIDEO_WEBM" type="video/webm"></video>
+        </div>
+        <div class="vcontrols">
+          <button type="button" class="vbtn" id="vToggle" aria-label="Reproducir"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path id="vIcon" d="M4 2.5v11l9-5.5z"/></svg></button>
+          <div class="vbar" aria-hidden="true"><i id="vProgress"></i></div>
+          <span class="vtime" id="vTime">0:00</span>
+        </div>
+      </div>
+      <div class="video-copy">
+        <h2 id="panel-title">Así se organiza tu día</h2>
+        <p class="muted">El panel real de goods.ar, grabado en un celular. Los clientes son de ejemplo, para cuidar los datos de los clientes reales.</p>
+        <ol class="chapters" id="chapters">
+          <li><button type="button" data-t="1.2"><span class="ts">0:01</span><span><b>Entrar con tu usuario</b><span class="d">Con tu email y contraseña, desde el celular o la compu.</span></span></button></li>
+          <li><button type="button" data-t="5.9"><span class="ts">0:06</span><span><b>La agenda de hoy</b><span class="d">Cada barbero con sus turnos, el próximo marcado y los atendidos tachados.</span></span></button></li>
+          <li><button type="button" data-t="9.5"><span class="ts">0:09</span><span><b>Filtrar por barbero</b><span class="d">Ves los turnos de uno solo o de todos juntos.</span></span></button></li>
+          <li><button type="button" data-t="15.2"><span class="ts">0:15</span><span><b>Turnos y recordatorios</b><span class="d">El teléfono de cada cliente y el recordatorio por WhatsApp a un toque.</span></span></button></li>
+          <li><button type="button" data-t="21.5"><span class="ts">0:21</span><span><b>Cargar un turno a mano</b><span class="d">Para el que llama o pasa por el local. El horario se ocupa en la página.</span></span></button></li>
+          <li><button type="button" data-t="34.2"><span class="ts">0:34</span><span><b>Horarios y feriados</b><span class="d">Cambiás el horario de cada barbero o cerrás un día.</span></span></button></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
   <section class="block" id="goods" aria-labelledby="goods-title">
     <div class="wrap">
       <div class="case-head">
@@ -382,8 +435,8 @@
           <p class="caption">La página de Goods, con sus fotos, precios y barberos.</p>
         </div>
         <div>
-          <div class="phone"><img src="IMG_PANEL" width="520" height="1125" alt="Panel del dueño de Goods con la agenda del día" loading="lazy"></div>
-          <p class="caption" style="text-align:center">El panel del dueño, desde el celular.</p>
+          <div class="phone"><img src="IMG_GOODSMOBILE" width="520" height="1125" alt="Página de Goods Barber Studio en el celular" loading="lazy"></div>
+          <p class="caption" style="text-align:center">La misma página, en el celular.</p>
         </div>
       </div>
     </div>
@@ -540,6 +593,43 @@
     var select = function(){ var r = document.createRange(); r.selectNodeContents(numEl); var s = getSelection(); s.removeAllRanges(); s.addRange(r); };
     try { navigator.clipboard.writeText(numEl.textContent).then(done, select); } catch(e){ select(); }
   });
+
+
+  /* ===== Video del panel: se reproduce cuando está a la vista; capítulos para saltar ===== */
+  (function(){
+    var v = document.getElementById('panelVideo'); if (!v) return;
+    var btn = document.getElementById('vToggle'), icon = document.getElementById('vIcon');
+    var bar = document.getElementById('vProgress'), time = document.getElementById('vTime');
+    var items = Array.prototype.slice.call(document.querySelectorAll('#chapters li'));
+    var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var userPaused = false;
+    function setIcon(){ var playing = !v.paused; icon.setAttribute('d', playing ? 'M4 2.5h3v11H4zM9 2.5h3v11H9z' : 'M4 2.5v11l9-5.5z'); btn.setAttribute('aria-label', playing ? 'Pausar' : 'Reproducir'); }
+    function fmt(t){ t = Math.floor(t || 0); return Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0'); }
+    function play(){ var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+    v.addEventListener('play', setIcon); v.addEventListener('pause', setIcon);
+    v.addEventListener('timeupdate', function(){
+      if (v.duration) bar.style.width = (v.currentTime / v.duration * 100) + '%';
+      time.textContent = fmt(v.currentTime);
+      var cur = 0;
+      items.forEach(function(li, i){ if (v.currentTime + 0.05 >= parseFloat(li.firstChild.dataset.t)) cur = i; });
+      items.forEach(function(li, i){ li.classList.toggle('on', i === cur); });
+    });
+    btn.addEventListener('click', function(){ if (v.paused){ userPaused = false; play(); } else { userPaused = true; v.pause(); } });
+    items.forEach(function(li){
+      li.firstChild.addEventListener('click', function(){
+        v.currentTime = parseFloat(this.dataset.t); userPaused = false; play();
+        // en el celular los capítulos quedan debajo del video: se sube hasta él para verlo
+        var r = v.getBoundingClientRect();
+        if (r.top < 0 || r.bottom > innerHeight) v.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
+      });
+    });
+    if (!reduced && 'IntersectionObserver' in window){
+      new IntersectionObserver(function(entries){
+        entries.forEach(function(e){ if (e.isIntersecting){ if (!userPaused) play(); } else v.pause(); });
+      }, { threshold: 0.35 }).observe(v);
+    }
+    setIcon();
+  })();
 
   /* ===== Demo: misma lógica que el sistema real, con datos de ejemplo ===== */
   var BARBERS = [
