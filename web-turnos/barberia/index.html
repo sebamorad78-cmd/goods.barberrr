@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- OG:START (generado por tools/rubros.py, no editar a mano) -->
+  <title>Así se vería la web de tu barbería</title>
+  <meta name="description" content="Demo en vivo: turnos online 24/7, seña, agenda del equipo y recordatorios por WhatsApp. Tocá y probá reservar un corte.">
+  <link rel="canonical" href="https://paginas-profesionales-1212.netlify.app/barberia/">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_AR">
+  <meta property="og:site_name" content="Sebastian Morad">
+  <meta property="og:title" content="Así se vería la web de tu barbería">
+  <meta property="og:description" content="Demo en vivo: turnos online 24/7, seña, agenda del equipo y recordatorios por WhatsApp. Tocá y probá reservar un corte.">
+  <meta property="og:url" content="https://paginas-profesionales-1212.netlify.app/barberia/">
+  <meta property="og:image" content="https://paginas-profesionales-1212.netlify.app/assets/og/barberia.jpg?v=4">
+  <meta property="og:image:secure_url" content="https://paginas-profesionales-1212.netlify.app/assets/og/barberia.jpg?v=4">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Demo de web con turnos online para barberías">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Así se vería la web de tu barbería">
+  <meta name="twitter:description" content="Demo en vivo: turnos online 24/7, seña, agenda del equipo y recordatorios por WhatsApp. Tocá y probá reservar un corte.">
+  <meta name="twitter:image" content="https://paginas-profesionales-1212.netlify.app/assets/og/barberia.jpg?v=4">
+  <!-- OG:END -->
+  <meta name="theme-color" content="#0f0e0c">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23c8a35b'/%3E%3Cpath d='M20 44 44 20M20 20l24 24' stroke='%230f0e0c' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../css/styles.css?v=2026100801">
+  <!-- La configuración se carga primero para aplicar el tema antes de pintar -->
+  <script>window.__MODO__ = "barberia"; window.__ROOT__ = "../";</script>
+  <script src="../js/config.js?v=2026100801"></script>
+  <script src="../js/store.js?v=2026100801"></script>
+  <script src="../js/theme.js?v=2026100801"></script>
+  <script src="../js/main.js?v=2026100801" defer></script>
+</head>
+<body>
+  <a class="skip" href="#reservar">Ir a reservar</a>
+
+  <!-- ============ NAV ============ -->
+  <header class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="#inicio" class="brand" data-bind="nombre">Tu Negocio</a>
+      <nav class="nav__links" aria-label="Principal">
+        <a href="#servicios">Servicios</a>
+        <a href="#nosotros">Nosotros</a>
+        <a href="#galeria">Galería</a>
+        <a href="#equipo">Equipo</a>
+        <a href="#horarios">Horarios</a>
+      </nav>
+      <div class="nav__actions">
+        <span class="status-pill" id="statusPill" hidden><i></i><span></span></span>
+        <a href="#reservar" class="btn btn--primary btn--sm">Reservar turno</a>
+        <button class="nav__burger" id="burger" aria-label="Abrir menú" aria-expanded="false"><span></span><span></span></button>
+      </div>
+    </div>
+    <div class="nav__mobile" id="mobileMenu">
+      <a href="#servicios">Servicios</a>
+      <a href="#nosotros">Nosotros</a>
+      <a href="#galeria">Galería</a>
+      <a href="#equipo">Equipo</a>
+      <a href="#horarios">Horarios</a>
+      <a href="#reservar" class="btn btn--primary">Reservar turno</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="inicio">
+      <div class="hero__media"><img id="heroImg" alt="" fetchpriority="high"></div>
+      <div class="hero__veil"></div>
+      <div class="container hero__content">
+        <p class="eyebrow hero__eyebrow"><span class="line"></span><span data-bind="kicker">Turnos online · 24/7</span></p>
+        <h1 class="hero__title" id="heroTitle">Reservá tu turno</h1>
+        <p class="hero__lead" data-bind="descripcion"></p>
+        <div class="hero__cta">
+          <a href="#reservar" class="btn btn--primary btn--lg">Reservar ahora <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a href="#servicios" class="btn btn--ghost btn--lg">Ver precios</a>
+        </div>
+        <a href="#reservar" class="next-slot" id="nextSlot" hidden><i></i><span class="next-slot__l">Próximo turno disponible:</span><span class="next-slot__s">Próximo turno:</span> <strong></strong><span aria-hidden="true">→</span></a>
+        <ul class="hero__stats" id="heroStats"></ul>
+      </div>
+      <a href="#marquee" class="hero__scroll" aria-label="Seguir bajando"><span></span></a>
+    </section>
+
+    <div class="marquee" id="marquee" aria-hidden="true"><div class="marquee__track" id="marqueeTrack"></div></div>
+
+    <!-- ============ SERVICIOS ============ -->
+    <section class="section" id="servicios">
+      <div class="container">
+        <header class="section__head reveal">
+          <p class="eyebrow"><span class="line"></span>Servicios &amp; precios</p>
+          <h2 class="section__title">Elegí lo que <em>necesitás</em>.</h2>
+          <p class="section__sub">Precios finales. Tocá cualquier servicio para reservarlo directamente.</p>
+        </header>
+        <div class="tabs reveal" id="serviceTabs" role="tablist"></div>
+        <div class="price-list" id="priceList"></div>
+      </div>
+    </section>
+
+    <!-- ============ PROMOS ============ -->
+    <section class="section section--tight" id="promos">
+      <div class="container">
+        <header class="section__head section__head--row reveal">
+          <div>
+            <p class="eyebrow"><span class="line"></span>Promos &amp; regalos</p>
+            <h2 class="section__title">Más motivos para <em>volver</em>.</h2>
+          </div>
+        </header>
+        <div class="promos" id="promoGrid"></div>
+      </div>
+    </section>
+
+    <!-- ============ NOSOTROS ============ -->
+    <section class="section section--alt" id="nosotros">
+      <div class="container about">
+        <figure class="about__media reveal"><img id="aboutImg" alt="" loading="lazy"><figcaption class="about__badge"><strong data-bind="anio">+10</strong><span>años cuidando tu estilo</span></figcaption></figure>
+        <div class="about__text">
+          <p class="eyebrow reveal"><span class="line"></span>Nosotros</p>
+          <h2 class="section__title reveal" data-bind="nosotrosTitulo"></h2>
+          <div id="aboutParas" class="reveal"></div>
+          <ul class="features reveal">
+            <li><svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8 5.8 21.3l2.4-7.4L2 9.4h7.6z"/></svg><div><strong>Productos premium</strong><span>Marcas profesionales seleccionadas.</span></div></li>
+            <li><svg viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5 3.4 9.6 8 11 4.6-1.4 8-6 8-11V5z"/></svg><div><strong>Higiene estricta</strong><span>Herramientas esterilizadas en cada servicio.</span></div></li>
+            <li><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2"/></svg><div><strong>Turnos puntuales</strong><span>Sin esperas: tu horario se respeta.</span></div></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ GALERÍA ============ -->
+    <section class="section" id="galeria">
+      <div class="container">
+        <header class="section__head section__head--row reveal">
+          <div>
+            <p class="eyebrow"><span class="line"></span>Galería</p>
+            <h2 class="section__title">Conocé el <em>lugar</em>.</h2>
+          </div>
+          <a class="link-arrow" id="igLink" target="_blank" rel="noopener">Más en Instagram →</a>
+        </header>
+        <div class="gallery" id="gallery"></div>
+      </div>
+    </section>
+
+    <!-- ============ EQUIPO ============ -->
+    <section class="section section--alt" id="equipo">
+      <div class="container">
+        <header class="section__head reveal">
+          <p class="eyebrow"><span class="line"></span>Equipo</p>
+          <h2 class="section__title">Manos que <em>saben</em>.</h2>
+          <p class="section__sub">Podés elegir con quién atenderte al reservar.</p>
+        </header>
+        <div class="team" id="team"></div>
+      </div>
+    </section>
+
+    <!-- ============ TESTIMONIOS ============ -->
+    <section class="section section--alt" id="opiniones">
+      <div class="container">
+        <header class="section__head section__head--center reveal">
+          <p class="eyebrow"><span class="line"></span>Opiniones<span class="line"></span></p>
+          <h2 class="section__title">Lo que dicen <em>quienes vuelven</em>.</h2>
+        </header>
+        <div class="quotes" id="quotes"></div>
+      </div>
+    </section>
+
+    <!-- ============ RESERVA ============ -->
+    <section class="section booking-section" id="reservar">
+      <div class="container">
+        <header class="section__head section__head--center reveal">
+          <p class="eyebrow"><span class="line"></span>Reserva online<span class="line"></span></p>
+          <h2 class="section__title">Tu turno en <em>cuatro pasos</em>.</h2>
+        </header>
+
+        <div class="booking reveal" id="booking">
+          <ol class="steps" id="steps">
+            <li class="is-active"><span>1</span><b>Servicio</b></li>
+            <li><span>2</span><b>Profesional</b></li>
+            <li><span>3</span><b>Fecha</b></li>
+            <li><span>4</span><b>Datos</b></li>
+          </ol>
+
+          <div class="booking__body">
+            <div class="booking__main">
+              <!-- Paso 1 -->
+              <div class="pane is-active" data-pane="1">
+                <h3 class="pane__title">¿Qué te hacemos?</h3>
+                <p class="pane__hint">Podés elegir más de un servicio.</p>
+                <div class="svc-pick" id="svcPick"></div>
+              </div>
+              <!-- Paso 2 -->
+              <div class="pane" data-pane="2">
+                <h3 class="pane__title">¿Con quién?</h3>
+                <p class="pane__hint">Mostramos quienes realizan todos los servicios elegidos.</p>
+                <div class="pro-pick" id="proPick"></div>
+              </div>
+              <!-- Paso 3 -->
+              <div class="pane" data-pane="3">
+                <h3 class="pane__title">Elegí día y horario</h3>
+                <div class="datetime">
+                  <div class="calendar" id="calendar"></div>
+                  <div class="slots">
+                    <p class="slots__label" id="slotsLabel">Elegí un día</p>
+                    <div class="slots__grid" id="slots"></div>
+                  </div>
+                </div>
+              </div>
+              <!-- Paso 4 -->
+              <div class="pane" data-pane="4">
+                <h3 class="pane__title">Tus datos</h3>
+                <form class="form" id="bookingForm" novalidate>
+                  <label class="field"><span>Nombre y apellido *</span><input name="nombre" autocomplete="name" required minlength="3" placeholder="Ej: Juan Pérez"></label>
+                  <label class="field"><span>WhatsApp / Teléfono *</span><input name="telefono" type="tel" autocomplete="tel" required placeholder="Ej: 11 2345 6789"></label>
+                  <label class="field"><span>Email (opcional)</span><input name="email" type="email" autocomplete="email" placeholder="tu@email.com"></label>
+                  <label class="field field--full"><span>¿Algo que debamos saber? (opcional)</span><textarea name="nota" rows="3" placeholder="Referencias, alergias, foto de inspiración por WhatsApp…"></textarea></label>
+                  <label class="check field--full"><input type="checkbox" name="recordatorio" checked><span>Quiero recibir recordatorio por WhatsApp</span></label>
+                  <p class="terms field--full">Al confirmar aceptás las <a href="#" data-legal="condiciones">condiciones de reserva</a> y la <a href="#" data-legal="privacidad">política de privacidad</a>.</p>
+                </form>
+              </div>
+              <!-- Éxito -->
+              <div class="pane pane--success" data-pane="5">
+                <div class="success">
+                  <div class="success__icon"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-16"/></svg></div>
+                  <h3 class="pane__title">¡Turno reservado!</h3>
+                  <p class="pane__hint" id="successText"></p>
+                  <div class="success__code">Código: <strong id="successCode"></strong></div>
+                  <div class="sena-box" id="successSena" hidden>
+                    <p class="sena-box__title">Para confirmar, aboná la seña de <strong id="senaMonto"></strong></p>
+                    <div class="sena-box__alias"><span>Alias</span><strong id="senaAlias"></strong><button type="button" id="senaCopy">Copiar</button></div>
+                    <p class="sena-box__note">Titular: <span id="senaTitular"></span>. Mandá el comprobante por WhatsApp. El resto se abona en el local.</p>
+                    <a class="btn btn--primary" id="senaPagar" target="_blank" rel="noopener" hidden>Pagar con Mercado Pago</a>
+                  </div>
+                  <div class="success__actions">
+                    <a class="btn btn--primary" id="waConfirm" target="_blank" rel="noopener">Confirmar por WhatsApp</a>
+                    <a class="btn btn--ghost" id="gcalLink" target="_blank" rel="noopener">Agregar a Google Calendar</a>
+                    <button class="btn btn--ghost" id="icsBtn" type="button">Descargar .ics</button>
+                  </div>
+                  <button class="link-arrow" id="newBooking" type="button">Reservar otro turno</button>
+                </div>
+              </div>
+            </div>
+
+            <aside class="summary" id="summary">
+              <h4>Resumen</h4>
+              <ul class="summary__list" id="summaryList"><li class="muted">Todavía no elegiste servicios.</li></ul>
+              <dl class="summary__meta">
+                <div><dt>Profesional</dt><dd id="sumPro">—</dd></div>
+                <div><dt>Fecha</dt><dd id="sumDate">—</dd></div>
+                <div><dt>Duración</dt><dd id="sumDur">—</dd></div>
+              </dl>
+              <div class="summary__total"><span>Total</span><strong id="sumTotal">$0</strong></div>
+              <div class="summary__sena" id="sumSena" hidden><span>Seña para reservar</span><strong></strong></div>
+              <div class="summary__nav">
+                <button class="btn btn--ghost" id="prevBtn" type="button" hidden>Atrás</button>
+                <button class="btn btn--primary" id="nextBtn" type="button" disabled>Continuar</button>
+              </div>
+              <p class="summary__note" id="sumNote">Pagás el resto en el local.</p>
+            </aside>
+          </div>
+        </div>
+
+        <details class="my-bookings reveal" id="myBookings" hidden>
+          <summary>Mis turnos en este dispositivo</summary>
+          <ul id="myBookingsList"></ul>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ HORARIOS + UBICACIÓN ============ -->
+    <section class="section" id="horarios">
+      <div class="container visit">
+        <div class="visit__info reveal">
+          <p class="eyebrow"><span class="line"></span>Horarios &amp; ubicación</p>
+          <h2 class="section__title">Te <em>esperamos</em>.</h2>
+          <table class="hours" id="hoursTable"></table>
+          <ul class="contact" id="contactList"></ul>
+          <div class="pay"><span>Medios de pago</span><ul class="pay-list"></ul></div>
+        </div>
+        <div class="visit__map reveal"><iframe id="mapFrame" title="Mapa de ubicación" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe><a class="btn btn--primary btn--sm map-go" id="mapGo" target="_blank" rel="noopener">Cómo llegar →</a></div>
+      </div>
+    </section>
+
+    <!-- ============ FAQ ============ -->
+    <section class="section section--alt" id="faq">
+      <div class="container container--narrow">
+        <header class="section__head section__head--center reveal">
+          <p class="eyebrow"><span class="line"></span>Preguntas frecuentes<span class="line"></span></p>
+          <h2 class="section__title">Antes de <em>venir</em>.</h2>
+        </header>
+        <div class="faq reveal" id="faqList"></div>
+      </div>
+    </section>
+
+    <!-- ============ CTA FINAL ============ -->
+    <section class="cta-band">
+      <div class="container cta-band__inner reveal">
+        <h2>¿Listo para tu próximo <em>cambio</em>?</h2>
+        <a href="#reservar" class="btn btn--primary btn--lg">Reservar turno</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div>
+        <a href="#inicio" class="brand" data-bind="nombre"></a>
+        <p class="footer__tag" data-bind="eslogan"></p>
+      </div>
+      <div class="footer__cols" id="footerCols"></div>
+    </div>
+    <div class="container footer__bottom"><span>© <span id="year"></span> <span data-bind="nombre"></span>. Todos los derechos reservados.</span><span class="footer__legal"><a href="#" data-legal="privacidad">Privacidad</a><a href="#" data-legal="condiciones">Condiciones de reserva</a></span><a class="seller" id="sellerCredit" target="_blank" rel="noopener" hidden></a><a href="#inicio">Volver arriba ↑</a></div>
+  </footer>
+
+  <!-- Barra fija móvil -->
+  <div class="mobile-cta"><a href="#reservar" class="btn btn--primary">Reservar turno</a></div>
+  <!-- WhatsApp flotante -->
+  <a class="wa-float" id="waFloat" target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp"><svg viewBox="0 0 32 32"><path d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm0 23.7a10.7 10.7 0 0 1-5.5-1.5l-.4-.2-3.9 1 1-3.8-.2-.4A10.7 10.7 0 1 1 16 26.7zm5.9-8c-.3-.2-1.9-1-2.2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7 0a8.8 8.8 0 0 1-4.4-3.8c-.3-.6.3-.5.9-1.7a.6.6 0 0 0 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6a1.2 1.2 0 0 0-.9.4 3.7 3.7 0 0 0-1.1 2.7 6.4 6.4 0 0 0 1.3 3.4 14.7 14.7 0 0 0 5.7 5c2.1.9 2.9 1 4 .8a3.4 3.4 0 0 0 2.2-1.6 2.8 2.8 0 0 0 .2-1.6c-.1-.1-.3-.2-.6-.4z"/></svg></a>
+
+  <!-- Selector de demo -->
+  <div class="demo" id="demoPanel" hidden>
+    <button class="demo__toggle" id="demoToggle" type="button" aria-expanded="false" aria-controls="demoForm">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+      <span>Personalizar demo</span>
+    </button>
+    <form class="demo__form" id="demoForm" autocomplete="off">
+      <div class="demo__head"><strong>Maqueta para un local</strong><button type="button" class="demo__x" id="demoClose" aria-label="Cerrar">×</button></div>
+      <div class="demo__modes" role="group" aria-label="Estilo">
+        <button type="button" data-mode="barberia">Barbería</button>
+        <button type="button" data-mode="salon">Salón</button>
+        <button type="button" data-mode="spa">Spa / Estética</button>
+        <button type="button" data-mode="unas">Nail bar</button>
+      </div>
+      <label class="demo__field"><span>Nombre del local</span><input name="nombre" maxlength="60" placeholder="Ej: Barbería Don Carlos"></label>
+      <label class="demo__field"><span>Frase principal</span><input name="eslogan" maxlength="80" placeholder="Ej: Cortes con estilo propio."></label>
+      <div class="demo__row">
+        <label class="demo__field demo__field--color"><span>Color</span><input name="color" type="color"></label>
+        <label class="demo__field"><span>WhatsApp del local</span><input name="wa" inputmode="numeric" placeholder="5491122334455"></label>
+      </div>
+      <label class="demo__field"><span>Dirección</span><input name="dir" maxlength="120" placeholder="Calle 123, Ciudad"></label>
+      <label class="demo__field"><span>Instagram</span><input name="ig" placeholder="@usuario"></label>
+      <div class="demo__row demo__row--2">
+        <label class="demo__field"><span>Ajustar precios %</span><input name="ajuste" type="number" step="5" min="-80" max="400" placeholder="Ej: 20 o -10"></label>
+        <label class="demo__check"><input type="checkbox" name="sena"><span>Pedir seña</span></label>
+      </div>
+      <div class="demo__actions">
+        <button type="submit" class="btn btn--primary btn--sm">Aplicar</button>
+        <button type="button" class="btn btn--ghost btn--sm" id="demoReset">Restablecer</button>
+      </div>
+      <button type="button" class="btn btn--ghost btn--sm demo__copy" id="demoCopy">Copiar link para el cliente</button>
+      <p class="demo__note">El link que copiás abre la web ya personalizada y sin este panel.</p>
+      <div class="demo__links"><a id="demoAdmin">Ver panel del dueño →</a><a id="demoVender" target="_blank" rel="noopener">Mi página de ventas →</a></div>
+    </form>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" hidden>
+    <button class="lightbox__close" aria-label="Cerrar">×</button>
+    <button class="lightbox__nav lightbox__nav--prev" aria-label="Anterior">‹</button>
+    <img alt="">
+    <button class="lightbox__nav lightbox__nav--next" aria-label="Siguiente">›</button>
+  </div>
+
+  <dialog class="legal" id="legal" aria-labelledby="legalTitle">
+    <div class="legal__card">
+      <header><h2 id="legalTitle"></h2><button type="button" data-close-legal aria-label="Cerrar">×</button></header>
+      <div class="legal__body" id="legalBody"></div>
+      <button type="button" class="btn btn--primary btn--sm" data-close-legal>Entendido</button>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <noscript><p style="padding:2rem;text-align:center">Activá JavaScript para reservar online, o escribinos por WhatsApp.</p></noscript>
+</body>
+</html>

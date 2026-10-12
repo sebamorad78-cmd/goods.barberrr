@@ -1,0 +1,40 @@
+# Configuración para Netlify (sitio estático, sin build)
+[build]
+  publish = "."
+  # Genera /barberia/, /salon/, /spa/ y /unas/ con su vista previa para WhatsApp,
+  # usando la URL real del sitio (Netlify la pasa en la variable URL).
+  command = "python3 tools/rubros.py"
+
+# HTML siempre fresco; CSS/JS cacheados (se refrescan con ?v=FECHA)
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "no-cache"
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "no-cache"
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# El panel no debe aparecer en Google
+[[headers]]
+  for = "/admin.html"
+  [headers.values]
+    X-Robots-Tag = "noindex"
+
+[[headers]]
+  for = "/assets/og/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
