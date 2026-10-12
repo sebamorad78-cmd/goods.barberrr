@@ -1,0 +1,388 @@
+<title>Turnos para barberías</title>
+<meta name="description" content="Sistema de turnos online para barberías de Mar del Plata: tus clientes reservan solos y vos manejás la agenda desde el celu.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Layout: columna editorial angosta; cada sección alterna texto y captura real del sistema.
+     El "turnero" (grilla de horarios en mono) es el elemento propio de la página. */
+  :root{
+    --bg:#F2F3EF;          /* papel gris verdoso */
+    --surface:#FFFFFF;
+    --ink:#17201D;         /* texto */
+    --muted:#5B6662;
+    --line:#D9DDD6;
+    --red:#B4352B;         /* rojo de poste de barbería: solo para lo que se toca */
+    --red-ink:#FFFFFF;
+    --blue:#2C5B86;        /* azul del poste: horarios y detalles */
+    --slot:#E7EAE3;
+    --slot-taken:#C9CEC6;
+    --shadow:0 24px 60px -28px rgba(23,32,29,.45);
+    --display:'Big Shoulders Display', 'Arial Narrow', Impact, sans-serif;
+    --body:'Public Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --mono:'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+    --bg:#121816; --surface:#1A2220; --ink:#E9ECE6; --muted:#9AA6A1; --line:#2C3633;
+    --red:#D9584D; --red-ink:#FFFFFF; --blue:#7FAEDB; --slot:#222B28; --slot-taken:#323C39;
+    --shadow:0 24px 60px -28px rgba(0,0,0,.7); color-scheme:dark;
+  }}
+  :root[data-theme="dark"]{
+    --bg:#121816; --surface:#1A2220; --ink:#E9ECE6; --muted:#9AA6A1; --line:#2C3633;
+    --red:#D9584D; --red-ink:#FFFFFF; --blue:#7FAEDB; --slot:#222B28; --slot-taken:#323C39;
+    --shadow:0 24px 60px -28px rgba(0,0,0,.7); color-scheme:dark;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{transition:none!important; animation:none!important} }
+  body{background:var(--bg); color:var(--ink); font-family:var(--body); font-size:17px; line-height:1.6; -webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  :focus-visible{outline:2px solid var(--red); outline-offset:3px; border-radius:2px}
+  .wrap{max-width:1080px; margin:0 auto; padding-inline:20px}
+  h1,h2,h3{font-family:var(--display); font-weight:800; line-height:.95; letter-spacing:.005em; text-wrap:balance; margin:0}
+  h2{font-size:clamp(38px,6vw,60px); text-transform:uppercase}
+  h3{font-size:24px; text-transform:uppercase; letter-spacing:.02em}
+  p{margin:0}
+  .lede{font-size:clamp(17px,2.2vw,20px); color:var(--muted); max-width:58ch}
+  .label{font-family:var(--mono); font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--blue)}
+
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:10px; min-height:48px; padding:12px 22px;
+    font-family:var(--body); font-weight:700; font-size:16px; text-decoration:none; border-radius:3px; border:2px solid var(--ink);
+    transition:transform .15s ease, background .15s ease, color .15s ease}
+  .btn:hover{transform:translateY(-1px)}
+  .btn.primary{background:var(--red); border-color:var(--red); color:var(--red-ink)}
+  .btn.ghost{background:transparent; color:var(--ink)}
+  .btn.ghost:hover{background:var(--ink); color:var(--bg)}
+  .btn svg{width:20px; height:20px; flex-shrink:0}
+
+  /* ---------- Barra superior ---------- */
+  .top{border-bottom:1px solid var(--line)}
+  .top .wrap{display:flex; align-items:center; justify-content:space-between; gap:16px; padding-block:14px}
+  .who{display:flex; flex-direction:column; line-height:1.15}
+  .who b{font-family:var(--display); font-size:24px; font-weight:800; text-transform:uppercase; letter-spacing:.02em}
+  .who span{font-size:13px; color:var(--muted)}
+  .top .btn{min-height:42px; padding:8px 16px; font-size:14.5px}
+
+  /* ---------- Portada ---------- */
+  .hero{padding-block:56px 72px}
+  .hero .wrap{display:grid; grid-template-columns:1.15fr .85fr; gap:48px; align-items:center}
+  .hero h1{font-size:clamp(54px,9.5vw,112px); text-transform:uppercase}
+  .hero h1 em{font-style:normal; color:var(--red)}
+  .hero .lede{margin-top:22px}
+  .hero-cta{display:flex; flex-wrap:wrap; gap:12px; margin-top:30px}
+  .hero-note{margin-top:18px; font-size:14px; color:var(--muted)}
+  .hero-note a{font-weight:600}
+
+  /* Turnero: grilla de horarios como la que ve el cliente */
+  .turnero{background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:22px; box-shadow:var(--shadow); min-width:0}
+  .turnero-head{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:14px}
+  .turnero-head b{font-family:var(--display); font-size:26px; text-transform:uppercase}
+  .turnero-head span{font-family:var(--mono); font-size:12.5px; color:var(--muted)}
+  .slots{display:grid; grid-template-columns:repeat(4,1fr); gap:8px}
+  .slot{font-family:var(--mono); font-size:14px; text-align:center; padding:11px 0; border-radius:3px; background:var(--slot); font-variant-numeric:tabular-nums}
+  .slot.taken{background:var(--slot-taken); color:var(--muted); text-decoration:line-through}
+  .slot.pick{background:var(--red); color:var(--red-ink); font-weight:600}
+  .turnero-foot{display:flex; justify-content:space-between; gap:10px; margin-top:16px; padding-top:14px; border-top:1px dashed var(--line); font-size:14px}
+  .turnero-foot span:last-child{font-family:var(--mono); color:var(--blue); font-weight:600}
+  .pole{height:8px; margin:-22px -22px 18px; border-radius:6px 6px 0 0;
+    background:repeating-linear-gradient(-45deg,var(--red) 0 10px,var(--surface) 10px 20px,var(--blue) 20px 30px,var(--surface) 30px 40px)}
+
+  /* ---------- Problemas ---------- */
+  .pains{padding-block:64px; background:var(--surface); border-block:1px solid var(--line)}
+  .pains-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:32px; margin-top:36px}
+  .pain h3{margin-bottom:10px}
+  .pain p{color:var(--muted); font-size:16px}
+  .pain .fix{margin-top:12px; font-size:15px; color:var(--ink); font-weight:600}
+  .pain .fix::before{content:"→ "; color:var(--red)}
+
+  /* ---------- Secciones con captura ---------- */
+  .feature{padding-block:80px}
+  .feature .wrap{display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center}
+  .feature.flip .copy{order:2}
+  .copy{min-width:0}
+  .copy h2{margin:12px 0 18px}
+  .copy .lede{margin-bottom:26px}
+  .list{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:14px}
+  .list li{display:grid; grid-template-columns:28px 1fr; gap:12px; align-items:start}
+  .list li b{display:block}
+  .list li span{color:var(--muted); font-size:15.5px}
+  .tick{width:28px; height:28px; border-radius:50%; background:var(--slot); display:flex; align-items:center; justify-content:center; color:var(--red)}
+  .tick svg{width:15px; height:15px}
+  .steps{counter-reset:paso; list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:14px}
+  .steps li{counter-increment:paso; display:grid; grid-template-columns:44px 1fr; gap:12px; align-items:baseline}
+  .steps li::before{content:counter(paso); font-family:var(--display); font-size:34px; font-weight:800; color:var(--red); line-height:1}
+  .steps li span{color:var(--muted); font-size:15.5px; display:block}
+
+  .shot{display:flex; justify-content:center; gap:20px; min-width:0}
+  .phone{width:min(270px,100%); border-radius:30px; padding:9px; background:var(--ink); box-shadow:var(--shadow); flex-shrink:1}
+  .phone img{display:block; width:100%; height:auto; border-radius:22px}
+  .phone.small{width:min(230px,46%); margin-top:60px}
+  .screen{border-radius:8px; overflow:hidden; border:1px solid var(--line); box-shadow:var(--shadow); max-width:100%}
+  .screen img{display:block; width:100%; height:auto}
+  .caption{font-size:13px; color:var(--muted); text-align:center; margin-top:12px}
+
+  /* ---------- Caso real ---------- */
+  .case{padding-block:72px; background:var(--ink); color:var(--bg)}
+  .case .wrap{display:grid; grid-template-columns:1.1fr .9fr; gap:48px; align-items:center}
+  .case .label{color:var(--bg); opacity:.7}
+  .case h2{margin:12px 0 16px}
+  .case p{opacity:.85; max-width:56ch}
+  .case .btn{margin-top:26px; border-color:var(--bg); color:var(--bg)}
+  .case .btn:hover{background:var(--bg); color:var(--ink)}
+  .facts{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:rgba(127,127,127,.35); border:1px solid rgba(127,127,127,.35)}
+  .fact{background:var(--ink); padding:22px}
+  .fact b{display:block; font-family:var(--display); font-size:40px; line-height:1; color:var(--bg)}
+  .fact span{font-size:14px; opacity:.75}
+
+  /* ---------- Cómo empezamos ---------- */
+  .start{padding-block:80px}
+  .start-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-top:36px; counter-reset:etapa}
+  .stage{counter-increment:etapa; background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:22px; display:flex; flex-direction:column; gap:8px}
+  .stage::before{content:"Paso " counter(etapa); font-family:var(--mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--blue)}
+  .stage h3{font-size:22px}
+  .stage p{color:var(--muted); font-size:15px}
+  .stage.free{border-color:var(--red)}
+  .stage.free h3{color:var(--red)}
+
+  /* ---------- Preguntas ---------- */
+  .faq{padding-block:72px; background:var(--surface); border-block:1px solid var(--line)}
+  .faq .wrap{max-width:820px}
+  .faq h2{margin-bottom:28px}
+  details{border-top:1px solid var(--line)}
+  details:last-of-type{border-bottom:1px solid var(--line)}
+  summary{cursor:pointer; list-style:none; padding:18px 36px 18px 0; position:relative; font-weight:600; font-size:17.5px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+"; position:absolute; right:4px; top:12px; font-family:var(--display); font-size:30px; color:var(--red); transition:transform .2s ease}
+  details[open] summary::after{transform:rotate(45deg)}
+  details p{padding:0 0 20px; color:var(--muted); max-width:62ch}
+
+  /* ---------- Contacto ---------- */
+  .contact{padding-block:88px 72px; text-align:left}
+  .contact h2{font-size:clamp(44px,8vw,88px); max-width:12ch}
+  .contact .lede{margin-top:18px}
+  .contact-row{display:flex; flex-wrap:wrap; align-items:center; gap:14px 22px; margin-top:30px}
+  .number{font-family:var(--mono); font-size:18px; font-weight:500; user-select:all}
+  .copy-btn{font-family:var(--body); font-size:14px; font-weight:600; background:none; border:1px solid var(--line); color:var(--ink); border-radius:3px; padding:8px 12px; cursor:pointer}
+  .copy-btn:hover{border-color:var(--ink)}
+  footer{border-top:1px solid var(--line); padding-block:24px; font-size:13.5px; color:var(--muted)}
+  footer .wrap{display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px}
+
+  @media (max-width:880px){
+    .hero .wrap, .feature .wrap, .case .wrap{grid-template-columns:1fr; gap:40px}
+    .feature.flip .copy{order:0}
+    .pains-grid{grid-template-columns:1fr; gap:26px}
+    .start-grid{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:520px){
+    body{font-size:16px}
+    .top .btn span{display:none}
+    .start-grid{grid-template-columns:1fr}
+    .slots{grid-template-columns:repeat(3,1fr)}
+    .slots .slot:nth-child(n+10){display:none}
+    .hero{padding-block:36px 56px}
+    .phone.small{display:none}
+  }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="who"><b>Sebastián Morad</b><span>Turnos online para barberías · Mar del Plata</span></div>
+    <a class="btn primary js-wa" href="#contacto"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.7 14.9L2 22l5.2-1.3A10 10 0 1 0 12 2Zm5.8 14.1c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3s.8-2.2 1-2.5c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5l.9 2.2c.1.2.1.4 0 .5l-.3.5-.4.5c-.1.1-.3.3-.1.6.2.3.7 1.2 1.5 1.9 1.1 1 2 1.3 2.3 1.4.3.1.4.1.6-.1l.9-1.1c.2-.3.4-.2.6-.1l2.1 1c.3.1.5.2.5.3.1.2.1.8-.1 1.5Z"/></svg><span>Escribime</span></a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <p class="label">Para barberías de Mar del Plata</p>
+        <h1 style="margin-top:14px">Tus clientes sacan turno solos. <em>Vos cortás.</em></h1>
+        <p class="lede">Una página con el nombre de tu barbería donde reservan a cualquier hora, y un panel para manejar la agenda desde el celu. Sin apps para descargar, sin contestar WhatsApp entre corte y corte.</p>
+        <div class="hero-cta">
+          <a class="btn primary" href="https://goods.ar" target="_blank" rel="noopener">Ver uno funcionando</a>
+          <a class="btn ghost js-wa" href="#contacto">Hablemos</a>
+        </div>
+        <p class="hero-note">En uso hoy en <a href="https://goods.ar" target="_blank" rel="noopener">Goods Barber Studio</a>, Olavarría 2583.</p>
+      </div>
+
+      <div class="turnero" aria-label="Ejemplo de la grilla de horarios que ve el cliente">
+        <div class="pole" aria-hidden="true"></div>
+        <div class="turnero-head"><b>Franco · Mié 14</b><span>elegí tu horario</span></div>
+        <div class="slots">
+          <div class="slot">09:30</div><div class="slot taken">10:00</div><div class="slot">10:30</div><div class="slot taken">11:00</div>
+          <div class="slot">11:30</div><div class="slot">12:00</div><div class="slot taken">12:30</div><div class="slot pick">13:00</div>
+          <div class="slot">13:30</div><div class="slot taken">14:00</div><div class="slot">14:30</div><div class="slot">15:00</div>
+        </div>
+        <div class="turnero-foot"><span>Corte + barba · Juan P.</span><span>Confirmado ✓</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pains" aria-labelledby="pains-title">
+    <div class="wrap">
+      <p class="label">Lo que te saca de encima</p>
+      <h2 id="pains-title" style="margin-top:12px">Menos celular, más sillón</h2>
+      <div class="pains-grid">
+        <div class="pain">
+          <h3>WhatsApp todo el día</h3>
+          <p>"¿Tenés algo para hoy?", "¿y mañana a la tarde?". Cada mensaje es una pausa en el corte.</p>
+          <p class="fix">El cliente ve los horarios libres y reserva solo.</p>
+        </div>
+        <div class="pain">
+          <h3>Turnos que no vienen</h3>
+          <p>Un horario reservado que queda vacío es plata perdida y un cliente que no pudiste atender.</p>
+          <p class="fix">Recordatorio por WhatsApp con un toque desde el panel.</p>
+        </div>
+        <div class="pain">
+          <h3>Turnos pisados</h3>
+          <p>Dos clientes a la misma hora, o un turno anotado en un día que cerrás.</p>
+          <p class="fix">El sistema no deja reservar dos veces el mismo horario ni en días bloqueados.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="feature" aria-labelledby="cliente-title">
+    <div class="wrap">
+      <div class="copy">
+        <p class="label">Lo que ve tu cliente</p>
+        <h2 id="cliente-title">Reservar lleva menos de un minuto</h2>
+        <p class="lede">Entra desde tu Instagram o desde el link que mandás por WhatsApp. Funciona en cualquier celular, sin registrarse.</p>
+        <ol class="steps">
+          <li><div><b>Elige barbero</b><span>Con la foto de cada uno.</span></div></li>
+          <li><div><b>Elige día y horario</b><span>Solo ve los horarios libres de ese barbero.</span></div></li>
+          <li><div><b>Deja nombre, teléfono y servicio</b><span>Recibe su comprobante y lo agenda en el calendario del celu.</span></div></li>
+        </ol>
+      </div>
+      <div class="shot">
+        <div class="phone"><img src="IMG_RESERVA" width="520" height="1125" alt="Pantalla de reserva: elegir barbero, día y horario" loading="lazy"></div>
+        <div class="phone small"><img src="IMG_HERO" width="520" height="1125" alt="Portada de la página de Goods Barber Studio" loading="lazy"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="feature flip" aria-labelledby="panel-title" style="padding-top:0">
+    <div class="wrap">
+      <div class="copy">
+        <p class="label">Lo que manejás vos</p>
+        <h2 id="panel-title">Tu agenda en el celu</h2>
+        <p class="lede">Un panel con tu usuario y contraseña. Lo abrís desde el celu o la compu, sin instalar nada.</p>
+        <ul class="list">
+          <li><span class="tick"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m3 8.5 3 3 7-7"/></svg></span><div><b>La agenda de hoy</b><span>Separada por barbero, con el próximo turno marcado.</span></div></li>
+          <li><span class="tick"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m3 8.5 3 3 7-7"/></svg></span><div><b>Recordatorio por WhatsApp</b><span>El mensaje sale escrito; solo tocás enviar.</span></div></li>
+          <li><span class="tick"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m3 8.5 3 3 7-7"/></svg></span><div><b>Turnos a mano</b><span>Para el que llama o pasa por el local: el horario queda ocupado en la página.</span></div></li>
+          <li><span class="tick"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m3 8.5 3 3 7-7"/></svg></span><div><b>Horarios y días bloqueados</b><span>Cambiás el horario de cada barbero o cerrás un feriado, y la página se actualiza al instante.</span></div></li>
+          <li><span class="tick"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m3 8.5 3 3 7-7"/></svg></span><div><b>Planilla de Excel</b><span>Todos los turnos por barbero, cuando la necesites.</span></div></li>
+        </ul>
+      </div>
+      <div class="shot">
+        <div class="phone"><img src="IMG_PANEL" width="520" height="1125" alt="Panel del dueño: agenda de hoy por barbero" loading="lazy"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="feature" aria-labelledby="horarios-title" style="padding-top:0">
+    <div class="wrap" style="grid-template-columns:1fr">
+      <div class="copy" style="max-width:640px">
+        <p class="label">Cada barbero con sus horarios</p>
+        <h2 id="horarios-title">Vos decidís quién atiende y cuándo</h2>
+        <p class="lede">Si uno entra más tarde los martes o se toma vacaciones, lo cambiás en un minuto. Los clientes solo ven los horarios reales.</p>
+      </div>
+      <div>
+        <div class="screen"><img src="IMG_HORARIOS" width="900" height="904" alt="Tabla de horarios de cada barbero por día de la semana" loading="lazy"></div>
+        <p class="caption">Panel de Goods Barber Studio: horario de cada barbero, de lunes a sábado.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="case" aria-labelledby="case-title">
+    <div class="wrap">
+      <div>
+        <p class="label">Caso real</p>
+        <h2 id="case-title">Goods Barber Studio</h2>
+        <p>Barbería en Olavarría 2583, Mar del Plata. Tres barberos con horarios distintos según el día. Los clientes reservan desde goods.ar, y el dueño maneja turnos, horarios y feriados desde el panel.</p>
+        <a class="btn" href="https://goods.ar" target="_blank" rel="noopener">Entrar a goods.ar</a>
+      </div>
+      <div class="facts">
+        <div class="fact"><b>24 h</b><span>para reservar, todos los días</span></div>
+        <div class="fact"><b>3</b><span>barberos, cada uno con su agenda</span></div>
+        <div class="fact"><b>0</b><span>apps para descargar</span></div>
+        <div class="fact"><b>1</b><span>panel para manejar todo</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="start" aria-labelledby="start-title">
+    <div class="wrap">
+      <p class="label">Cómo empezamos</p>
+      <h2 id="start-title" style="margin-top:12px">Sin vueltas y sin riesgo</h2>
+      <div class="start-grid">
+        <div class="stage"><h3>Charlamos</h3><p>Paso por tu barbería, te muestro el sistema en el celu y me contás cómo trabajan.</p></div>
+        <div class="stage"><h3>Lo armo</h3><p>Con tu nombre, tus fotos, tus barberos, tus precios y tus horarios. Te dejo el panel listo para usar.</p></div>
+        <div class="stage free"><h3>Primer mes sin costo</h3><p>Lo usás con clientes reales. Si no te sirve, no pagás nada.</p></div>
+        <div class="stage"><h3>Seguimos juntos</h3><p>Me ocupo de que funcione y de los cambios que necesites: precios, barberos, fotos.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq" aria-labelledby="faq-title">
+    <div class="wrap">
+      <h2 id="faq-title">Preguntas frecuentes</h2>
+      <details><summary>¿Mis clientes tienen que descargar algo?</summary><p>No. Entran a la página desde el celular, como a cualquier sitio, y reservan sin registrarse.</p></details>
+      <details><summary>¿Necesito saber de computación?</summary><p>No. Si usás WhatsApp, podés usar el panel. Te muestro cómo funciona el día que lo dejamos andando.</p></details>
+      <details><summary>¿Qué pasa si un barbero cambia de horario o cierro un día?</summary><p>Lo cambiás vos desde el panel, en un minuto, y la página se actualiza sola. Para cambios de precios, fotos o barberos, me escribís y lo hago yo.</p></details>
+      <details><summary>¿Puedo seguir tomando turnos por teléfono?</summary><p>Sí. Los cargás en el panel y ese horario queda ocupado en la página, así nadie más lo reserva.</p></details>
+      <details><summary>¿Qué pasa si algo deja de andar?</summary><p>Me escribís y lo resuelvo. Además, cada reserva queda guardada y controlada: el sistema no deja reservar en horarios ocupados, vencidos o bloqueados.</p></details>
+      <details><summary>¿Los datos de mis clientes están protegidos?</summary><p>Sí. Nombres y teléfonos solo se ven desde el panel, con tu usuario y contraseña. No se comparten con nadie.</p></details>
+    </div>
+  </section>
+
+  <section class="contact" id="contacto" aria-labelledby="contact-title">
+    <div class="wrap">
+      <p class="label">Contacto</p>
+      <h2 id="contact-title" style="margin-top:12px">Te lo muestro en 10 minutos</h2>
+      <p class="lede">Escribime y paso por tu barbería, o te mando el link para que lo pruebes vos.</p>
+      <div class="contact-row">
+        <a class="btn primary js-wa" href="#contacto"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.7 14.9L2 22l5.2-1.3A10 10 0 1 0 12 2Zm5.8 14.1c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3s.8-2.2 1-2.5c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5l.9 2.2c.1.2.1.4 0 .5l-.3.5-.4.5c-.1.1-.3.3-.1.6.2.3.7 1.2 1.5 1.9 1.1 1 2 1.3 2.3 1.4.3.1.4.1.6-.1l.9-1.1c.2-.3.4-.2.6-.1l2.1 1c.3.1.5.2.5.3.1.2.1.8-.1 1.5Z"/></svg>Escribime por WhatsApp</a>
+        <span class="number" id="waNumber">NÚMERO_PENDIENTE</span>
+        <button type="button" class="copy-btn" id="copyNumber">Copiar número</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><span>Sebastián Morad · Mar del Plata</span><span>Sistemas de turnos para barberías</span></div>
+</footer>
+
+<script>
+(function(){
+  // ===== Tu WhatsApp: escribilo acá una sola vez (con código de país, sin espacios). Ej: '5492231234567'
+  var WHATSAPP = '';
+  var MENSAJE = 'Hola Sebastián! Vi la página de turnos para barberías y quiero saber más.';
+
+  var numEl = document.getElementById('waNumber');
+  if (WHATSAPP){
+    var d = WHATSAPP.replace(/\D/g, '');
+    // muestra el número con formato argentino: +54 9 223 123-4567
+    numEl.textContent = d.length === 13 ? '+' + d.slice(0,2) + ' ' + d.slice(2,3) + ' ' + d.slice(3,6) + ' ' + d.slice(6,9) + '-' + d.slice(9) : '+' + d;
+    document.querySelectorAll('.js-wa').forEach(function(a){
+      a.href = 'https://wa.me/' + d + '?text=' + encodeURIComponent(MENSAJE);
+      a.target = '_blank'; a.rel = 'noopener';
+    });
+  }
+  var btn = document.getElementById('copyNumber');
+  btn.addEventListener('click', function(){
+    var text = numEl.textContent;
+    function done(){ btn.textContent = 'Copiado'; setTimeout(function(){ btn.textContent = 'Copiar número'; }, 1800); }
+    try {
+      navigator.clipboard.writeText(text).then(done, function(){ selectNumber(); });
+    } catch(e){ selectNumber(); }
+  });
+  function selectNumber(){
+    var r = document.createRange(); r.selectNodeContents(numEl);
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  }
+})();
+</script>
