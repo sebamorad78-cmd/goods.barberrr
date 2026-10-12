@@ -5,7 +5,7 @@ import json, sys, os
 here = os.path.dirname(os.path.abspath(__file__))
 imgs = json.load(open(sys.argv[1]))
 s = open(os.path.join(here, 'plantilla.html'), encoding='utf-8').read()
-for key, name in [('IMG_RESERVA','reserva'), ('IMG_HERO','hero'), ('IMG_PANEL','panel-hoy'), ('IMG_HORARIOS','panel-horarios')]:
+for key, name in [('IMG_GOODS','goods-desk'), ('IMG_PANEL','panel-hoy')]:
     assert key in s; s = s.replace(key, imgs[name][0])
 open(os.path.join(here, 'vista-previa.html'), 'w', encoding='utf-8').write(s)
 head, body = s.split('</style>', 1)
