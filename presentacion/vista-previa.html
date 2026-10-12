@@ -1,5 +1,13 @@
 <title>Turnos para barberías</title>
 <meta name="description" content="Sistema de turnos online para barberías: tus clientes reservan solos y vos manejás la agenda desde el celular. Mar del Plata.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23161716'/%3E%3Crect x='14' y='16' width='36' height='34' rx='5' fill='none' stroke='%23F6F6F3' stroke-width='4'/%3E%3Cpath d='M14 26h36M24 11v9M40 11v9' stroke='%23F6F6F3' stroke-width='4' stroke-linecap='round'/%3E%3Crect x='34' y='33' width='9' height='9' rx='2' fill='%237D97F0'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Turnos online para tu barbería">
+<meta property="og:description" content="Tus clientes reservan desde el celular y vos manejás la agenda desde un panel simple. Mar del Plata.">
+<meta property="og:image" content="og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -187,6 +195,61 @@
   footer{padding-block:28px; font-size:13.5px; color:var(--faint)}
   footer .wrap{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
 
+
+  /* ---------- Confiabilidad ---------- */
+  .reliab{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 40px}
+  .reliab div{padding:18px 0; border-top:1px solid var(--line); min-width:0}
+  .reliab b{display:block; font-weight:600}
+  .reliab p{color:var(--muted); font-size:15px; margin-top:4px}
+  .reliab code{font-family:var(--mono); font-size:13px; background:var(--sunken); border-radius:4px; padding:1px 5px}
+
+  /* ---------- Comparación ---------- */
+  .table-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:12px; background:var(--surface)}
+  .compare{width:100%; border-collapse:collapse; min-width:640px; font-size:15px}
+  .compare th, .compare td{padding:14px 16px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top}
+  .compare tr:last-child td{border-bottom:0}
+  .compare thead th{font-size:13px; font-weight:600; color:var(--muted); background:var(--sunken)}
+  .compare thead th.us{color:var(--ink)}
+  .compare tbody th{font-weight:500; width:30%}
+  .compare td{color:var(--muted)}
+  .compare td.us{color:var(--ink); font-weight:500; background:color-mix(in srgb, var(--accent-soft) 55%, transparent)}
+  .yes, .no{font-family:var(--mono); font-size:13px; font-weight:500}
+  .yes{color:var(--ok)} .no{color:var(--faint)}
+
+  /* ---------- Precio ---------- */
+  .price-card{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); border:1px solid var(--line); border-radius:14px; background:var(--surface); overflow:hidden; box-shadow:var(--shadow)}
+  .price-main{padding:32px; border-right:1px solid var(--line); display:flex; flex-direction:column; gap:18px}
+  .price-row{display:flex; justify-content:space-between; align-items:baseline; gap:16px; padding-bottom:14px; border-bottom:1px solid var(--line)}
+  .price-row span{color:var(--muted); font-size:15px}
+  .price-row b{font-size:28px; font-weight:600; letter-spacing:-0.02em; font-variant-numeric:tabular-nums; white-space:nowrap}
+  .price-row b small{font-size:14px; font-weight:400; color:var(--muted); margin-left:4px}
+  .price-row.free b{color:var(--ok); font-size:20px}
+  .price-note{font-size:14px; color:var(--muted)}
+  .price-incl{padding:32px; background:var(--sunken)}
+  .price-incl h3{font-size:14px; color:var(--muted); font-weight:600; margin-bottom:12px}
+  .check{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; font-size:15px}
+  .check li{display:grid; grid-template-columns:18px 1fr; gap:10px}
+  .check li::before{content:""; width:16px; height:16px; margin-top:4px; border-radius:50%; background:var(--ok-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m4.5 8.2 2.2 2.2 4.8-4.8' fill='none' stroke='%2323744A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat}
+
+  /* ---------- Origen ---------- */
+  .origin{margin-top:44px; padding:24px 26px; border-left:3px solid var(--accent); background:var(--surface); border-radius:0 10px 10px 0}
+  .origin p{color:var(--ink); margin:0; max-width:60ch}
+  .origin small{display:block; margin-top:10px; color:var(--muted); font-size:13.5px}
+
+  /* ---------- Privacidad ---------- */
+  .legal{padding-block:40px 20px; border-top:1px solid var(--line); font-size:14px; color:var(--muted)}
+  .legal h2{font-size:17px; margin-bottom:10px; color:var(--ink)}
+  .legal p{max-width:72ch; margin-top:8px}
+
+  @media (max-width:920px){
+    .price-card{grid-template-columns:1fr}
+    .price-main{border-right:0; border-bottom:1px solid var(--line)}
+  }
+  @media (max-width:600px){
+    .reliab{grid-template-columns:1fr}
+    .price-main, .price-incl{padding:22px}
+  }
+
   @media (max-width:920px){
     .hero .wrap, .split, .case-grid{grid-template-columns:1fr; gap:36px}
     .hero-copy{padding-top:0}
@@ -213,6 +276,7 @@
     <nav class="nav" aria-label="Secciones">
       <a href="#incluye">Qué incluye</a>
       <a href="#goods">Goods</a>
+      <a href="#precio">Precio</a>
       <a href="#contacto">Contacto</a>
     </nav>
   </div>
@@ -325,6 +389,70 @@
     </div>
   </section>
 
+  <section class="block" id="confiable" aria-labelledby="confiable-title">
+    <div class="wrap split">
+      <div class="intro">
+        <h2 id="confiable-title">Hecho para que no falle un sábado a la tarde</h2>
+        <p>Lo que no se ve de una página de turnos es lo que más importa. Esto ya está resuelto.</p>
+      </div>
+      <div class="reliab">
+        <div><b>Un turno, una persona</b><p>Si dos clientes eligen el mismo horario al mismo tiempo, la base de datos acepta uno solo. Al otro le avisa que elija otro.</p></div>
+        <div><b>Las reglas se controlan en el servidor</b><p>Horarios vencidos, días cerrados y franjas de cada barbero se validan antes de guardar, no solo en la pantalla del cliente.</p></div>
+        <div><b>Datos de tus clientes protegidos</b><p>Nombres y teléfonos solo se leen con el usuario y la contraseña del dueño. La página pública ve horarios ocupados, nada más.</p></div>
+        <div><b>Siempre al día</b><p>Si bloqueás un feriado o cancelás un turno, la página de tus clientes se actualiza sola en menos de un minuto, sin recargar.</p></div>
+        <div><b>Funciona con mala señal</b><p>Pensado para el celular y datos móviles. Si la conexión se corta, avisa en vez de dejar un turno a medias.</p></div>
+        <div><b>Tus datos son tuyos</b><p>Descargás todos los turnos en Excel cuando quieras, separados por barbero.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="compara-title">
+    <div class="wrap">
+      <h2 id="compara-title" style="margin-bottom:12px">En qué se diferencia</h2>
+      <p class="muted" style="max-width:60ch; margin-bottom:28px">Tres formas de dar turnos. Las apps de turnos son muy distintas entre sí; la columna del medio resume lo más común.</p>
+      <div class="table-wrap">
+        <table class="compare">
+          <thead><tr><th scope="col"></th><th scope="col">Agenda por WhatsApp</th><th scope="col">App de turnos genérica</th><th scope="col" class="us">Este sistema</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">El cliente reserva solo, a cualquier hora</th><td><span class="no">No</span></td><td><span class="yes">Sí</span></td><td class="us"><span class="yes">Sí</span></td></tr>
+            <tr><th scope="row">Página con el nombre y el dominio de tu barbería</th><td><span class="no">No</span></td><td>Un perfil dentro de la app</td><td class="us">Tu página, tu dominio</td></tr>
+            <tr><th scope="row">Quién lo configura</th><td>Vos, a mano</td><td>Vos, siguiendo un tutorial</td><td class="us">Yo, con vos, en tu local</td></tr>
+            <tr><th scope="row">Ayuda si algo no anda</th><td>—</td><td>Soporte por chat o mail</td><td class="us">Por WhatsApp, y en persona si hace falta</td></tr>
+            <tr><th scope="row">Comisión por turno</th><td>No</td><td>Según la app</td><td class="us">No</td></tr>
+            <tr><th scope="row">Cambios a medida</th><td>—</td><td>Lo que permita la app</td><td class="us">Se agregan según cómo trabajás</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="precio" aria-labelledby="precio-title">
+    <div class="wrap">
+      <h2 id="precio-title" style="margin-bottom:12px">Precio</h2>
+      <p class="muted" style="max-width:60ch; margin-bottom:28px">Un solo plan, con todo incluido. Sin comisiones por turno.</p>
+      <div class="price-card">
+        <div class="price-main">
+          <div class="price-row"><span>Instalación<br><small>Se paga una sola vez</small></span><b id="priceSetup">A consultar</b></div>
+          <div class="price-row"><span>Abono mensual<br><small>Mantenimiento y cambios</small></span><b id="priceMonthly">A consultar</b></div>
+          <div class="price-row free"><span>Primer mes</span><b>Sin cargo</b></div>
+          <p class="price-note">Pagás recién cuando lo usaste un mes con clientes reales y decidís seguir.</p>
+          <a class="btn primary js-wa" href="#contacto" style="align-self:flex-start">Quiero probarlo</a>
+        </div>
+        <div class="price-incl">
+          <h3>Incluye</h3>
+          <ul class="check">
+            <li>Página de turnos con tu nombre, fotos, servicios y precios</li>
+            <li>Panel del dueño: agenda, recordatorios, horarios y feriados</li>
+            <li>Carga de turnos a mano y descarga en Excel</li>
+            <li>Configuración en tu local, con tus barberos y horarios</li>
+            <li>Cambios de precios, fotos y barberos cuando los necesites</li>
+            <li>Soporte por WhatsApp</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="block" aria-labelledby="trabajo-title">
     <div class="wrap split">
       <div class="intro">
@@ -342,6 +470,13 @@
           <div><b>¿Qué pasa si cambio precios o sumo un barbero?</b><p>Me escribís y lo cambio. Los horarios y feriados los manejás vos.</p></div>
           <div><b>¿Quién ve los datos de mis clientes?</b><p>Solo vos, desde el panel con tu usuario y contraseña.</p></div>
         </div>
+        <div class="origin">
+          <p>Empecé armándolo para Goods, la barbería de un amigo. Cada problema que apareció usándolo con clientes reales quedó resuelto en el sistema: los turnos pisados, los feriados, los horarios distintos de cada barbero. Eso es lo que te instalo.</p>
+          <small>Sebastián Morad</small>
+        </div>
+        <!-- TESTIMONIO REAL: cuando el dueño de Goods te dé una frase, reemplazá este comentario por:
+        <figure class="origin" style="border-left-color:var(--ok)"><p>“Frase textual del dueño.”</p><small>Nombre — Goods Barber Studio</small></figure>
+        -->
       </div>
     </div>
   </section>
@@ -360,10 +495,17 @@
       </div>
     </div>
   </section>
+  <section class="legal" id="privacidad" aria-labelledby="privacidad-title">
+    <div class="wrap">
+      <h2 id="privacidad-title">Privacidad y condiciones</h2>
+      <p>Los datos que tus clientes cargan al reservar (nombre, teléfono y servicio) se usan solo para gestionar sus turnos. Los ve únicamente la barbería desde su panel, no se venden ni se comparten con terceros, y se pueden borrar a pedido.</p>
+      <p>La barbería es dueña de su información: puede descargar sus turnos en Excel en cualquier momento. El abono mensual cubre el funcionamiento, el mantenimiento y los cambios de contenido de su página. La demo de esta página usa datos de ejemplo que quedan solo en tu navegador.</p>
+    </div>
+  </section>
 </main>
 
 <footer>
-  <div class="wrap"><span>Sebastián Morad · Mar del Plata</span><span>Sistemas de turnos para barberías</span></div>
+  <div class="wrap"><span>Sebastián Morad · Mar del Plata</span><span><a href="#privacidad">Privacidad</a> · Sistemas de turnos para barberías</span></div>
 </footer>
 
 <script>
@@ -373,6 +515,13 @@
   /* ===== Contacto: tu WhatsApp, con código de país y sin espacios. Ej: '5492231234567' ===== */
   var WHATSAPP = '';
   var WA_TEXT = 'Hola Sebastián, vi tu página de turnos para barberías y me gustaría ver una demo.';
+
+  /* ===== Precios en pesos, sin puntos. Ej: 150000. Si quedan vacíos se muestra "A consultar". ===== */
+  var PRECIO_INSTALACION = '';
+  var PRECIO_MENSUAL = '';
+  function pesos(n){ return '$' + Number(n).toLocaleString('es-AR'); }
+  if (PRECIO_INSTALACION) document.getElementById('priceSetup').textContent = pesos(PRECIO_INSTALACION);
+  if (PRECIO_MENSUAL){ var pm = document.getElementById('priceMonthly'); pm.textContent = pesos(PRECIO_MENSUAL); pm.appendChild(Object.assign(document.createElement('small'), { textContent:'/ mes' })); }
 
   var numEl = document.getElementById('waNumber');
   if (WHATSAPP){
@@ -577,6 +726,11 @@
     t.addEventListener('keydown', function(e){ if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){ var other = t.id === 'tabClient' ? $('tabOwner') : $('tabClient'); other.focus(); other.click(); } });
   });
 
+  // La demo arranca en el primer día con horarios libres (a la noche, "hoy" ya no tiene).
+  for (var di = 0; di < days.length; di++){
+    var ft = freeTimes(days[di].key, state.barber);
+    if (ft && ft.some(function(x){ return !x.taken; })){ state.day = state.ownerDay = days[di].key; break; }
+  }
   renderClient();
 })();
 </script>
