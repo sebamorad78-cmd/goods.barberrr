@@ -24,243 +24,225 @@
   <meta name="twitter:description" content="Barberías, peluquerías, spas y nail bars: tus clientes reservan solos 24/7, con seña, agenda y recordatorios por WhatsApp. Primer mes sin cargo.">
   <meta name="twitter:image" content="https://paginas-profesionales-1212.netlify.app/assets/og/vender.jpg?v=4">
   <!-- OG:END -->
-  <meta name="theme-color" content="#F4F2ED">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230F0E0C'/%3E%3Crect x='15' y='17' width='34' height='32' rx='4' fill='none' stroke='%23EEE9E0' stroke-width='3.5'/%3E%3Cpath d='M15 26h34M24 12v9M40 12v9' stroke='%23EEE9E0' stroke-width='3.5' stroke-linecap='round'/%3E%3Crect x='33' y='32' width='9' height='9' rx='1.5' fill='%23C8A35B'/%3E%3C/svg%3E">
+  <meta name="theme-color" content="#F5F4F0">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231A1A18'/%3E%3Ctext x='32' y='42' font-family='Arial' font-weight='700' font-size='28' fill='%23F5F4F0' text-anchor='middle'%3ESM%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/venta.css?v=2026101304">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/venta.css?v=2026101310">
   <script src="js/config.js?v=2026100801"></script>
-  <script src="js/vender.js?v=2026100801" defer></script>
 </head>
 <body>
-  <header class="nav">
-    <div class="wrap">
-      <a href="#top" class="brand" data-v="nombre">Sebastian Morad</a>
-      <nav class="nav__links" aria-label="Principal">
-        <a href="#incluye">Qué incluye</a>
-        <a href="#goods">Caso real</a>
-        <a href="#demos">Demos</a>
-        <a href="#planes">Precio</a>
-        <a href="#preguntas">Preguntas</a>
-      </nav>
-      <a class="btn btn--primary btn--sm" data-wa>Hablemos</a>
-    </div>
+  <header class="wrap top">
+    <a class="top__name" href="#">Sebastián Morad</a>
+    <nav aria-label="Secciones">
+      <a href="#trabajo">Trabajo</a>
+      <a href="#precio">Precio</a>
+      <a href="#rubros">Otros rubros</a>
+      <a class="top__wa" data-wa>WhatsApp</a>
+    </nav>
   </header>
 
-  <main id="top">
-    <section class="hero">
+  <main>
+    <section class="wrap intro">
+      <h1>Hago webs con turnos online para barberías y salones de Mar del Plata.</h1>
+      <p class="intro__text">Tus clientes eligen profesional, día y horario desde el celular, y vos ves la agenda en un panel simple. Yo me encargo del diseño, de dejarla funcionando y de los cambios de todos los meses.</p>
+      <div class="intro__cta">
+        <a class="btn" data-wa>Escribime por WhatsApp</a>
+        <a class="link" href="#trabajo">Ver el trabajo para Goods Barber Studio</a>
+      </div>
+    </section>
+
+    <div class="wrap">
+      <figure>
+        <div class="browser">
+          <div class="browser__bar">goods.ar</div>
+          <img src="assets/goods/goods-desk.jpg" width="1280" height="800" alt="Página de inicio de goods.ar, la web de Goods Barber Studio">
+        </div>
+        <figcaption><b>goods.ar</b>, la web de Goods Barber Studio, una barbería de Mar del Plata.</figcaption>
+      </figure>
+    </div>
+
+    <section class="block" id="trabajo" style="margin-top:96px">
       <div class="wrap">
-        <div>
-          <h1>Tu local recibe turnos mientras dormís.</h1>
-          <p class="lead">Una web con tu marca para barberías, peluquerías, spas y nail bars de Mar del Plata. Reservas online con seña, agenda para tu equipo y recordatorios por WhatsApp. Sin comisiones por turno y sin que tengas que saber de tecnología.</p>
-          <div class="hero__cta">
-            <a href="#probar" class="btn btn--primary btn--lg">Ver la demo con mi nombre</a>
-            <a class="btn btn--ghost btn--lg" data-wa>Escribime por WhatsApp</a>
-          </div>
-          <p class="hero__terms"><span>Primer mes sin cargo</span><span>Sin comisión por reserva</span><span>Sin permanencia</span></p>
-        </div>
-        <div class="phone" aria-hidden="true">
-          <div class="phone__bar"></div>
-          <iframe class="phone__screen" id="heroPhone" title="Vista previa de la web" loading="lazy" tabindex="-1"></iframe>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="wrap split">
-        <div>
-          <h2>Si hoy los turnos van por WhatsApp, esto te suena.</h2>
-        </div>
-        <div>
-          <ul class="pain">
-            <li>Contestás mensajes toda la noche para pasar horarios.</li>
-            <li>Clientes que reservan y no vienen, y ese hueco se pierde.</li>
-            <li>La agenda en papel o en la cabeza de cada profesional.</li>
-            <li>Te buscan en Google y aparece solo un Instagram.</li>
-          </ul>
-          <p class="pain__fix">Todo eso se resuelve con una sola herramienta, con tu nombre y tus colores.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--alt season">
-      <div class="wrap split">
-        <div>
-          <h2>En temporada, gana el que aparece primero.</h2>
-        </div>
-        <div>
-          <p>Cada verano Mar del Plata recibe millones de turistas que buscan en Google “barbería cerca”, “peluquería en Güemes” o “manicura Playa Grande”. Eligen al que tiene fotos, precios claros y un botón para reservar en el momento.</p>
-          <p>Fuera de temporada, la web trabaja para tus clientes de siempre: reservan solos, reciben recordatorios y vuelven más seguido.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="incluye">
-      <div class="wrap">
-        <div class="head">
-          <h2>Todo lo que tu local necesita, en un solo lugar.</h2>
-        </div>
-        <div class="feats">
-          <article><h3>Reservas las 24 horas</h3><p>El cliente elige servicio, profesional, día y hora en menos de un minuto. Solo ve los horarios realmente libres.</p></article>
-          <article><h3>Seña para confirmar</h3><p>Pedís un porcentaje por alias o Mercado Pago. Las ausencias bajan y el hueco deja de costarte plata.</p></article>
-          <article><h3>Agenda del equipo</h3><p>La agenda de cada profesional, turnos cargados a mano, bloqueos de horario y estados: atendido o no vino.</p></article>
-          <article><h3>WhatsApp integrado</h3><p>Recordatorios, pedido de reseñas y mensajes a los clientes que hace tiempo no vuelven, con un toque.</p></article>
-          <article><h3>Clientes y números</h3><p>Quién viene más, cuánto gasta, los servicios más pedidos, los días fuertes y lo facturado por profesional.</p></article>
-          <article><h3>Presencia en Google</h3><p>Una web rápida y preparada para buscadores, con tus servicios, precios, horarios y ubicación en el mapa.</p></article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--alt" id="goods">
-      <div class="wrap case">
-        <div class="case__copy">
-          <h2>Ya funciona en Goods Barber Studio.</h2>
-          <p class="lead">Goods es una barbería de Mar del Plata con tres barberos y horarios distintos según el día. Sus clientes reservan desde goods.ar y el dueño maneja la agenda desde el celular.</p>
-          <ul class="case__list">
-            <li><b>La agenda del día</b> de cada barbero, con el próximo turno marcado.</li>
-            <li><b>Turnos cargados a mano</b> para el que llama o pasa por el local.</li>
-            <li><b>Feriados y horarios</b> que se cambian en un minuto.</li>
-          </ul>
-          <div class="case__links">
-            <a class="btn btn--ghost" href="https://goods.ar" target="_blank" rel="noopener">Ver goods.ar</a>
+        <div class="block__head">
+          <h2>Goods Barber Studio</h2>
+          <div class="lead">
+            <p>Tres barberos, cada uno con sus días y su horario. La web muestra solo los horarios que de verdad están libres para cada uno, y el dueño maneja la agenda desde el celular: ve los turnos del día, carga los que llegan por teléfono y bloquea feriados.</p>
+            <dl class="facts">
+              <dt>Cliente</dt><dd>Goods Barber Studio, Mar del Plata</dd>
+              <dt>Sitio</dt><dd><a class="link" href="https://goods.ar" target="_blank" rel="noopener">goods.ar</a></dd>
+              <dt>Hice</dt><dd>Diseño, reservas online y panel del dueño</dd>
+            </dl>
           </div>
         </div>
-        <div>
-          <div class="vphone">
-            <video id="caseVideo" poster="assets/video/panel-poster.jpg" muted playsinline loop preload="metadata" width="600" height="1298" aria-label="Grabación del panel del dueño de Goods Barber Studio">
+
+        <div class="trio">
+          <figure>
+            <div class="shot"><img src="assets/goods/hero.jpg" width="520" height="1125" loading="lazy" alt="Inicio de goods.ar en el celular"></div>
+            <figcaption><b>Inicio.</b> Lo primero que ve el cliente al entrar.</figcaption>
+          </figure>
+          <figure>
+            <div class="shot"><img src="assets/goods/reserva.jpg" width="520" height="1125" loading="lazy" alt="Pantalla de reserva de turno en goods.ar"></div>
+            <figcaption><b>Reserva.</b> Elige barbero, día y horario. Los horarios ocupados o que ya pasaron no aparecen.</figcaption>
+          </figure>
+          <figure>
+            <div class="shot"><video id="caseVideo" poster="assets/video/panel-poster.jpg" muted playsinline loop preload="metadata" width="600" height="1298" aria-label="Grabación del panel del dueño de Goods">
               <source src="assets/video/panel-demo.mp4" type="video/mp4">
               <source src="assets/video/panel-demo.webm" type="video/webm">
-            </video>
-          </div>
-          <p class="vnote">Panel de Goods. Clientes ficticios y teléfonos ocultos.</p>
+            </video></div>
+            <figcaption><b>Panel del dueño.</b> La agenda del día de cada barbero y el aviso por WhatsApp con un toque. Grabación con clientes de ejemplo.</figcaption>
+          </figure>
+        </div>
+
+        <div class="wide">
+          <figcaption><b>Horarios y feriados.</b> Cada barbero tiene su horario por día. Lo que se cambia acá se aplica en la web al instante, sin llamarme.</figcaption>
+          <figure>
+            <div class="browser">
+              <div class="browser__bar">goods.ar/panel</div>
+              <img src="assets/goods/panel-horarios.jpg" width="900" height="904" loading="lazy" alt="Sección de horarios del panel de Goods">
+            </div>
+          </figure>
         </div>
       </div>
     </section>
 
-    <section class="section" id="calculadora">
-      <div class="wrap calc">
-        <div>
-          <h2>¿Cuánto te cuesta un turno vacío?</h2>
-          <p class="lead" style="margin-top:20px">Mové los valores con los números de tu local. La seña online y los recordatorios apuntan justo a esto.</p>
-        </div>
-        <div class="calc__card">
-          <label class="calc__row"><span>Ausencias por semana</span><output id="oAus">6</output><input type="range" id="cAus" min="1" max="25" value="6"></label>
-          <label class="calc__row"><span>Precio promedio del servicio</span><output id="oPrecio">$15.000</output><input type="range" id="cPrecio" min="5000" max="60000" step="1000" value="15000"></label>
-          <label class="calc__row"><span>Turnos que hoy perdés por no contestar a tiempo, por semana</span><output id="oPerdidos">4</output><input type="range" id="cPerdidos" min="0" max="25" value="4"></label>
-          <div class="calc__result">
-            <span>Plata que se te va por mes</span>
-            <strong id="cTotal">$0</strong>
-            <small id="cNota"></small>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section--alt" id="demos">
+    <section class="block" id="incluye">
       <div class="wrap">
-        <div class="head">
-          <h2>Un estilo para cada rubro.</h2>
-          <p class="lead">Abrí cualquiera y probá reservar un turno. Después mirá el panel del dueño.</p>
+        <div class="block__head">
+          <h2>Qué incluye</h2>
+          <p class="lead">Lo mismo que tiene Goods, armado con el nombre, las fotos y los colores de tu local.</p>
         </div>
-        <div class="demos" id="demoCards"></div>
-        <p class="demos__pin">PIN del panel de demo: <strong data-v="pin">1234</strong></p>
+        <ul class="list">
+          <li><b>La web</b><span>Inicio, servicios con precios, equipo, fotos, ubicación y contacto. Rápida en el celular, que es desde donde entra casi todo el mundo.</span></li>
+          <li><b>Reservas online</b><span>El cliente elige servicio, profesional, día y horario a cualquier hora. Si pedís seña, ve el monto y tu alias al reservar.</span></li>
+          <li><b>Panel para el local</b><span>Agenda del día, turnos cargados a mano, horarios de cada profesional y días bloqueados.</span></li>
+          <li><b>Recordatorios</b><span>Un botón por turno que abre WhatsApp con el mensaje ya escrito para el cliente.</span></li>
+          <li><b>Mantenimiento</b><span>Hosting, seguridad y los cambios que necesites: precios, servicios, fotos, personal, vacaciones.</span></li>
+          <li><b>Puesta en marcha</b><span>El botón de reservas en tu Instagram y en Google Maps, y te enseño a usar el panel en el local.</span></li>
+        </ul>
       </div>
     </section>
 
-    <section class="section" id="probar">
-      <div class="wrap try">
+    <section class="block" id="precio">
+      <div class="wrap price">
+        <h2>Precio</h2>
         <div>
-          <h2>Mirá cómo quedaría tu web.</h2>
-          <p class="lead" style="margin-top:20px">Escribí el nombre de tu local, elegí estilo y color, y abrí tu demo al instante.</p>
+          <p class="price__num"><span data-v="precio">$139.000</span><small>por mes</small></p>
+          <div class="price__body">
+            <p><strong>Todo incluido y sin comisión por turno.</strong> Pagás lo mismo con 10 reservas que con 1.000.</p>
+            <p>La instalación no se cobra y el primer mes tampoco. No hay contrato: si no te sirve, la das de baja.</p>
+            <p id="precioAnual" hidden></p>
+            <p class="mono">Equivale a <span data-v="precio-usd">US$ 90</span> al dólar oficial del Banco Nación y se ajusta al tipo de cambio del día de pago. El dominio propio (.com.ar) es opcional y va aparte.</p>
+          </div>
         </div>
-        <form class="try__form" id="tryForm">
-          <label class="field"><span>Nombre de tu local</span><input name="nombre" required maxlength="60" placeholder="Ej: Barbería Don Carlos"></label>
-          <div class="try__modes" id="tryModes"></div>
-          <label class="field"><span>Color de tu marca</span><input name="color" type="color" value="#c8a35b"></label>
-          <button class="btn btn--primary btn--lg" type="submit">Ver mi demo</button>
+      </div>
+    </section>
+
+    <section class="block" id="rubros">
+      <div class="wrap">
+        <div class="block__head">
+          <h2>Otros rubros</h2>
+          <p class="lead">También tengo diseños listos para salones, spas y nail bars. Podés abrirlos y sacar un turno de prueba; el panel de las demos entra con el PIN <span class="mono" data-v="pin">1234</span>.</p>
+        </div>
+        <ul class="rubros" id="rubrosList"></ul>
+        <form class="try" id="tryForm">
+          <label for="tryNombre">Probá cómo quedaría con el nombre de tu local</label>
+          <input id="tryNombre" name="nombre" placeholder="Ej: Barbería Don Carlos" autocomplete="organization" required>
+          <select name="modo" aria-label="Rubro">
+            <option value="barberia">Barbería</option>
+            <option value="salon">Salón de belleza</option>
+            <option value="spa">Spa y estética</option>
+            <option value="unas">Nail bar</option>
+          </select>
+          <button class="btn" type="submit">Ver mi demo</button>
         </form>
       </div>
     </section>
 
-    <section class="section section--alt" id="como">
+    <section class="block" id="preguntas">
       <div class="wrap">
-        <div class="head"><h2>Cómo trabajamos.</h2></div>
-        <ol class="steps">
-          <li><small>Paso 1</small><strong>Charlamos 15 minutos</strong><p>Me contás servicios, precios, horarios y equipo. Me pasás fotos o las sacamos juntos.</p></li>
-          <li><small>Paso 2</small><strong>Armo tu web</strong><p>Te muestro una primera versión con tu marca y hacemos los ajustes que quieras.</p></li>
-          <li><small>Paso 3</small><strong>Empezás a recibir turnos</strong><p>La publicamos, la conectamos a tu Instagram y a Google, y te enseño a usar el panel.</p></li>
-        </ol>
-      </div>
-    </section>
-
-    <section class="section" id="comparativa">
-      <div class="wrap">
-        <div class="head"><h2>Lo que tenés hoy y lo que podés tener.</h2></div>
-        <div class="table-scroll">
-          <table class="compare">
-            <thead><tr><th></th><th>Agenda por WhatsApp</th><th>Apps de turnos genéricas</th><th class="is-us">Tu web propia</th></tr></thead>
-            <tbody>
-              <tr><td>Reservas las 24 horas sin contestar mensajes</td><td>No</td><td>Sí</td><td class="is-us">Sí</td></tr>
-              <tr><td>Tu marca, tus colores y tu dominio</td><td>No</td><td>No</td><td class="is-us">Sí</td></tr>
-              <tr><td>Sin comisión por turno</td><td>Sí</td><td>A veces</td><td class="is-us">Sí</td></tr>
-              <tr><td>Seña para confirmar el turno</td><td>Manual</td><td>Sí</td><td class="is-us">Sí</td></tr>
-              <tr><td>Galería, promos, gift cards y opiniones</td><td>No</td><td>Limitado</td><td class="is-us">Sí</td></tr>
-              <tr><td>Tu propia web en Google</td><td>No</td><td>No</td><td class="is-us">Sí</td></tr>
-              <tr><td>Clientes y estadísticas del local</td><td>No</td><td>Sí</td><td class="is-us">Sí</td></tr>
-              <tr><td>Atención de alguien de Mar del Plata</td><td>No</td><td>No</td><td class="is-us">Sí</td></tr>
-            </tbody>
-          </table>
+        <div class="block__head">
+          <h2>Preguntas</h2>
+          <div class="faq">
+            <details><summary>¿Necesito saber de computación?</summary><p>No. Usás el panel desde el celular, como cualquier app. Los cambios de precios, fotos o servicios los hago yo.</p></details>
+            <details><summary>¿Puedo seguir tomando turnos por WhatsApp o en el local?</summary><p>Sí. Los cargás en el panel en segundos y ese horario deja de aparecer en la web.</p></details>
+            <details><summary>¿Cómo funciona la seña?</summary><p>Al reservar, el cliente ve el monto y tu alias o link de Mercado Pago, y te manda el comprobante. El cobro va directo a tu cuenta; yo no intervengo.</p></details>
+            <details><summary>¿Y si ya tengo dominio o Instagram?</summary><p>Usamos tu dominio si ya lo tenés, y sumamos el botón de reservas en tu Instagram y en Google Maps.</p></details>
+            <details><summary>¿Atendés en persona?</summary><p>Sí. En Mar del Plata paso por el local para dejar todo andando y enseñarte el panel.</p></details>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="section section--alt" id="planes">
+    <section class="block" id="contacto">
       <div class="wrap">
-        <div class="head"><h2>Un solo plan, con todo incluido.</h2></div>
-        <div class="plans" id="plans"></div>
-        <p class="plans__note" data-v="nota"></p>
-      </div>
-    </section>
-
-    <section class="section" id="preguntas">
-      <div class="wrap split">
-        <div><h2>Preguntas frecuentes.</h2></div>
-        <div class="faq">
-          <details><summary>¿Necesito saber de computación?</summary><p>No. Vos solo usás el panel desde el celular, como cualquier app. Los cambios de precios, fotos o servicios los hago yo.</p></details>
-          <details><summary>¿Qué entra en el mantenimiento?</summary><p>Todo lo del día a día: cambiar horarios, cargar feriados o vacaciones, sumar o sacar personal, actualizar precios, servicios, promos y fotos. Me escribís por WhatsApp y lo dejo listo.</p></details>
-          <details><summary>¿Cuánto sale y cómo se paga?</summary><p><span data-v="precio">$139.000</span> por mes, todo incluido (<span data-v="precio-usd">US$ 90</span> al dólar oficial del día de pago). Pagás por transferencia o Mercado Pago. El primer mes es sin cargo, la instalación no se cobra y no hay permanencia mínima.</p></details>
-          <details><summary>¿Me cobran comisión por cada turno?</summary><p>No. Pagás un abono fijo por mes, recibas 10 o 1.000 turnos.</p></details>
-          <details><summary>¿Puedo seguir tomando turnos por WhatsApp o en el local?</summary><p>Sí. Los cargás en el panel en segundos y la web bloquea ese horario automáticamente.</p></details>
-          <details><summary>¿Cómo cobro la seña?</summary><p>Con tu alias o link de Mercado Pago. El cliente ve el monto y el alias al reservar, y te manda el comprobante.</p></details>
-          <details><summary>¿Y si ya tengo dominio o Instagram?</summary><p>Usamos tu dominio si ya lo tenés, y sumamos el botón de reservas en tu Instagram y en Google Maps.</p></details>
-          <details><summary>¿Y si ya uso una app de turnos?</summary><p>Podés seguir usándola mientras probás. Muchos locales se pasan porque quieren su propia marca, dejar de pagar comisiones y que el cliente reserve desde su web o Instagram.</p></details>
-          <details><summary>¿Atendés en persona?</summary><p>Sí, en Mar del Plata te visito en el local para armar todo y enseñarte a usar el panel.</p></details>
-          <details><summary>¿Puedo dar de baja cuando quiera?</summary><p>Sí. El abono es mensual y sin permanencia mínima.</p></details>
+        <p class="contact__line">Si querés verlo funcionando para tu local, escribime y lo charlamos.</p>
+        <div class="contact__actions">
+          <a class="btn" data-wa>Escribime por WhatsApp</a>
+          <a class="link" id="mailLink"></a>
         </div>
-      </div>
-    </section>
-
-    <section class="closing">
-      <div class="wrap">
-        <h2>¿Lo vemos para tu local?</h2>
-        <a class="btn btn--primary btn--lg" data-wa>Escribime por WhatsApp</a>
       </div>
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="wrap"><span>© <span id="year"></span> <span data-v="nombre"></span> · Mar del Plata</span><a data-v="email" id="mailLink"></a></div>
+  <footer class="wrap footer mono">
+    <span>© <span id="year"></span> Sebastián Morad · Mar del Plata</span>
   </footer>
-  <a class="wa-float" data-wa aria-label="Escribir por WhatsApp"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm0 23.7a10.7 10.7 0 0 1-5.5-1.5l-.4-.2-3.9 1 1-3.8-.2-.4A10.7 10.7 0 1 1 16 26.7zm5.9-8c-.3-.2-1.9-1-2.2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7 0a8.8 8.8 0 0 1-4.4-3.8c-.3-.6.3-.5.9-1.7a.6.6 0 0 0 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6a1.2 1.2 0 0 0-.9.4 3.7 3.7 0 0 0-1.1 2.7 6.4 6.4 0 0 0 1.3 3.4 14.7 14.7 0 0 0 5.7 5c2.1.9 2.9 1 4 .8a3.4 3.4 0 0 0 2.2-1.6 2.8 2.8 0 0 0 .2-1.6c-.1-.1-.3-.2-.6-.4z"/></svg></a>
 
   <script>
-  /* Video del caso real: se reproduce cuando está a la vista y se pausa al salir */
   (function(){
-    var v = document.getElementById('caseVideo'); if (!v) return;
-    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches){ v.controls = true; return; }
-    if (!('IntersectionObserver' in window)){ v.controls = true; return; }
-    new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting){ var p = v.play(); if (p && p.catch) p.catch(function(){ v.controls = true; }); } else v.pause(); }); }, { threshold: .35 }).observe(v);
+    "use strict";
+    var C = window.__NEGOCIO__ || {}, V = C.vendedor || {};
+    var $$ = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+    var fmt = function(n){ return "$" + Math.round(n).toLocaleString("es-AR"); };
+    var wa = "https://wa.me/" + (V.whatsapp || "") + "?text=" + encodeURIComponent("Hola Sebastián, vi tu página de webs con turnos y me interesa para mi local.");
+    $$("[data-wa]").forEach(function(a){ a.href = wa; a.target = "_blank"; a.rel = "noopener"; });
+    var mail = document.getElementById("mailLink");
+    if (V.email){ mail.href = "mailto:" + V.email; mail.textContent = V.email; } else mail.remove();
+    document.getElementById("year").textContent = new Date().getFullYear();
+    $$('[data-v="pin"]').forEach(function(e){ e.textContent = C.pinPanel || "1234"; });
+
+    // Precio en pesos a partir de US$ y la cotización de config.js (redondeado a $1.000)
+    var abono = Math.round((V.precioUSD || 0) * (V.cotizacion || 0) / 1000) * 1000;
+    if (abono){
+      $$('[data-v="precio"]').forEach(function(e){ e.textContent = fmt(abono); });
+      $$('[data-v="precio-usd"]').forEach(function(e){ e.textContent = "US$ " + V.precioUSD; });
+      if (V.mesesRegaloAnual){
+        var an = document.getElementById("precioAnual");
+        an.textContent = "Pagando el año por adelantado, " + V.mesesRegaloAnual + " meses no se cobran: " + fmt(abono * (12 - V.mesesRegaloAnual)) + " por los 12 meses.";
+        an.hidden = false;
+      }
+    }
+
+    var RUBROS = [
+      { modo:"barberia", nombre:"Barbería", texto:"Oscuro y clásico.", color:"#c9a45c" },
+      { modo:"salon", nombre:"Salón de belleza", texto:"Luminoso y elegante.", color:"#9b4560" },
+      { modo:"spa", nombre:"Spa y estética", texto:"Sereno y natural.", color:"#4a6752" },
+      { modo:"unas", nombre:"Nail bar", texto:"Moderno y con onda.", color:"#eaa8b6" }
+    ];
+    document.getElementById("rubrosList").innerHTML = RUBROS.map(function(r){
+      return '<li><span class="rubros__name"><i style="background:' + r.color + '"></i>' + r.nombre + '</span>' +
+        '<span class="rubros__desc">' + r.texto + '</span>' +
+        '<span class="rubros__links"><a class="link" href="' + r.modo + '/?limpio=1" target="_blank" rel="noopener">Ver web</a>' +
+        '<a class="link" href="admin.html?modo=' + r.modo + '" target="_blank" rel="noopener">Ver panel</a></span></li>';
+    }).join("");
+
+    var form = document.getElementById("tryForm");
+    form.addEventListener("submit", function(ev){
+      ev.preventDefault();
+      var p = new URLSearchParams();
+      p.set("nombre", form.elements.nombre.value.trim());
+      p.set("limpio", "1");
+      window.open(form.elements.modo.value + "/?" + p.toString(), "_blank", "noopener");
+    });
+
+    // Video del panel: se reproduce cuando está a la vista y se pausa al salir
+    var v = document.getElementById("caseVideo");
+    if ((window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) || !("IntersectionObserver" in window)){ v.controls = true; return; }
+    new IntersectionObserver(function(es){ es.forEach(function(e){
+      if (e.isIntersecting){ var pr = v.play(); if (pr && pr.catch) pr.catch(function(){ v.controls = true; }); } else v.pause();
+    }); }, { threshold: .35 }).observe(v);
   })();
   </script>
 </body>
