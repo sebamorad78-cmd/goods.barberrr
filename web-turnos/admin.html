@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Panel del local</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23c8a35b'/%3E%3Crect x='16' y='18' width='32' height='30' rx='4' fill='none' stroke='%230f0e0c' stroke-width='4'/%3E%3Cpath d='M16 28h32M26 14v8M38 14v8' stroke='%230f0e0c' stroke-width='4'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/styles.css?v=2026100801">
+  <link rel="stylesheet" href="css/admin.css?v=2026100801">
+  <script src="js/config.js?v=2026100801"></script>
+  <script src="js/store.js?v=2026100801"></script>
+  <script src="js/theme.js?v=2026100801"></script>
+  <script src="js/admin.js?v=2026100801" defer></script>
+</head>
+<body class="admin">
+
+  <!-- Login -->
+  <section class="login" id="login">
+    <form class="login__card" id="loginForm">
+      <p class="eyebrow"><span class="line"></span>Panel del local</p>
+      <h1 class="login__title" data-bind="nombre">Tu negocio</h1>
+      <label class="field" id="pinField"><span>PIN de acceso</span><input name="pin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="••••"></label>
+      <label class="field" id="emailField" hidden><span>Email</span><input name="email" type="email" autocomplete="username" placeholder="tu@email.com"></label>
+      <label class="field" id="passField" hidden><span>Contraseña</span><input name="password" type="password" autocomplete="current-password" placeholder="••••••••"></label>
+      <button class="btn btn--primary" type="submit">Entrar</button>
+      <p class="login__hint" id="pinHint"></p>
+      <a class="login__back" id="backLink" href="index.html">← Volver a la web</a>
+    </form>
+  </section>
+
+  <!-- App -->
+  <div class="app" id="app" hidden>
+    <aside class="side">
+      <div class="side__brand"><span class="side__logo" id="logoMark">I</span><div><strong data-bind="nombre"></strong><small>Panel del local</small></div></div>
+      <nav class="side__nav" id="sideNav">
+        <button data-view="agenda" class="is-active"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Agenda</button>
+        <button data-view="turnos"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Turnos</button>
+        <button data-view="clientes"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0M16 4a4 4 0 0 1 0 8M22 21a7 7 0 0 0-4-6.3"/></svg>Clientes</button>
+        <button data-view="stats"><svg viewBox="0 0 24 24"><path d="M3 21h18M6 17V9M11 17V5M16 17v-6M21 17v-3"/></svg>Estadísticas</button>
+      </nav>
+      <div class="side__foot">
+        <a class="side__link" id="webLink" href="index.html" target="_blank" rel="noopener">Ver web pública ↗</a>
+        <button class="side__link" id="resetDemo" type="button">Reiniciar datos de demo</button>
+        <button class="side__link" id="logout" type="button">Salir</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="top">
+        <div>
+          <h1 class="top__title" id="viewTitle">Agenda</h1>
+          <p class="top__sub" id="viewSub"></p>
+        </div>
+        <div class="top__actions">
+          <button class="btn btn--ghost btn--sm" id="blockBtn" type="button">Bloquear horario</button>
+          <button class="btn btn--primary btn--sm" id="newBtn" type="button">+ Nuevo turno</button>
+        </div>
+      </header>
+
+      <section class="kpis" id="kpis"></section>
+
+      <!-- Agenda -->
+      <section class="view is-active" data-view="agenda">
+        <div class="daybar">
+          <div class="daybar__nav">
+            <button type="button" data-day="-1" aria-label="Día anterior">‹</button>
+            <button type="button" data-day="0" class="daybar__today">Hoy</button>
+            <button type="button" data-day="1" aria-label="Día siguiente">›</button>
+            <strong id="dayLabel"></strong>
+          </div>
+          <div class="legend">
+            <span><i class="st-confirmado"></i>Confirmado</span>
+            <span><i class="st-atendido"></i>Atendido</span>
+            <span><i class="st-ausente"></i>No vino</span>
+            <span><i class="st-bloqueo"></i>Bloqueado</span>
+          </div>
+        </div>
+        <div class="agenda-wrap"><div class="agenda" id="agenda"></div></div>
+      </section>
+
+      <!-- Turnos -->
+      <section class="view" data-view="turnos">
+        <div class="toolbar">
+          <div class="seg" id="turnosFilter">
+            <button data-f="hoy" class="is-active">Hoy</button>
+            <button data-f="proximos">Próximos</button>
+            <button data-f="pasados">Pasados</button>
+            <button data-f="cancelados">Cancelados</button>
+          </div>
+          <input class="search" id="turnosSearch" type="search" placeholder="Buscar cliente o código…">
+        </div>
+        <div class="table-wrap"><table class="table" id="turnosTable"></table></div>
+      </section>
+
+      <!-- Clientes -->
+      <section class="view" data-view="clientes">
+        <div class="toolbar">
+          <div class="seg" id="clientesFilter">
+            <button data-f="todos" class="is-active">Todos</button>
+            <button data-f="frecuentes">Frecuentes</button>
+            <button data-f="inactivos">Hace +30 días</button>
+          </div>
+          <input class="search" id="clientesSearch" type="search" placeholder="Buscar cliente…">
+        </div>
+        <div class="table-wrap"><table class="table" id="clientesTable"></table></div>
+      </section>
+
+      <!-- Estadísticas -->
+      <section class="view" data-view="stats">
+        <div class="stats" id="stats"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="modal" hidden>
+    <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <header class="modal__head"><h2 id="modalTitle"></h2><button type="button" class="modal__x" data-close aria-label="Cerrar">×</button></header>
+      <div class="modal__body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="demo-badge" id="demoBadge" hidden>DEMO · datos de ejemplo</div>
+</body>
+</html>

@@ -1,0 +1,826 @@
+<title>Turnos para barberías</title>
+<meta name="description" content="Sistema de turnos online para barberías: tus clientes reservan solos y vos manejás la agenda desde el celular. Mar del Plata.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23161716'/%3E%3Crect x='14' y='16' width='36' height='34' rx='5' fill='none' stroke='%23F6F6F3' stroke-width='4'/%3E%3Cpath d='M14 26h36M24 11v9M40 11v9' stroke='%23F6F6F3' stroke-width='4' stroke-linecap='round'/%3E%3Crect x='34' y='33' width='9' height='9' rx='2' fill='%237D97F0'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Turnos online para tu barbería">
+<meta property="og:description" content="Tus clientes reservan desde el celular y vos manejás la agenda desde un panel simple. Mar del Plata.">
+<meta property="og:image" content="og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* Página de producto sobria: texto a la izquierda, demo funcionando a la derecha.
+     Una sola familia tipográfica; el azul se reserva para lo que se puede tocar. */
+  :root{
+    --bg:#F6F6F3;
+    --surface:#FFFFFF;
+    --sunken:#EFEFEB;
+    --ink:#161716;
+    --muted:#6A6B66;
+    --faint:#9A9B95;
+    --line:#E2E2DC;
+    --accent:#2343B8;
+    --accent-soft:#E7ECFA;
+    --accent-ink:#FFFFFF;
+    --ok:#23744A;
+    --ok-soft:#E3F1E8;
+    --warn:#9A5B12;
+    --shadow:0 1px 2px rgba(22,23,22,.06), 0 12px 32px -12px rgba(22,23,22,.18);
+    --sans:'Schibsted Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --mono:'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+    --bg:#101211; --surface:#181A19; --sunken:#1F2220; --ink:#ECEDE9; --muted:#9C9E98; --faint:#6E716C; --line:#2A2D2B;
+    --accent:#8AA2F2; --accent-soft:#1E2643; --accent-ink:#0E1220; --ok:#6CC495; --ok-soft:#183024; --warn:#E0A55C;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 32px -12px rgba(0,0,0,.6); color-scheme:dark;
+  }}
+  :root[data-theme="dark"]{
+    --bg:#101211; --surface:#181A19; --sunken:#1F2220; --ink:#ECEDE9; --muted:#9C9E98; --faint:#6E716C; --line:#2A2D2B;
+    --accent:#8AA2F2; --accent-soft:#1E2643; --accent-ink:#0E1220; --ok:#6CC495; --ok-soft:#183024; --warn:#E0A55C;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 32px -12px rgba(0,0,0,.6); color-scheme:dark;
+  }
+
+  *{box-sizing:border-box}
+  body{background:var(--bg); color:var(--ink); font-family:var(--sans); font-size:16.5px; line-height:1.6; -webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+  @media (prefers-reduced-motion: reduce){ *{transition:none!important; animation:none!important} }
+  .wrap{max-width:1120px; margin:0 auto; padding-inline:20px}
+  h1,h2,h3{margin:0; font-weight:600; letter-spacing:-0.02em; text-wrap:balance}
+  h1{font-size:clamp(34px,4.6vw,52px); line-height:1.06}
+  h2{font-size:clamp(26px,3.2vw,34px); line-height:1.15}
+  h3{font-size:17px; letter-spacing:-0.01em}
+  p{margin:0}
+  .muted{color:var(--muted)}
+
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:10px 18px; border-radius:8px;
+    font:600 15.5px/1.2 var(--sans); text-decoration:none; border:1px solid transparent; cursor:pointer; transition:background .15s, border-color .15s, transform .1s}
+  .btn:active{transform:translateY(1px)}
+  .btn.primary{background:var(--ink); color:var(--bg)}
+  .btn.primary:hover{background:color-mix(in srgb, var(--ink) 85%, var(--bg))}
+  .btn.line{border-color:var(--line); background:var(--surface); color:var(--ink)}
+  .btn.line:hover{border-color:var(--muted)}
+
+  /* ---------- Barra superior ---------- */
+  .top{padding-block:18px}
+  .top .wrap{display:flex; align-items:center; justify-content:space-between; gap:16px}
+  .mark{font-weight:700; font-size:16px; letter-spacing:-0.01em; text-decoration:none}
+  .mark small{font-weight:400; color:var(--muted); margin-left:8px; font-size:14px}
+  .nav{display:flex; gap:22px; font-size:14.5px}
+  .nav a{text-decoration:none; color:var(--muted)}
+  .nav a:hover{color:var(--ink)}
+
+  /* ---------- Portada con demo ---------- */
+  .hero{padding-block:40px 88px}
+  .hero .wrap{display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); gap:56px; align-items:start}
+  .hero-copy{padding-top:28px}
+  .hero-copy p.lead{font-size:18px; color:var(--muted); margin-top:18px; max-width:46ch}
+  .hero-actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:28px}
+  .proof{margin-top:28px; padding-top:20px; border-top:1px solid var(--line); font-size:14.5px; color:var(--muted); max-width:46ch}
+  .proof a{color:var(--ink); font-weight:500}
+
+  /* ---------- Demo ---------- */
+  .demo{background:var(--surface); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); overflow:hidden; min-width:0}
+  .demo-bar{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; border-bottom:1px solid var(--line); flex-wrap:wrap}
+  .seg{display:inline-flex; background:var(--sunken); border-radius:8px; padding:3px}
+  .seg button{font:500 14px/1 var(--sans); color:var(--muted); background:none; border:0; border-radius:6px; padding:9px 14px; cursor:pointer; position:relative}
+  .seg button[aria-selected="true"]{background:var(--surface); color:var(--ink); box-shadow:0 1px 2px rgba(0,0,0,.08)}
+  .seg .dot{position:absolute; top:6px; right:6px; width:7px; height:7px; border-radius:50%; background:var(--accent)}
+  .demo-tag{font-size:12.5px; color:var(--faint)}
+  .demo-body{padding:18px 18px 20px}
+  .demo-shop{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:14px}
+  .demo-shop b{font-size:15px}
+  .demo-shop span{font-size:12.5px; color:var(--faint)}
+  .step-title{font-size:12.5px; font-weight:600; color:var(--muted); margin:16px 0 8px}
+  .step-title:first-of-type{margin-top:0}
+  .chips{display:flex; flex-wrap:wrap; gap:6px}
+  .chip{font:500 14px/1 var(--sans); color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:9px 13px; cursor:pointer; display:inline-flex; align-items:center; gap:8px}
+  .chip:hover{border-color:var(--muted)}
+  .chip[aria-pressed="true"]{background:var(--ink); color:var(--bg); border-color:var(--ink)}
+  .chip:disabled{cursor:not-allowed; color:var(--faint); background:var(--sunken); border-color:transparent}
+  .avatar{width:22px; height:22px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; background:var(--accent-soft); color:var(--accent)}
+  .chip[aria-pressed="true"] .avatar{background:var(--bg); color:var(--ink)}
+  .days{display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:6px}
+  .day{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:7px 0 8px; text-align:center; cursor:pointer; font-family:var(--sans); color:var(--ink)}
+  .day small{display:block; font-size:11.5px; color:var(--muted)}
+  .day b{display:block; font-size:17px; font-weight:600; font-variant-numeric:tabular-nums}
+  .day:hover{border-color:var(--muted)}
+  .day[aria-pressed="true"]{background:var(--ink); border-color:var(--ink); color:var(--bg)}
+  .day[aria-pressed="true"] small{color:inherit; opacity:.7}
+  .day:disabled{cursor:not-allowed; background:var(--sunken); border-color:transparent; color:var(--faint)}
+  .day:disabled b{text-decoration:line-through}
+  .times{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:6px}
+  .time{font:500 13.5px/1 var(--mono); padding:10px 0; text-align:center; border-radius:6px; border:1px solid var(--line); background:var(--surface); color:var(--ink); cursor:pointer; font-variant-numeric:tabular-nums}
+  .time:hover{border-color:var(--accent)}
+  .time[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+  .time:disabled{cursor:not-allowed; color:var(--faint); background:var(--sunken); border-color:transparent; text-decoration:line-through}
+  .empty{font-size:14px; color:var(--muted); padding:10px 0}
+  .form-row{display:grid; grid-template-columns:1fr auto; gap:8px; margin-top:16px}
+  .input{font:400 15px/1.2 var(--sans); color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:11px 12px; min-width:0}
+  .input:focus{border-color:var(--accent); outline:none}
+  .confirm{min-width:150px}
+  .confirm:disabled{opacity:.35; cursor:not-allowed}
+  .done{margin-top:16px; padding:14px; border-radius:10px; background:var(--ok-soft); color:var(--ink); display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; font-size:14.5px}
+  .done b{color:var(--ok)}
+  .link-btn{font:600 14px/1 var(--sans); color:var(--accent); background:none; border:0; padding:6px 0; cursor:pointer}
+  .link-btn:hover{text-decoration:underline}
+
+  /* vista del dueño */
+  .owner-head{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px}
+  .owner-head b{font-size:15px}
+  .small-btn{font:500 13px/1 var(--sans); color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:8px 11px; cursor:pointer}
+  .small-btn:hover{border-color:var(--muted)}
+  .small-btn.danger{color:var(--warn)}
+  .agenda{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:14px}
+  .col{border:1px solid var(--line); border-radius:10px; padding:10px; min-width:0}
+  .col h4{margin:0 0 6px; font-size:13px; font-weight:600; display:flex; justify-content:space-between; color:var(--muted)}
+  .slot{display:grid; grid-template-columns:44px 1fr; gap:6px; padding:7px 4px; border-top:1px solid var(--line); font-size:13.5px; align-items:baseline}
+  .slot:first-of-type{border-top:0}
+  .slot .t{font:500 12.5px/1 var(--mono); color:var(--muted)}
+  .slot .n{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .slot.new{background:var(--accent-soft); border-radius:6px; border-top-color:transparent}
+  .slot.new .t{color:var(--accent)}
+  .slot.new .n{white-space:normal}
+  .slot .tag{grid-column:2; font-size:11.5px; font-weight:600; color:var(--accent); margin-top:-2px}
+  .remind{grid-column:2; justify-self:start; margin-top:4px; font:500 12px/1 var(--sans); color:var(--ok); background:none; border:1px solid var(--ok-soft); border-radius:5px; padding:5px 8px; cursor:pointer}
+  .closed-note{margin-top:14px; font-size:14px; color:var(--warn); background:var(--sunken); border-radius:8px; padding:12px}
+  .wa-preview{margin-top:14px; border-radius:10px; background:var(--ok-soft); padding:12px 14px; font-size:14px}
+  .wa-preview small{display:block; color:var(--muted); margin-bottom:4px; font-size:12px}
+  .demo-foot{border-top:1px solid var(--line); padding:10px 14px; font-size:12.5px; color:var(--faint)}
+
+  /* ---------- Qué incluye ---------- */
+  section.block{padding-block:80px; border-top:1px solid var(--line)}
+  .split{display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr); gap:56px}
+  .split .intro p{margin-top:14px; color:var(--muted); max-width:40ch}
+  .features{display:grid; grid-template-columns:1fr 1fr; gap:0 40px}
+  .features h3{grid-column:auto; font-size:13px; font-weight:600; color:var(--muted); padding-bottom:10px; border-bottom:1px solid var(--line)}
+  .flist{list-style:none; margin:0 0 28px; padding:0}
+  .flist li{padding:14px 0; border-bottom:1px solid var(--line)}
+  .flist b{display:block; font-weight:600}
+  .flist span{display:block; color:var(--muted); font-size:15px; margin-top:2px}
+
+  /* ---------- Goods ---------- */
+  .case-head{display:flex; justify-content:space-between; align-items:end; gap:20px; flex-wrap:wrap; margin-bottom:32px}
+  .case-head p{margin-top:12px; color:var(--muted); max-width:60ch}
+  .browser{border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--surface); box-shadow:var(--shadow)}
+  .browser-bar{display:flex; align-items:center; gap:12px; padding:10px 14px; border-bottom:1px solid var(--line); background:var(--sunken)}
+  .lights{display:flex; gap:6px}
+  .lights i{width:10px; height:10px; border-radius:50%; background:var(--line); display:block}
+  .url{font:400 13px/1 var(--mono); color:var(--muted); background:var(--surface); border-radius:6px; padding:7px 12px; flex:1; max-width:340px}
+  .browser img{display:block; width:100%; height:auto}
+  .case-grid{display:grid; grid-template-columns:minmax(0,1.6fr) minmax(0,1fr); gap:20px; align-items:start}
+  .phone{border-radius:26px; padding:8px; background:#151616; box-shadow:var(--shadow); max-width:300px; justify-self:center}
+  .phone img{display:block; width:100%; height:auto; border-radius:19px}
+  .caption{font-size:13.5px; color:var(--muted); margin-top:12px}
+
+  /* ---------- Cómo trabajo ---------- */
+  .prose{max-width:62ch}
+  .prose p{margin-top:16px; color:var(--muted)}
+  .prose p strong{color:var(--ink); font-weight:600}
+  .qa{display:grid; grid-template-columns:1fr 1fr; gap:28px 40px; margin-top:8px}
+  .qa div{min-width:0}
+  .qa b{display:block; font-weight:600}
+  .qa p{color:var(--muted); font-size:15px; margin-top:4px}
+
+  /* ---------- Contacto ---------- */
+  .contact{padding-block:88px; border-top:1px solid var(--line)}
+  .contact-card{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:32px; align-items:center; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:36px}
+  .contact-card p{color:var(--muted); margin-top:10px; max-width:52ch}
+  .contact-side{display:flex; flex-direction:column; align-items:flex-start; gap:12px}
+  .number{display:flex; align-items:center; gap:10px; font:500 15px/1 var(--mono)}
+  .number span{user-select:all}
+  footer{padding-block:28px; font-size:13.5px; color:var(--faint)}
+  footer .wrap{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap}
+
+
+
+  /* ---------- Video del panel ---------- */
+  .video-grid{display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr); gap:56px; align-items:center}
+  .vphone{position:relative; width:min(320px,100%); justify-self:center; border-radius:34px; padding:10px; background:#151616; box-shadow:var(--shadow)}
+  .vphone video{display:block; width:100%; height:auto; aspect-ratio:600/1298; border-radius:25px; background:#0A1930}
+  .vcontrols{display:flex; align-items:center; gap:10px; margin:14px auto 0; width:min(320px,100%)}
+  .vbtn{flex-shrink:0; width:36px; height:36px; border-radius:50%; border:1px solid var(--line); background:var(--surface); color:var(--ink); display:inline-flex; align-items:center; justify-content:center; cursor:pointer}
+  .vbtn:hover{border-color:var(--muted)}
+  .vbtn svg{width:14px; height:14px}
+  .vbar{position:relative; flex:1; height:4px; border-radius:2px; background:var(--line); overflow:hidden}
+  .vbar i{position:absolute; inset:0 auto 0 0; width:0; background:var(--accent)}
+  .vtime{font:500 12.5px/1 var(--mono); color:var(--muted); font-variant-numeric:tabular-nums; min-width:36px; text-align:right}
+  .video-copy p.muted{margin-top:14px; max-width:52ch}
+  .chapters{list-style:none; margin:26px 0 0; padding:0; border-top:1px solid var(--line)}
+  .chapters li{border-bottom:1px solid var(--line)}
+  .chapters button{all:unset; box-sizing:border-box; width:100%; display:grid; grid-template-columns:52px 1fr; gap:12px; padding:13px 8px; cursor:pointer; border-radius:8px}
+  .chapters button:hover{background:var(--sunken)}
+  .chapters button:focus-visible{outline:2px solid var(--accent); outline-offset:-2px}
+  .chapters .ts{font:500 13px/1.6 var(--mono); color:var(--faint); font-variant-numeric:tabular-nums}
+  .chapters b{display:block; font-weight:600; font-size:15.5px}
+  .chapters span.d{display:block; color:var(--muted); font-size:14.5px; margin-top:1px}
+  .chapters li.on button{background:var(--accent-soft)}
+  .chapters li.on .ts{color:var(--accent)}
+  @media (max-width:920px){ .video-grid{grid-template-columns:1fr; gap:32px} }
+
+  /* ---------- Confiabilidad ---------- */
+  .reliab{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 40px}
+  .reliab div{padding:18px 0; border-top:1px solid var(--line); min-width:0}
+  .reliab b{display:block; font-weight:600}
+  .reliab p{color:var(--muted); font-size:15px; margin-top:4px}
+  .reliab code{font-family:var(--mono); font-size:13px; background:var(--sunken); border-radius:4px; padding:1px 5px}
+
+  /* ---------- Comparación ---------- */
+  .table-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:12px; background:var(--surface)}
+  .compare{width:100%; border-collapse:collapse; min-width:640px; font-size:15px}
+  .compare th, .compare td{padding:14px 16px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top}
+  .compare tr:last-child td{border-bottom:0}
+  .compare thead th{font-size:13px; font-weight:600; color:var(--muted); background:var(--sunken)}
+  .compare thead th.us{color:var(--ink)}
+  .compare tbody th{font-weight:500; width:30%}
+  .compare td{color:var(--muted)}
+  .compare td.us{color:var(--ink); font-weight:500; background:color-mix(in srgb, var(--accent-soft) 55%, transparent)}
+  .yes, .no{font-family:var(--mono); font-size:13px; font-weight:500}
+  .yes{color:var(--ok)} .no{color:var(--faint)}
+
+  /* ---------- Precio ---------- */
+  .price-card{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); border:1px solid var(--line); border-radius:14px; background:var(--surface); overflow:hidden; box-shadow:var(--shadow)}
+  .price-main{padding:32px; border-right:1px solid var(--line); display:flex; flex-direction:column; gap:18px}
+  .price-row{display:flex; justify-content:space-between; align-items:baseline; gap:16px; padding-bottom:14px; border-bottom:1px solid var(--line)}
+  .price-row span{color:var(--muted); font-size:15px}
+  .price-row b{font-size:28px; font-weight:600; letter-spacing:-0.02em; font-variant-numeric:tabular-nums; white-space:nowrap}
+  .price-row b small{font-size:14px; font-weight:400; color:var(--muted); margin-left:4px}
+  .price-row.free b{color:var(--ok); font-size:20px}
+  .price-note{font-size:14px; color:var(--muted)}
+  .price-incl{padding:32px; background:var(--sunken)}
+  .price-incl h3{font-size:14px; color:var(--muted); font-weight:600; margin-bottom:12px}
+  .check{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; font-size:15px}
+  .check li{display:grid; grid-template-columns:18px 1fr; gap:10px}
+  .check li::before{content:""; width:16px; height:16px; margin-top:4px; border-radius:50%; background:var(--ok-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m4.5 8.2 2.2 2.2 4.8-4.8' fill='none' stroke='%2323744A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat}
+
+  /* ---------- Origen ---------- */
+  .origin{margin-top:44px; padding:24px 26px; border-left:3px solid var(--accent); background:var(--surface); border-radius:0 10px 10px 0}
+  .origin p{color:var(--ink); margin:0; max-width:60ch}
+  .origin small{display:block; margin-top:10px; color:var(--muted); font-size:13.5px}
+
+  /* ---------- Privacidad ---------- */
+  .legal{padding-block:40px 20px; border-top:1px solid var(--line); font-size:14px; color:var(--muted)}
+  .legal h2{font-size:17px; margin-bottom:10px; color:var(--ink)}
+  .legal p{max-width:72ch; margin-top:8px}
+
+  @media (max-width:920px){
+    .price-card{grid-template-columns:1fr}
+    .price-main{border-right:0; border-bottom:1px solid var(--line)}
+  }
+  @media (max-width:600px){
+    .reliab{grid-template-columns:1fr}
+    .price-main, .price-incl{padding:22px}
+  }
+
+  @media (max-width:920px){
+    .hero .wrap, .split, .case-grid{grid-template-columns:1fr; gap:36px}
+    .hero-copy{padding-top:0}
+    .contact-card{grid-template-columns:1fr}
+  }
+  @media (max-width:600px){
+    body{font-size:16px}
+    .nav{display:none}
+    .features, .qa{grid-template-columns:1fr}
+    .days{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .times{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .agenda{grid-template-columns:1fr}
+    .form-row{grid-template-columns:1fr}
+    .confirm{width:100%}
+    .demo-tag{display:none}
+    .contact-card{padding:24px}
+    section.block{padding-block:60px}
+  }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="#">Sebastián Morad<small>Mar del Plata</small></a>
+    <nav class="nav" aria-label="Secciones">
+      <a href="#incluye">Qué incluye</a>
+      <a href="#panel">Panel</a>
+      <a href="#goods">Goods</a>
+      <a href="#precio">Precio</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-copy">
+        <h1>Turnos online para tu barbería</h1>
+        <p class="lead">Tus clientes reservan desde el celular, a cualquier hora, y vos manejás la agenda desde un panel simple. Lo instalo con el nombre de tu barbería, tus barberos y tus horarios.</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#contacto">Coordinar una demo</a>
+          <a class="btn line" href="https://goods.ar" target="_blank" rel="noopener">Ver goods.ar</a>
+        </div>
+        <p class="proof">Probá la demo: sacá un turno como cliente y después pasá a la vista del dueño. Así funciona en <a href="https://goods.ar" target="_blank" rel="noopener">Goods Barber Studio</a>, en Olavarría 2583.</p>
+      </div>
+
+      <div class="demo" id="demo" aria-label="Demo del sistema de turnos">
+        <div class="demo-bar">
+          <div class="seg" role="tablist" aria-label="Vista">
+            <button type="button" role="tab" id="tabClient" aria-selected="true" aria-controls="viewClient">Cliente</button>
+            <button type="button" role="tab" id="tabOwner" aria-selected="false" aria-controls="viewOwner">Dueño<i class="dot" id="ownerDot" hidden></i></button>
+          </div>
+          <span class="demo-tag">Demo con datos de ejemplo</span>
+        </div>
+
+        <div class="demo-body" id="viewClient" role="tabpanel" aria-labelledby="tabClient">
+          <div class="demo-shop"><b>Barbería de ejemplo</b><span>Reservá tu turno</span></div>
+          <p class="step-title">Barbero</p>
+          <div class="chips" id="barbers"></div>
+          <p class="step-title">Día</p>
+          <div class="days" id="days"></div>
+          <p class="step-title">Horario</p>
+          <div id="times"></div>
+          <div class="form-row">
+            <label class="sr" for="clientName" hidden>Tu nombre</label>
+            <input class="input" id="clientName" value="Juan P." maxlength="30" autocomplete="off" aria-label="Tu nombre">
+            <button type="button" class="btn primary confirm" id="confirm" disabled>Confirmar turno</button>
+          </div>
+          <div id="doneBox"></div>
+        </div>
+
+        <div class="demo-body" id="viewOwner" role="tabpanel" aria-labelledby="tabOwner" hidden>
+          <div class="owner-head">
+            <b>Agenda</b>
+            <button type="button" class="small-btn danger" id="toggleClose">Cerrar este día</button>
+          </div>
+          <div class="days" id="ownerDays"></div>
+          <div id="agendaBox"></div>
+          <div id="waBox"></div>
+        </div>
+
+        <div class="demo-foot">Los turnos de esta demo quedan solo en tu navegador.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="incluye" aria-labelledby="incluye-title">
+    <div class="wrap split">
+      <div class="intro">
+        <h2 id="incluye-title">Qué incluye</h2>
+        <p>Una página propia para tu barbería y un panel para el dueño. No hay apps para descargar ni cuentas que crear.</p>
+      </div>
+      <div class="features">
+        <div>
+          <h3>Para tus clientes</h3>
+          <ul class="flist">
+            <li><b>Reservan solos</b><span>Eligen barbero, día y horario libre. Funciona en cualquier celular.</span></li>
+            <li><b>Ven solo lo disponible</b><span>Horarios de cada barbero, sin turnos ocupados, vencidos ni días cerrados.</span></li>
+            <li><b>Se llevan el comprobante</b><span>Con número de turno y un botón para agendarlo en su calendario.</span></li>
+            <li><b>Tu marca</b><span>Tus fotos, tus precios y tu dirección, con tu propio dominio.</span></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Para vos</h3>
+          <ul class="flist">
+            <li><b>Agenda del día</b><span>Por barbero, con el próximo turno marcado.</span></li>
+            <li><b>Recordatorios por WhatsApp</b><span>El mensaje sale escrito; lo mandás con un toque.</span></li>
+            <li><b>Horarios y feriados</b><span>Cambiás el horario de cada barbero o cerrás un día, y la página se actualiza sola.</span></li>
+            <li><b>Turnos por teléfono</b><span>Los cargás a mano y ese horario queda ocupado. Exportás todo a Excel cuando quieras.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="panel" aria-labelledby="panel-title">
+    <div class="wrap video-grid">
+      <div>
+        <div class="vphone">
+          <video id="panelVideo" poster="IMG_POSTER" muted playsinline loop preload="metadata" width="600" height="1298" aria-label="Grabación del panel del dueño de goods.ar en el celular"><source src="VIDEO_PANEL" type="video/mp4"><source src="VIDEO_WEBM" type="video/webm"></video>
+        </div>
+        <div class="vcontrols">
+          <button type="button" class="vbtn" id="vToggle" aria-label="Reproducir"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path id="vIcon" d="M4 2.5v11l9-5.5z"/></svg></button>
+          <div class="vbar" aria-hidden="true"><i id="vProgress"></i></div>
+          <span class="vtime" id="vTime">0:00</span>
+        </div>
+      </div>
+      <div class="video-copy">
+        <h2 id="panel-title">Así se organiza tu día</h2>
+        <p class="muted">El panel real de goods.ar, grabado en un celular. Los clientes son ficticios y los teléfonos están ocultos: los datos reales de una barbería no se muestran nunca.</p>
+        <ol class="chapters" id="chapters">
+          <li><button type="button" data-t="0"><span class="ts">0:00</span><span><b>Entrar con tu usuario</b><span class="d">Con tu email y contraseña, desde el celular o la compu.</span></span></button></li>
+          <li><button type="button" data-t="4.8"><span class="ts">0:05</span><span><b>La agenda de hoy</b><span class="d">Cada barbero con sus turnos, el próximo marcado y los atendidos tachados.</span></span></button></li>
+          <li><button type="button" data-t="7.3"><span class="ts">0:07</span><span><b>Filtrar por barbero</b><span class="d">Ves los turnos de uno solo o de todos juntos.</span></span></button></li>
+          <li><button type="button" data-t="12.8"><span class="ts">0:13</span><span><b>Turnos y recordatorios</b><span class="d">El teléfono de cada cliente y el recordatorio por WhatsApp a un toque.</span></span></button></li>
+          <li><button type="button" data-t="16.9"><span class="ts">0:17</span><span><b>Cargar un turno a mano</b><span class="d">Para el que llama o pasa por el local. El horario se ocupa en la página.</span></span></button></li>
+          <li><button type="button" data-t="26.9"><span class="ts">0:27</span><span><b>Horarios y feriados</b><span class="d">Cambiás el horario de cada barbero o cerrás un día.</span></span></button></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="goods" aria-labelledby="goods-title">
+    <div class="wrap">
+      <div class="case-head">
+        <div>
+          <h2 id="goods-title">Funcionando en Goods Barber Studio</h2>
+          <p>Goods tiene tres barberos con horarios distintos según el día. Los clientes reservan desde goods.ar y el dueño maneja turnos, horarios y feriados desde el panel.</p>
+        </div>
+        <a class="btn line" href="https://goods.ar" target="_blank" rel="noopener">Entrar a goods.ar</a>
+      </div>
+      <div class="case-grid">
+        <div>
+          <div class="browser">
+            <div class="browser-bar"><div class="lights" aria-hidden="true"><i></i><i></i><i></i></div><div class="url">goods.ar</div></div>
+            <img src="IMG_GOODS" width="1280" height="800" alt="Página de inicio de Goods Barber Studio" loading="lazy">
+          </div>
+          <p class="caption">La página de Goods, con sus fotos, precios y barberos.</p>
+        </div>
+        <div>
+          <div class="phone"><img src="IMG_GOODSMOBILE" width="520" height="1125" alt="Página de Goods Barber Studio en el celular" loading="lazy"></div>
+          <p class="caption" style="text-align:center">La misma página, en el celular.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="confiable" aria-labelledby="confiable-title">
+    <div class="wrap split">
+      <div class="intro">
+        <h2 id="confiable-title">Hecho para que no falle un sábado a la tarde</h2>
+        <p>Lo que no se ve de una página de turnos es lo que más importa. Esto ya está resuelto.</p>
+      </div>
+      <div class="reliab">
+        <div><b>Un turno, una persona</b><p>Si dos clientes eligen el mismo horario al mismo tiempo, la base de datos acepta uno solo. Al otro le avisa que elija otro.</p></div>
+        <div><b>Las reglas se controlan en el servidor</b><p>Horarios vencidos, días cerrados y franjas de cada barbero se validan antes de guardar, no solo en la pantalla del cliente.</p></div>
+        <div><b>Datos de tus clientes protegidos</b><p>Nombres y teléfonos solo se leen con el usuario y la contraseña del dueño. La página pública ve horarios ocupados, nada más.</p></div>
+        <div><b>Siempre al día</b><p>Si bloqueás un feriado o cancelás un turno, la página de tus clientes se actualiza sola en menos de un minuto, sin recargar.</p></div>
+        <div><b>Funciona con mala señal</b><p>Pensado para el celular y datos móviles. Si la conexión se corta, avisa en vez de dejar un turno a medias.</p></div>
+        <div><b>Tus datos son tuyos</b><p>Descargás todos los turnos en Excel cuando quieras, separados por barbero.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="compara-title">
+    <div class="wrap">
+      <h2 id="compara-title" style="margin-bottom:12px">En qué se diferencia</h2>
+      <p class="muted" style="max-width:60ch; margin-bottom:28px">Tres formas de dar turnos. Las apps de turnos son muy distintas entre sí; la columna del medio resume lo más común.</p>
+      <div class="table-wrap">
+        <table class="compare">
+          <thead><tr><th scope="col"></th><th scope="col">Agenda por WhatsApp</th><th scope="col">App de turnos genérica</th><th scope="col" class="us">Este sistema</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">El cliente reserva solo, a cualquier hora</th><td><span class="no">No</span></td><td><span class="yes">Sí</span></td><td class="us"><span class="yes">Sí</span></td></tr>
+            <tr><th scope="row">Página con el nombre y el dominio de tu barbería</th><td><span class="no">No</span></td><td>Un perfil dentro de la app</td><td class="us">Tu página, tu dominio</td></tr>
+            <tr><th scope="row">Quién lo configura</th><td>Vos, a mano</td><td>Vos, siguiendo un tutorial</td><td class="us">Yo, con vos, en tu local</td></tr>
+            <tr><th scope="row">Ayuda si algo no anda</th><td>—</td><td>Soporte por chat o mail</td><td class="us">Por WhatsApp, y en persona si hace falta</td></tr>
+            <tr><th scope="row">Comisión por turno</th><td>No</td><td>Según la app</td><td class="us">No</td></tr>
+            <tr><th scope="row">Cambios a medida</th><td>—</td><td>Lo que permita la app</td><td class="us">Se agregan según cómo trabajás</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="precio" aria-labelledby="precio-title">
+    <div class="wrap">
+      <h2 id="precio-title" style="margin-bottom:12px">Precio</h2>
+      <p class="muted" style="max-width:60ch; margin-bottom:28px">Un solo plan, con todo incluido. Sin comisiones por turno.</p>
+      <div class="price-card">
+        <div class="price-main">
+          <div class="price-row"><span>Instalación<br><small>Se paga una sola vez</small></span><b id="priceSetup">A consultar</b></div>
+          <div class="price-row"><span>Abono mensual<br><small>Mantenimiento y cambios</small></span><b id="priceMonthly">A consultar</b></div>
+          <div class="price-row free"><span>Primer mes</span><b>Sin cargo</b></div>
+          <p class="price-note">Pagás recién cuando lo usaste un mes con clientes reales y decidís seguir.</p>
+          <a class="btn primary js-wa" href="#contacto" style="align-self:flex-start">Quiero probarlo</a>
+        </div>
+        <div class="price-incl">
+          <h3>Incluye</h3>
+          <ul class="check">
+            <li>Página de turnos con tu nombre, fotos, servicios y precios</li>
+            <li>Panel del dueño: agenda, recordatorios, horarios y feriados</li>
+            <li>Carga de turnos a mano y descarga en Excel</li>
+            <li>Configuración en tu local, con tus barberos y horarios</li>
+            <li>Cambios de precios, fotos y barberos cuando los necesites</li>
+            <li>Soporte por WhatsApp</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="trabajo-title">
+    <div class="wrap split">
+      <div class="intro">
+        <h2 id="trabajo-title">Cómo trabajo</h2>
+      </div>
+      <div>
+        <div class="prose">
+          <p style="margin-top:0"><strong>Primero paso por tu barbería.</strong> Te muestro el sistema en el celular y me contás cómo trabajan: cuántos barberos son, qué días atiende cada uno, qué servicios hacen.</p>
+          <p><strong>Después lo armo con tus cosas.</strong> Tu nombre, tus fotos, tus precios y tus horarios. Te dejo el panel funcionando y te muestro cómo usarlo.</p>
+          <p><strong>El primer mes no lo pagás.</strong> Lo usás con clientes reales. Si no te sirve, lo dejamos ahí. Si seguís, pagás un abono mensual que incluye el mantenimiento y los cambios que necesites.</p>
+        </div>
+        <div class="qa" style="margin-top:44px">
+          <div><b>¿Necesito saber de computación?</b><p>No. Si usás WhatsApp, podés usar el panel.</p></div>
+          <div><b>¿Puedo seguir tomando turnos por teléfono?</b><p>Sí. Los cargás en el panel y ese horario se ocupa en la página.</p></div>
+          <div><b>¿Qué pasa si cambio precios o sumo un barbero?</b><p>Me escribís y lo cambio. Los horarios y feriados los manejás vos.</p></div>
+          <div><b>¿Quién ve los datos de mis clientes?</b><p>Solo vos, desde el panel con tu usuario y contraseña.</p></div>
+        </div>
+        <div class="origin">
+          <p>Empecé armándolo para Goods, la barbería de un amigo. Cada problema que apareció usándolo con clientes reales quedó resuelto en el sistema: los turnos pisados, los feriados, los horarios distintos de cada barbero. Eso es lo que te instalo.</p>
+          <small>Sebastián Morad</small>
+        </div>
+        <!-- TESTIMONIO REAL: cuando el dueño de Goods te dé una frase, reemplazá este comentario por:
+        <figure class="origin" style="border-left-color:var(--ok)"><p>“Frase textual del dueño.”</p><small>Nombre — Goods Barber Studio</small></figure>
+        -->
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contacto" aria-labelledby="contacto-title">
+    <div class="wrap">
+      <div class="contact-card">
+        <div>
+          <h2 id="contacto-title">Coordinemos una demo</h2>
+          <p>Escribime por WhatsApp y paso por tu barbería a mostrártelo. Son diez minutos.</p>
+        </div>
+        <div class="contact-side">
+          <a class="btn primary js-wa" href="#contacto">Escribir por WhatsApp</a>
+          <div class="number"><span id="waNumber">NÚMERO_PENDIENTE</span><button type="button" class="small-btn" id="copyNumber">Copiar</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="legal" id="privacidad" aria-labelledby="privacidad-title">
+    <div class="wrap">
+      <h2 id="privacidad-title">Privacidad y condiciones</h2>
+      <p>Los datos que tus clientes cargan al reservar (nombre, teléfono y servicio) se usan solo para gestionar sus turnos. Los ve únicamente la barbería desde su panel, no se venden ni se comparten con terceros, y se pueden borrar a pedido.</p>
+      <p>La barbería es dueña de su información: puede descargar sus turnos en Excel en cualquier momento. El abono mensual cubre el funcionamiento, el mantenimiento y los cambios de contenido de su página. La demo de esta página usa datos de ejemplo que quedan solo en tu navegador.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap"><span>Sebastián Morad · Mar del Plata</span><span><a href="#privacidad">Privacidad</a> · Sistemas de turnos para barberías</span></div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ===== Contacto: tu WhatsApp, con código de país y sin espacios. Ej: '5492231234567' ===== */
+  var WHATSAPP = '';
+  var WA_TEXT = 'Hola Sebastián, vi tu página de turnos para barberías y me gustaría ver una demo.';
+
+  /* ===== Precios en pesos, sin puntos. Ej: 150000. Si quedan vacíos se muestra "A consultar". ===== */
+  var PRECIO_INSTALACION = '';
+  var PRECIO_MENSUAL = '';
+  function pesos(n){ return '$' + Number(n).toLocaleString('es-AR'); }
+  if (PRECIO_INSTALACION) document.getElementById('priceSetup').textContent = pesos(PRECIO_INSTALACION);
+  if (PRECIO_MENSUAL){ var pm = document.getElementById('priceMonthly'); pm.textContent = pesos(PRECIO_MENSUAL); pm.appendChild(Object.assign(document.createElement('small'), { textContent:'/ mes' })); }
+
+  var numEl = document.getElementById('waNumber');
+  if (WHATSAPP){
+    var digits = WHATSAPP.replace(/\D/g, '');
+    numEl.textContent = digits.length === 13
+      ? '+' + digits.slice(0,2) + ' ' + digits.slice(2,3) + ' ' + digits.slice(3,6) + ' ' + digits.slice(6,9) + '-' + digits.slice(9)
+      : '+' + digits;
+    document.querySelectorAll('.js-wa').forEach(function(a){
+      a.href = 'https://wa.me/' + digits + '?text=' + encodeURIComponent(WA_TEXT);
+      a.target = '_blank'; a.rel = 'noopener';
+    });
+  }
+  var copyBtn = document.getElementById('copyNumber');
+  copyBtn.addEventListener('click', function(){
+    var done = function(){ copyBtn.textContent = 'Copiado'; setTimeout(function(){ copyBtn.textContent = 'Copiar'; }, 1600); };
+    var select = function(){ var r = document.createRange(); r.selectNodeContents(numEl); var s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+    try { navigator.clipboard.writeText(numEl.textContent).then(done, select); } catch(e){ select(); }
+  });
+
+
+  /* ===== Video del panel: se reproduce cuando está a la vista; capítulos para saltar ===== */
+  (function(){
+    var v = document.getElementById('panelVideo'); if (!v) return;
+    var btn = document.getElementById('vToggle'), icon = document.getElementById('vIcon');
+    var bar = document.getElementById('vProgress'), time = document.getElementById('vTime');
+    var items = Array.prototype.slice.call(document.querySelectorAll('#chapters li'));
+    var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var userPaused = false;
+    function setIcon(){ var playing = !v.paused; icon.setAttribute('d', playing ? 'M4 2.5h3v11H4zM9 2.5h3v11H9z' : 'M4 2.5v11l9-5.5z'); btn.setAttribute('aria-label', playing ? 'Pausar' : 'Reproducir'); }
+    function fmt(t){ t = Math.floor(t || 0); return Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0'); }
+    function play(){ var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+    v.addEventListener('play', setIcon); v.addEventListener('pause', setIcon);
+    v.addEventListener('timeupdate', function(){
+      if (v.duration) bar.style.width = (v.currentTime / v.duration * 100) + '%';
+      time.textContent = fmt(v.currentTime);
+      var cur = 0;
+      items.forEach(function(li, i){ if (v.currentTime + 0.05 >= parseFloat(li.firstChild.dataset.t)) cur = i; });
+      items.forEach(function(li, i){ li.classList.toggle('on', i === cur); });
+    });
+    btn.addEventListener('click', function(){ if (v.paused){ userPaused = false; play(); } else { userPaused = true; v.pause(); } });
+    items.forEach(function(li){
+      li.firstChild.addEventListener('click', function(){
+        v.currentTime = parseFloat(this.dataset.t); userPaused = false; play();
+        // en el celular los capítulos quedan debajo del video: se sube hasta él para verlo
+        var r = v.getBoundingClientRect();
+        if (r.top < 0 || r.bottom > innerHeight) v.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
+      });
+    });
+    if (!reduced && 'IntersectionObserver' in window){
+      new IntersectionObserver(function(entries){
+        entries.forEach(function(e){ if (e.isIntersecting){ if (!userPaused) play(); } else v.pause(); });
+      }, { threshold: 0.35 }).observe(v);
+    }
+    setIcon();
+  })();
+
+  /* ===== Demo: misma lógica que el sistema real, con datos de ejemplo ===== */
+  var BARBERS = [
+    { id:'lucas', name:'Lucas' },
+    { id:'mati',  name:'Mati'  },
+    { id:'nico',  name:'Nico'  }
+  ];
+  // Horario de cada barbero por día de la semana (0 = domingo, cerrado)
+  var SCHEDULE = {
+    1:{ lucas:['09:30','17:30'], mati:['12:00','20:00'], nico:['14:00','20:00'] },
+    2:{ lucas:['12:00','20:00'], mati:['09:30','17:30'], nico:['12:00','20:00'] },
+    3:{ lucas:['09:30','17:30'], mati:['14:00','20:00'], nico:['09:30','17:30'] },
+    4:{ lucas:['12:00','20:00'], mati:['09:30','17:30'], nico:['14:00','20:00'] },
+    5:{ lucas:['09:30','17:30'], mati:['12:00','20:30'], nico:['14:00','20:30'] },
+    6:{ lucas:['14:00','20:30'], mati:['09:30','17:30'], nico:['12:00','20:30'] }
+  };
+  var CLIENTS = ['Martín L.','Tomás R.','Facundo G.','Bruno S.','Agustín P.','Lautaro M.','Joaquín D.','Franco V.','Nahuel C.','Ignacio B.','Matías F.','Santiago A.'];
+  var SERVICES = ['Corte','Corte + barba','Barba'];
+  var DOW = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  var MONTHS = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+
+  function key(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+  function toMin(t){ var p = t.split(':'); return +p[0]*60 + +p[1]; }
+  function fromMin(m){ return String(Math.floor(m/60)).padStart(2,'0') + ':' + String(m%60).padStart(2,'0'); }
+  function rangeTimes(r){ var out = []; for (var m = toMin(r[0]); m < toMin(r[1]); m += 30) out.push(fromMin(m)); return out; }
+  function seeded(str){ var h = 2166136261; for (var i = 0; i < str.length; i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return function(){ h = Math.imul(h ^ (h >>> 15), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909); return ((h ^= h >>> 16) >>> 0) / 4294967296; }; }
+
+  // Próximos 6 días con atención (sin domingos)
+  var days = [];
+  for (var c = new Date(), i = 0; days.length < 6 && i < 14; i++){
+    var d = new Date(c.getFullYear(), c.getMonth(), c.getDate() + i);
+    if (d.getDay() !== 0) days.push({ key:key(d), dow:d.getDay(), label:DOW[d.getDay()], day:d.getDate(), month:MONTHS[d.getMonth()], today:i === 0 });
+  }
+
+  // Turnos de ejemplo ya tomados, siempre los mismos para cada día
+  var bookings = [];
+  days.forEach(function(d){
+    BARBERS.forEach(function(b){
+      var r = SCHEDULE[d.dow][b.id]; if (!r) return;
+      var rnd = seeded(d.key + b.id);
+      rangeTimes(r).forEach(function(t){
+        if (rnd() < 0.38) bookings.push({ day:d.key, barber:b.id, time:t, client:CLIENTS[Math.floor(rnd()*CLIENTS.length)], service:SERVICES[Math.floor(rnd()*SERVICES.length)], isNew:false });
+      });
+    });
+  });
+  var closedDays = {};
+  var state = { barber:'mati', day:days[0].key, time:null, ownerDay:days[0].key, lastNew:null };
+
+  var $ = function(id){ return document.getElementById(id); };
+  function el(tag, attrs, text){ var e = document.createElement(tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; return e; }
+  function dayObj(k){ return days.filter(function(d){ return d.key === k; })[0]; }
+  function nowMin(){ var n = new Date(); return n.getHours()*60 + n.getMinutes(); }
+  function dayLabel(d){ return d.label + ' ' + d.day + ' ' + d.month; }
+
+  // ---- Vista del cliente
+  function renderBarbers(){
+    var box = $('barbers'); box.innerHTML = '';
+    BARBERS.forEach(function(b){
+      var bt = el('button', { type:'button', class:'chip', 'aria-pressed': String(state.barber === b.id) });
+      bt.appendChild(el('span', { class:'avatar', 'aria-hidden':'true' }, b.name[0]));
+      bt.appendChild(document.createTextNode(b.name));
+      bt.addEventListener('click', function(){ state.barber = b.id; state.time = null; clearDone(); renderClient(); });
+      box.appendChild(bt);
+    });
+  }
+  function renderDays(boxId, selected, onPick, disableClosed){
+    var box = $(boxId); box.innerHTML = '';
+    days.forEach(function(d){
+      var bt = el('button', { type:'button', class:'day', 'aria-pressed': String(selected === d.key) });
+      bt.appendChild(el('small', {}, d.today ? 'Hoy' : d.label));
+      bt.appendChild(el('b', {}, String(d.day)));
+      if (disableClosed && closedDays[d.key]){ bt.disabled = true; bt.title = 'Cerrado'; }
+      bt.addEventListener('click', function(){ onPick(d.key); });
+      box.appendChild(bt);
+    });
+  }
+  function freeTimes(dayKey, barberId){
+    var d = dayObj(dayKey); var r = SCHEDULE[d.dow][barberId];
+    if (!r || closedDays[dayKey]) return null;
+    var taken = {};
+    bookings.forEach(function(x){ if (x.day === dayKey && x.barber === barberId) taken[x.time] = true; });
+    return rangeTimes(r).filter(function(t){ return !(d.today && toMin(t) <= nowMin()); })
+      .map(function(t){ return { t:t, taken:!!taken[t] }; });
+  }
+  function renderTimes(){
+    var box = $('times'); box.innerHTML = '';
+    var list = freeTimes(state.day, state.barber);
+    var barber = BARBERS.filter(function(b){ return b.id === state.barber; })[0];
+    if (closedDays[state.day]){ box.appendChild(el('p', { class:'empty' }, 'Ese día la barbería está cerrada. Elegí otra fecha.')); return; }
+    if (!list){ box.appendChild(el('p', { class:'empty' }, barber.name + ' no atiende ese día.')); return; }
+    if (!list.some(function(x){ return !x.taken; })){ box.appendChild(el('p', { class:'empty' }, 'No quedan horarios libres ese día con ' + barber.name + '.')); return; }
+    var grid = el('div', { class:'times' });
+    list.forEach(function(x){
+      var bt = el('button', { type:'button', class:'time', 'aria-pressed': String(state.time === x.t) }, x.t);
+      if (x.taken) bt.disabled = true;
+      bt.addEventListener('click', function(){ state.time = x.t; clearDone(); renderTimes(); updateConfirm(); });
+      grid.appendChild(bt);
+    });
+    box.appendChild(grid);
+  }
+  function updateConfirm(){ $('confirm').disabled = !(state.time && $('clientName').value.trim().length > 1); }
+  function clearDone(){ $('doneBox').innerHTML = ''; }
+  function renderClient(){
+    if (closedDays[state.day]) { var open = days.filter(function(d){ return !closedDays[d.key]; })[0]; if (open) state.day = open.key; }
+    renderBarbers();
+    renderDays('days', state.day, function(k){ state.day = k; state.time = null; clearDone(); renderClient(); }, true);
+    renderTimes(); updateConfirm();
+  }
+  $('clientName').addEventListener('input', updateConfirm);
+  $('confirm').addEventListener('click', function(){
+    if (!state.time) return;
+    bookings.forEach(function(b){ b.isNew = false; });
+    var nb = { day:state.day, barber:state.barber, time:state.time, client:$('clientName').value.trim(), service:'Corte', isNew:true };
+    bookings.push(nb);
+    state.lastNew = nb; state.ownerDay = state.day; state.time = null;
+    var d = dayObj(nb.day); var barber = BARBERS.filter(function(b){ return b.id === nb.barber; })[0];
+    renderTimes(); updateConfirm();
+    var box = $('doneBox'); box.innerHTML = '';
+    var done = el('div', { class:'done', role:'status' });
+    var txt = el('span'); txt.appendChild(el('b', {}, 'Turno confirmado. ')); txt.appendChild(document.createTextNode(dayLabel(d) + ', ' + nb.time + ' con ' + barber.name + '.'));
+    var go = el('button', { type:'button', class:'link-btn' }, 'Ver en el panel del dueño →');
+    go.addEventListener('click', function(){ showTab('owner'); });
+    done.appendChild(txt); done.appendChild(go); box.appendChild(done);
+    $('ownerDot').hidden = false;
+  });
+
+  // ---- Vista del dueño
+  function renderOwner(){
+    renderDays('ownerDays', state.ownerDay, function(k){ state.ownerDay = k; $('waBox').innerHTML = ''; renderOwner(); }, false);
+    var closed = !!closedDays[state.ownerDay];
+    $('toggleClose').textContent = closed ? 'Abrir este día' : 'Cerrar este día';
+    var box = $('agendaBox'); box.innerHTML = '';
+    if (closed){ box.appendChild(el('p', { class:'closed-note' }, 'Día cerrado. En la vista del cliente ya no se puede elegir.')); return; }
+    var d = dayObj(state.ownerDay);
+    var grid = el('div', { class:'agenda' });
+    BARBERS.forEach(function(b){
+      var col = el('div', { class:'col' });
+      var mine = bookings.filter(function(x){ return x.day === d.key && x.barber === b.id; }).sort(function(a, c){ return toMin(a.time) - toMin(c.time); });
+      var h = el('h4'); h.appendChild(el('span', {}, b.name)); h.appendChild(el('span', {}, String(mine.length))); col.appendChild(h);
+      if (!SCHEDULE[d.dow][b.id]) col.appendChild(el('p', { class:'empty' }, 'No atiende'));
+      else if (!mine.length) col.appendChild(el('p', { class:'empty' }, 'Sin turnos'));
+      mine.forEach(function(x){
+        var row = el('div', { class:'slot' + (x.isNew ? ' new' : '') });
+        row.appendChild(el('span', { class:'t' }, x.time));
+        row.appendChild(el('span', { class:'n', title:x.client + ' · ' + x.service }, x.client));
+        if (x.isNew){
+          row.appendChild(el('span', { class:'tag' }, 'Nuevo · ' + x.service));
+          var rb = el('button', { type:'button', class:'remind', 'aria-label':'Recordar por WhatsApp a ' + x.client }, 'Recordar');
+          rb.addEventListener('click', function(){ showReminder(x); });
+          row.appendChild(rb);
+        }
+        col.appendChild(row);
+      });
+      grid.appendChild(col);
+    });
+    box.appendChild(grid);
+  }
+  function showReminder(x){
+    var d = dayObj(x.day); var barber = BARBERS.filter(function(b){ return b.id === x.barber; })[0];
+    var when = d.today ? 'hoy' : (d.key === (days[1] && days[1].key) && days[0].today ? 'mañana' : 'el ' + dayLabel(d));
+    var box = $('waBox'); box.innerHTML = '';
+    var p = el('div', { class:'wa-preview', role:'status' });
+    p.appendChild(el('small', {}, 'Se abre WhatsApp con este mensaje listo para enviar:'));
+    p.appendChild(document.createTextNode('Hola ' + x.client.split(' ')[0] + ', te recordamos tu turno ' + when + ' a las ' + x.time + ' con ' + barber.name + '. Si no podés venir, avisanos por acá así liberamos el horario.'));
+    box.appendChild(p);
+  }
+  $('toggleClose').addEventListener('click', function(){
+    if (closedDays[state.ownerDay]) delete closedDays[state.ownerDay]; else closedDays[state.ownerDay] = true;
+    $('waBox').innerHTML = '';
+    renderOwner();
+  });
+
+  // ---- Pestañas
+  function showTab(which){
+    var owner = which === 'owner';
+    $('tabClient').setAttribute('aria-selected', String(!owner));
+    $('tabOwner').setAttribute('aria-selected', String(owner));
+    $('viewClient').hidden = owner; $('viewOwner').hidden = !owner;
+    if (owner){ $('ownerDot').hidden = true; renderOwner(); } else { renderClient(); }
+  }
+  $('tabClient').addEventListener('click', function(){ showTab('client'); });
+  $('tabOwner').addEventListener('click', function(){ showTab('owner'); });
+  [$('tabClient'), $('tabOwner')].forEach(function(t){
+    t.addEventListener('keydown', function(e){ if (e.key === 'ArrowRight' || e.key === 'ArrowLeft'){ var other = t.id === 'tabClient' ? $('tabOwner') : $('tabClient'); other.focus(); other.click(); } });
+  });
+
+  // La demo arranca en el primer día con horarios libres (a la noche, "hoy" ya no tiene).
+  for (var di = 0; di < days.length; di++){
+    var ft = freeTimes(days[di].key, state.barber);
+    if (ft && ft.some(function(x){ return !x.taken; })){ state.day = state.ownerDay = days[di].key; break; }
+  }
+  renderClient();
+})();
+</script>
