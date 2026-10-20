@@ -138,8 +138,8 @@ HOOK.forEach((h,i)=>addPanel("hk"+i,h.th,
   `<div class="hw" style="opacity:1"><div class="w" id="hw${i}" style="font-size:${h.fs}px;background-image:url(hd/${h.img}.jpg);background-position:${h.pos}">${h.w.toUpperCase()}</div><div class="k mono" id="hk${i}k">${h.k}</div></div>`, i*HW));
 
 addPanel("intro","musgo",`
-  <div class="t mono" id="i-top" style="left:72px;right:72px;top:150px;font-size:20px;color:var(--ocre-cl);display:flex;gap:16px;align-items:center">
-    <span>Servicios rurales</span><i style="flex:1;border-top:2px solid var(--ocre-cl);opacity:.6"></i><span>Agua · Energía</span></div>
+  <div class="t mono" id="i-top" style="left:72px;right:72px;top:96px;font-size:20px;color:var(--ocre-cl);display:flex;gap:16px;align-items:center">
+    <img src="../marca/logo-badge-beige.png" style="width:120px;height:120px"><span>Servicios rurales</span><i style="flex:1;border-top:2px solid var(--ocre-cl);opacity:.6"></i><span>Agua · Energía</span></div>
   <div id="intro"><svg class="draw" viewBox="0 0 300 560" id="windmill"></svg></div>
   <div class="anton" id="i-name" style="position:absolute;left:0;right:0;text-align:center;top:1070px;font-size:236px;line-height:.86">
     <div style="color:var(--crema)">${split(["JULIÁN"])}</div><div style="color:var(--ocre-cl)">${split(["ACEBAL"])}</div></div>
@@ -155,8 +155,8 @@ SC.forEach((s,i)=>addPanel("sc"+i,s.th,`
 const SERV=["Molinos de viento","Paneles y bombas solares","Tanques","Bebederos","Perforaciones","Movimientos de tierra"];
 let dd="M0 24 L0 14",x=0; while(x<1080){x+=6+rnd()*14; dd+=` L${x.toFixed(1)} ${(4+rnd()*14).toFixed(1)}`;}
 addPanel("outro","beige",`
-  <div class="t mono" id="o-top" style="left:64px;right:64px;top:110px;font-size:20px;color:var(--musgo);display:flex;gap:16px;align-items:center">
-    <span>Servicios rurales</span><i style="flex:1;border-top:2px solid var(--musgo);opacity:.7"></i><span>Agua · Energía</span></div>
+  <div class="t mono" id="o-top" style="left:64px;right:64px;top:62px;font-size:20px;color:var(--musgo);display:flex;gap:16px;align-items:center">
+    <img src="../marca/logo-badge-musgo.png" style="width:120px;height:120px"><span>Servicios rurales</span><i style="flex:1;border-top:2px solid var(--musgo);opacity:.7"></i><span>Agua · Energía</span></div>
   <div class="anton" id="o-name" style="position:absolute;left:58px;top:190px;font-size:250px;line-height:.84">
     <div style="color:#252D18">${split(["JULIÁN"])}</div><div style="color:var(--musgo)">${split(["ACEBAL"])}</div></div>
   <div class="t" id="o-list" style="left:64px;right:64px;top:700px">

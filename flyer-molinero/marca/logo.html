@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Julián Acebal · Logo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:transparent}
+  .wrap{display:inline-flex;align-items:center;justify-content:center;padding:40px}
+  .lockup{display:flex;align-items:center;gap:34px}
+  .lockup .txt b{display:block;font-family:Anton;font-weight:400;font-size:120px;line-height:.9;letter-spacing:.01em}
+  .lockup .txt span{display:block;font-family:"IBM Plex Mono";font-weight:600;font-size:22px;letter-spacing:.34em;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap" id="root"></div>
+<script>
+/* ---------- isotipo: molino de 12 aspas con cola y torre reticulada ---------- */
+function molino(c){            // c = color de trazo/relleno
+  let aspas="";
+  for(let k=0;k<12;k++){
+    const a=(k/12)*Math.PI*2-Math.PI/2, w=0.17;
+    const p=(r,ang)=>`${(100+Math.cos(ang)*r).toFixed(2)},${(78+Math.sin(ang)*r).toFixed(2)}`;
+    aspas+=`<path d="M${p(13,a-w*0.45)} L${p(54,a-w)} L${p(54,a+w*0.55)} L${p(13,a+w*0.45)} Z" fill="${c}"/>`;
+  }
+  return `
+    <circle cx="100" cy="78" r="56" fill="none" stroke="${c}" stroke-width="2.4"/>
+    ${aspas}
+    <circle cx="100" cy="78" r="9" fill="${c}"/>
+    <path d="M104 74 L152 70 L152 62 L170 58 L170 92 L152 88 L152 82 L104 82 Z" fill="${c}"/>
+    <g stroke="${c}" stroke-width="4" stroke-linecap="round" fill="none">
+      <path d="M94 92 L72 196 M106 92 L128 196"/>
+      <path d="M90 118 H110 M85 146 H115 M79 174 H121"/>
+      <path d="M90 118 L115 146 L79 174 L128 196 M110 118 L85 146 L121 174 L72 196"/>
+    </g>`;
+}
+
+/* sello circular: aro con texto + molino al centro */
+function badge(fg,bg,ring){
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="600" height="600">
+    <defs><path id="top" d="M200,200 m-148,0 a148,148 0 1,1 296,0"/><path id="bot" d="M200,200 m-162,0 a162,162 0 0,0 324,0"/></defs>
+    <circle cx="200" cy="200" r="196" fill="${bg}"/>
+    <circle cx="200" cy="200" r="186" fill="none" stroke="${ring}" stroke-width="3"/>
+    <circle cx="200" cy="200" r="122" fill="none" stroke="${ring}" stroke-width="1.6"/>
+    <text font-family="Anton" font-size="40" letter-spacing="6" fill="${fg}" text-anchor="middle"><textPath href="#top" startOffset="50%">JULIÁN ACEBAL</textPath></text>
+    <text font-family="IBM Plex Mono" font-weight="600" font-size="17" letter-spacing="6" fill="${ring}" text-anchor="middle"><textPath href="#bot" startOffset="50%">· SERVICIOS RURALES ·</textPath></text>
+    <circle cx="66" cy="200" r="4" fill="${ring}"/><circle cx="334" cy="200" r="4" fill="${ring}"/>
+    <g transform="translate(112 112) scale(0.9)">${molino(fg)}</g>
+  </svg>`;
+}
+
+/* horizontal: isotipo + nombre */
+function lockup(fg,acc,sub){
+  return `<div class="lockup">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="40 10 140 200" width="168" height="240">${molino(fg)}</svg>
+    <div class="txt"><b style="color:${fg}">JULIÁN</b><b style="color:${acc}">ACEBAL</b><span style="color:${sub}">SERVICIOS RURALES</span></div>
+  </div>`;
+}
+
+const V=new URLSearchParams(location.search).get("v")||"badge-musgo";
+const M={
+  "badge-musgo": ()=>badge("#F3EAD5","#252D18","#D9B26A"),
+  "badge-beige": ()=>badge("#252D18","#EADFC6","#B98A3E"),
+  "lockup-oscuro": ()=>lockup("#252D18","#4A5733","#B98A3E"),
+  "lockup-claro":  ()=>lockup("#F3EAD5","#D9B26A","#D9B26A"),
+};
+document.getElementById("root").innerHTML=M[V]();
+window.BADGE=badge; window.MOLINO=molino;
+</script>
+</body>
+</html>
