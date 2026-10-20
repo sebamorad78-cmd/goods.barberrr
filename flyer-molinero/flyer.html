@@ -2,286 +2,220 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<title>Flyer Molinero</title>
+<title>Julián Acebal · Flyer</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Serif+Display:ital@0;1&family=Caveat:wght@600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
-  /* ============ Paleta: beige + verde musgo ============ */
   :root{
-    --beige:#EFE6D2;
-    --beige-2:#E4D6B8;
-    --beige-3:#CDBA92;
-    --musgo:#4B5A35;
-    --musgo-2:#3A4729;
-    --musgo-3:#232C18;
-    --oliva:#7C8B4E;
-    --ocre:#C9A15A;
-    --tinta:#1D2314;
+    --papel:#EADFC6;
+    --papel-2:#DCCDAA;
+    --musgo:#4A5733;
+    --musgo-osc:#252D18;
+    --ocre:#B98A3E;
+    --tinta:#1F2614;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{background:#111}
-  body{display:flex;justify-content:center;align-items:flex-start}
+  body{display:flex;justify-content:center}
 
-  .flyer{
-    position:relative;overflow:hidden;
-    width:1080px;
-    background:var(--beige);
-    color:var(--tinta);
-    font-family:Inter,system-ui,sans-serif;
-  }
-  .post .flyer,.flyer.post{height:1350px}
+  .flyer{position:relative;overflow:hidden;width:1080px;color:var(--tinta);
+    background:radial-gradient(120% 90% at 30% 20%, #F1E8D2 0%, var(--papel) 45%, var(--papel-2) 100%);}
+  .flyer.post{height:1350px}
   .flyer.story{height:1920px}
 
-  /* textura de papel / grano */
-  .grain{position:absolute;inset:0;pointer-events:none;z-index:50;opacity:.16;mix-blend-mode:multiply;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .25  0 0 0 0 .22  0 0 0 0 .15  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");}
+  /* papel: grano + fibras */
+  .paper{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.55;z-index:20;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .38  0 0 0 0 .25  0 0 0 .35 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='.012 .08' numOctaves='2' seed='4'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .42  0 0 0 0 .3  0 0 0 .18 0'/></filter><rect width='100%' height='100%' filter='url(%23f)'/></svg>");}
 
-  /* ============ HERO ============ */
-  .hero{position:relative;overflow:hidden;background:var(--musgo-3)}
-  .hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.85) contrast(1.05)}
-  .hero::after{content:"";position:absolute;inset:0;
-    background:
-      linear-gradient(180deg, rgba(35,44,24,.85) 0%, rgba(35,44,24,.2) 26%, rgba(35,44,24,.35) 45%, rgba(35,44,24,.9) 72%, var(--musgo-3) 100%),
-      radial-gradient(120% 80% at 50% 45%, transparent 40%, rgba(20,26,12,.55) 100%);}
-  .hero-inner{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;padding:56px 64px}
+  /* molino dibujado de fondo */
+  .ghost{position:absolute;pointer-events:none;opacity:.13}
+  .ghost svg{width:100%;height:100%;stroke:var(--musgo-osc);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 
-  .brand{display:flex;align-items:center;gap:18px;color:var(--beige);text-shadow:0 2px 10px rgba(0,0,0,.6)}
-  .brand .mark{width:74px;height:74px;border-radius:50%;border:2px solid var(--ocre);display:grid;place-items:center;background:rgba(35,44,24,.55);backdrop-filter:blur(4px)}
-  .brand .mark svg{width:46px;height:46px}
-  .brand .name{font-family:Oswald,sans-serif;font-weight:700;font-size:34px;letter-spacing:.14em;line-height:1}
-  .brand .sub{font-size:15px;letter-spacing:.32em;text-transform:uppercase;color:var(--ocre);margin-top:8px;font-weight:600}
-  .chip{margin-left:auto;font-family:Oswald;font-weight:600;font-size:17px;letter-spacing:.2em;color:var(--musgo-3);background:var(--ocre);padding:10px 18px;border-radius:999px;text-transform:uppercase}
+  .abs{position:absolute}
 
-  .headline{margin-top:auto;color:var(--beige)}
-  .kicker{display:flex;align-items:center;gap:14px;font-family:Oswald;font-weight:500;letter-spacing:.34em;text-transform:uppercase;font-size:20px;color:#E2BE78;text-shadow:0 2px 10px rgba(0,0,0,.75),0 0 2px rgba(0,0,0,.6)}
-  .kicker::before{content:"";width:56px;height:2px;background:var(--ocre)}
-  h1{font-family:Fraunces,serif;font-weight:900;font-size:98px;line-height:.94;letter-spacing:-.02em;margin-top:18px;font-variation-settings:"opsz" 144}
-  h1 em{font-style:italic;font-weight:500;color:var(--beige-2)}
-  .lead{margin-top:20px;font-size:24px;line-height:1.4;color:rgba(239,230,210,.88);max-width:720px}
+  .top{display:flex;align-items:center;gap:16px;font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:17px;letter-spacing:.22em;text-transform:uppercase;color:var(--musgo)}
+  .top i{flex:1;height:0;border-top:2px solid var(--musgo);opacity:.7}
 
-  /* ============ CUERPO ============ */
-  .body{position:relative;padding:44px 64px 0}
-  .sec-title{display:flex;align-items:baseline;gap:16px;margin-bottom:22px}
-  .sec-title h2{font-family:Oswald;font-weight:700;font-size:30px;letter-spacing:.16em;text-transform:uppercase;color:var(--musgo-2)}
-  .sec-title .line{flex:1;margin-right:200px;height:2px;background:linear-gradient(90deg,var(--beige-3),transparent)}
-  .sec-title .num{font-family:Fraunces;font-style:italic;color:var(--oliva);font-size:22px}
+  .name{font-family:Anton,sans-serif;text-transform:uppercase;color:var(--musgo-osc);line-height:.84;letter-spacing:.005em}
+  .name span{display:block}
+  .name .ap{color:var(--musgo)}
+  .script{font-family:Caveat,cursive;font-weight:700;color:var(--ocre);transform:rotate(-7deg);white-space:nowrap;line-height:1}
+  .swoosh{stroke:var(--ocre);fill:none;stroke-width:5;stroke-linecap:round}
 
-  .services{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}
-  .svc{display:flex;align-items:center;gap:16px;padding:14px 16px;border-radius:16px;background:rgba(255,252,244,.55);border:1px solid rgba(124,139,78,.28);box-shadow:0 1px 0 rgba(255,255,255,.7) inset}
-  .svc .ic{flex:none;width:58px;height:58px;border-radius:14px;background:var(--musgo);display:grid;place-items:center;box-shadow:0 6px 14px -6px rgba(35,44,24,.6)}
-  .svc .ic svg{width:32px;height:32px;stroke:var(--beige);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-  .svc b{display:block;font-size:20px;font-weight:700;color:var(--musgo-3);line-height:1.15}
-  .svc span{display:block;font-size:15px;color:#5d6250;margin-top:3px;line-height:1.3}
+  /* lista estilo planilla */
+  .list{list-style:none}
+  .list li{display:flex;align-items:baseline;gap:18px;border-bottom:1.5px dashed rgba(37,45,24,.45);padding:9px 0 7px}
+  .list li em{font-style:normal;font-family:"IBM Plex Mono";font-weight:600;font-size:16px;color:var(--ocre);letter-spacing:.06em;width:30px;flex:none}
+  .list li b{font-family:"DM Serif Display",serif;font-weight:400;font-size:36px;line-height:1.05;color:var(--tinta)}
+  .list-head{font-family:"IBM Plex Mono";font-weight:600;font-size:15px;letter-spacing:.24em;text-transform:uppercase;color:var(--musgo);margin-bottom:6px;display:flex;justify-content:space-between}
 
-  /* tarjeta solar destacada */
-  .solar{position:relative;display:grid;grid-template-columns:1.05fr 1fr;border-radius:26px;overflow:hidden;background:var(--musgo-2);color:var(--beige);box-shadow:0 24px 50px -24px rgba(35,44,24,.75)}
-  .solar .ph{position:relative;min-height:100%}
-  .solar .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-  .solar .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 55%,var(--musgo-2))}
-  .solar .tx{padding:30px 34px 30px 18px;display:flex;flex-direction:column;justify-content:center}
-  .solar .tag{align-self:flex-start;display:flex;align-items:center;gap:8px;background:var(--ocre);color:var(--musgo-3);font-family:Oswald;font-weight:600;letter-spacing:.18em;text-transform:uppercase;font-size:15px;padding:7px 14px;border-radius:999px}
-  .solar .tag svg{width:18px;height:18px;stroke:var(--musgo-3);fill:none;stroke-width:2}
-  .solar h3{font-family:Fraunces;font-weight:700;font-size:44px;line-height:1;margin-top:14px;letter-spacing:-.01em}
-  .solar h3 em{font-style:italic;font-weight:500;color:var(--ocre)}
-  .solar ul{list-style:none;margin-top:14px;display:grid;gap:7px}
-  .solar li{font-size:17px;display:flex;gap:10px;align-items:center;color:rgba(239,230,210,.9)}
-  .solar li::before{content:"";flex:none;width:8px;height:8px;border-radius:2px;transform:rotate(45deg);background:var(--ocre)}
+  /* fotos como copias impresas */
+  .print{position:absolute;background:#FBF7EC;padding:12px 12px 14px;box-shadow:0 1px 1px rgba(0,0,0,.15),0 12px 24px -8px rgba(40,30,10,.45),0 2px 6px rgba(40,30,10,.2)}
+  .print .img{width:100%;height:100%;background-size:cover;background-position:center;filter:saturate(.9) contrast(1.04) sepia(.06)}
+  .print.cap{padding-bottom:46px}
+  .print .c{position:absolute;left:14px;right:14px;bottom:8px;font-family:Caveat;font-weight:700;font-size:28px;color:#3b3a2a;line-height:1}
+  .tape{position:absolute;width:120px;height:34px;background:rgba(222,208,170,.8);box-shadow:0 1px 2px rgba(0,0,0,.12);
+    clip-path:polygon(0 6%,5% 0,10% 9%,100% 3%,95% 12%,100% 24%,100% 97%,93% 91%,88% 100%,0 94%,4% 82%,0 70%)}
 
-  /* galería */
-  .gallery{display:grid;gap:14px}
-  .gallery figure{position:relative;border-radius:18px;overflow:hidden;background:var(--beige-2)}
-  .gallery img{width:100%;height:100%;object-fit:cover;display:block}
-  .gallery figcaption{position:absolute;left:12px;bottom:12px;font-family:Oswald;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:14px;color:var(--beige);background:rgba(35,44,24,.78);padding:6px 11px;border-radius:8px;backdrop-filter:blur(3px)}
+  .note{font-family:Caveat;font-weight:700;color:var(--musgo);line-height:1}
+  .arrow{stroke:var(--musgo);fill:none;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
 
-  /* pilares de confianza */
-  .trust{display:flex;justify-content:space-between;gap:12px}
-  .trust div{flex:1;text-align:center;padding:4px 6px;border-left:1px solid var(--beige-3)}
-  .trust div:first-child{border-left:0}
-  .trust b{display:block;font-family:Fraunces;font-weight:900;font-size:40px;color:var(--musgo);line-height:1}
-  .trust span{display:block;margin-top:6px;font-size:13.5px;letter-spacing:.16em;text-transform:uppercase;color:#6a6b55;font-weight:600}
+  .stamp{position:relative}
+  .stamp svg{width:100%;height:100%}
 
-  /* ============ CTA ============ */
-  .cta{position:absolute;left:0;right:0;bottom:0;background:var(--musgo-3);color:var(--beige);display:flex;align-items:center;gap:26px;padding:0 64px;z-index:5}
-  .cta::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:repeating-linear-gradient(90deg,var(--ocre) 0 28px,var(--musgo) 28px 56px)}
-  .wa{flex:none;width:84px;height:84px;border-radius:50%;background:#25D366;display:grid;place-items:center;box-shadow:0 0 0 6px rgba(37,211,102,.18)}
-  .wa svg{width:48px;height:48px;fill:#fff}
-  .cta .lbl{font-family:Oswald;font-weight:500;font-size:18px;letter-spacing:.28em;text-transform:uppercase;color:var(--ocre)}
-  .cta .tel{font-family:Oswald;font-weight:700;font-size:56px;letter-spacing:.02em;line-height:1.05}
-  .cta .side{margin-left:auto;text-align:right;font-size:18px;line-height:1.5;color:rgba(239,230,210,.82)}
-  .cta .side b{color:var(--beige);font-weight:700}
-
-  /* sello giratorio */
-  .seal{position:absolute;z-index:6;width:190px;height:190px}
-  .seal svg{width:100%;height:100%;filter:drop-shadow(0 14px 22px rgba(0,0,0,.35))}
-  .seal .center{position:absolute;inset:27%;border-radius:50%;background:var(--musgo-3);display:grid;place-items:center}
-  .seal .center svg{width:58%;height:58%;filter:none;stroke:var(--beige);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-
-  /* ======= variantes de layout ======= */
-  .post .hero{height:575px}
-  .post .gallery{grid-template-columns:1.2fr 1fr 1fr;height:150px;margin-top:22px}
-  .post h1{font-size:88px}
-  .post .lead{font-size:22px}
-  .post .services{grid-template-columns:1fr 1fr}
-  .post .svc{padding:11px 14px}
-  .post .svc .ic{width:52px;height:52px}
-  .post .svc b{font-size:19px}
-  .post .svc span{font-size:14px}
-  .post .body{padding-top:30px}
-  .post .svc .ic svg{width:29px;height:29px}
-  .post .cta{height:150px}
-  .post .seal{right:52px;top:470px;width:180px;height:180px}
-
-  .story .hero{height:730px}
-  .story .body{padding-top:44px}
-  .story .solar{margin-top:24px;height:270px}
-  .story .gallery{grid-template-columns:1fr 1fr 1fr;height:170px;margin-top:20px}
-  .story .cta{height:180px}
-  .story .cta .tel{font-size:62px}
-  .story .seal{right:56px;top:630px}
-  .story .trust{margin-top:30px}
+  /* banda inferior con borde rasgado */
+  .band{position:absolute;left:0;right:0;bottom:0;color:var(--papel)}
+  .band .edge{position:absolute;left:0;top:-22px;width:100%;height:24px;display:block}
+  .band .bg{position:absolute;inset:0;background:var(--musgo-osc)}
+  .band .in{position:relative;height:100%;display:flex;align-items:center;padding:0 60px}
+  .band .lbl{font-family:"IBM Plex Mono";font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:#D9B26A;font-size:17px;margin-bottom:6px}
+  .band .tel{font-family:Anton;letter-spacing:.02em;line-height:1.04;color:#F3EAD5}
+  .band .tel small{font-size:.55em;color:#C9BC9A;margin-right:.2em;vertical-align:.2em}
+  .band .note{color:#E9DFC6}
 </style>
 </head>
 <body>
 <div id="root"></div>
-
 <script>
-/* ==========================================================
-   DATOS EDITABLES — cambiá solo esta parte
-   ========================================================== */
-const DATA = Object.assign({
-  marca:     "MOLINERO",
-  subtitulo: "Servicios rurales",
-  telefono:  "+54 9 0000 00-0000",
-  zona:      "Zona y alrededores",
-  instagram: "@tu.molinero",
-  anios:     "+20",
-}, JSON.parse(new URLSearchParams(location.search).get("data") || "{}"));
-
+/* ===== Datos ===== */
+const D = {
+  nombre: ["Julián", "Acebal"],
+  servicios: ["Molinos de viento","Paneles y bombas solares","Tanques","Bebederos","Perforaciones","Movimientos de tierra"],
+  tel: [["2268","518941"],["2268","518665"]],
+};
 const FORMAT = new URLSearchParams(location.search).get("format") || "post";
 
-/* ============ Íconos (trazo) ============ */
-const I = {
-  molino:`<svg viewBox="0 0 48 48"><path d="M24 20 L19 46 M24 20 L29 46 M20.5 38h7 M21.6 31h4.8"/><circle cx="24" cy="17" r="2.2"/><path d="M24 15 L24 3 L28 5 Z M26 17.5 L36.5 23.5 L33 26 Z M22 18 L11.5 24 L12 19.5 Z M22 16 L13.5 8 L17.5 7 Z M26 16 L35 8.5 L35.5 12.5 Z"/></svg>`,
-  pozo:`<svg viewBox="0 0 32 32"><path d="M16 3v20M11 8h10M12 23h8l-1 6h-6z"/><path d="M8 13l3 3M24 13l-3 3"/><path d="M16 23c-1.5 1.8-1.5 3.5 0 4.5 1.5-1 1.5-2.7 0-4.5z"/></svg>`,
-  bomba:`<svg viewBox="0 0 32 32"><rect x="11" y="4" width="10" height="18" rx="2"/><path d="M11 9h10M11 14h10M16 22v6M13 28h6"/><path d="M21 7h5v6"/></svg>`,
-  tanque:`<svg viewBox="0 0 32 32"><ellipse cx="16" cy="9" rx="12" ry="4"/><path d="M4 9v12c0 2.2 5.4 4 12 4s12-1.8 12-4V9"/><path d="M8 17c2.5 1.4 13.5 1.4 16 0"/></svg>`,
-  cano:`<svg viewBox="0 0 32 32"><path d="M3 11h12a4 4 0 0 1 4 4v12M3 17h9a1 1 0 0 1 1 1v9"/><path d="M19 27h-6M3 11v6"/><path d="M26 6c-2 2.4-2 4.6 0 6 2-1.4 2-3.6 0-6z"/></svg>`,
-  bebedero:`<svg viewBox="0 0 32 32"><path d="M3 13h26l-3 11H6z"/><path d="M6 18c3 1.2 7 1.2 10 0s7-1.2 10 0"/><path d="M8 24v4M24 24v4"/></svg>`,
-  llave:`<svg viewBox="0 0 32 32"><path d="M20.5 4.5a6.5 6.5 0 0 0-6.2 8.6L4.5 22.9a2.6 2.6 0 0 0 3.7 3.7l9.8-9.8a6.5 6.5 0 0 0 8.4-8.3l-3.9 3.9-3.6-.5-.5-3.6 3.9-3.9a6.5 6.5 0 0 0-1.8-.4z"/></svg>`,
-  sol:`<svg viewBox="0 0 32 32"><path d="M5 25l3-11h16l3 11z M9.7 14l-1.4 11 M16 14v11 M22.3 14l1.4 11 M6.4 19.5h19.2"/><circle cx="16" cy="6" r="2.5"/><path d="M16 1.5v.5M11.5 6H11M21 6h-.5M12.8 2.8l.4.4M19.2 2.8l-.4.4"/></svg>`,
-  rayo:`<svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>`,
-  wa:`<svg viewBox="0 0 32 32"><path d="M16 3C8.8 3 3 8.7 3 15.8c0 2.5.7 4.9 2 7L3 29l6.4-2c2 1.1 4.3 1.7 6.6 1.7 7.2 0 13-5.7 13-12.8S23.2 3 16 3zm0 23.4c-2.1 0-4.1-.6-5.9-1.7l-.4-.2-3.8 1.2 1.2-3.7-.3-.4a10.5 10.5 0 0 1-1.7-5.8C5.1 9.9 10 5.2 16 5.2s10.9 4.7 10.9 10.6S22 26.4 16 26.4zm6-7.9c-.3-.2-1.9-.9-2.2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7.1a8.9 8.9 0 0 1-4.4-3.8c-.3-.6.3-.5 1-1.8.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4s-1.1 1.1-1.1 2.7 1.2 3.1 1.3 3.3c.2.2 2.3 3.5 5.6 4.9 2.1.9 2.9 1 3.9.8.6-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5-.1-.3-.3-.4-.7-.5z"/></svg>`,
-};
+/* azar con semilla: el pulso "a mano" sale igual en cada render */
+let seed = 7; const rnd = () => (seed = (seed*16807) % 2147483647) / 2147483647;
 
-const SERVICIOS = [
-  ["molino","Molinos de viento","Instalación, armado y reparación"],
-  ["pozo","Perforaciones","Pozos nuevos y encamisado"],
-  ["bomba","Bombas sumergibles","Colocación, service y cambio"],
-  ["tanque","Tanques australianos","Montaje, sellado y limpieza"],
-  ["bebedero","Bebederos y flotantes","Aguadas para hacienda"],
-  ["cano","Cañerías y redes","Distribución de agua al campo"],
-  ["llave","Mantenimiento","Cilindros, varillas y cueros"],
-  ["sol","Bombeo solar","Paneles + controlador, sin luz"],
-];
+/* molino a mano alzada */
+function molinoSVG(){
+  let aspas = "";
+  for (let k=0;k<16;k++){
+    const a=(k/16)*Math.PI*2, a2=a+0.16;
+    const p=(r,ang)=>`${(130+Math.cos(ang)*r).toFixed(1)},${(110+Math.sin(ang)*r).toFixed(1)}`;
+    aspas += `<path d="M${p(14,a)} L${p(86,a)} L${p(86,a2)} L${p(14,a2+0.05)}"/>`;
+  }
+  return `<svg viewBox="0 0 300 560"><defs><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="4"/></filter></defs>
+  <g filter="url(#rough)">
+    <circle cx="130" cy="110" r="88"/><circle cx="130" cy="110" r="52"/><circle cx="130" cy="110" r="12"/>${aspas}
+    <path d="M140 108 L252 96 L262 70 L292 66 L288 132 L258 128 L252 116 L140 116"/>
+    <path d="M118 128 L70 552 M142 128 L190 552 M106 230 L154 230 M96 330 L164 330 M86 430 L174 430 M78 520 L182 520
+             M106 230 L164 330 L86 430 L182 520 M154 230 L96 330 L174 430 L78 520"/>
+  </g></svg>`;
+}
 
-/* ============ Sello circular ============ */
-const seal = () => `
-<div class="seal"><svg viewBox="0 0 200 200">
-  <defs><path id="c" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0"/></defs>
-  <circle cx="100" cy="100" r="98" fill="#C9A15A"/>
-  <circle cx="100" cy="100" r="90" fill="none" stroke="#232C18" stroke-width="1.2" stroke-dasharray="2 5"/>
-  <text font-family="Oswald" font-weight="600" font-size="14.5" letter-spacing="3.1" fill="#232C18">
-    <textPath href="#c" textLength="482">AGUA SEGURA ★ TRABAJO GARANTIZADO ★ </textPath></text>
-</svg><div class="center">${I.molino}</div></div>`;
+function edge(){
+  let d="M0 24 L0 14"; let x=0;
+  while(x<1080){ x+=6+rnd()*14; d+=` L${x.toFixed(1)} ${(4+rnd()*14).toFixed(1)}`; }
+  return `<svg class="edge" viewBox="0 0 1080 24" preserveAspectRatio="none"><path d="${d} L1080 24 Z" fill="#252D18"/></svg>`;
+}
 
-const svcHTML = () => SERVICIOS.map(([ic,t,d]) =>
-  `<div class="svc"><div class="ic">${I[ic]}</div><div><b>${t}</b><span>${d}</span></div></div>`).join("");
+/* sello de goma con tinta irregular */
+function stamp(size, rot, ink="#D9B26A", blend="normal"){
+  return `<div class="stamp" style="width:${size}px;height:${size}px;transform:rotate(${rot}deg);mix-blend-mode:${blend}">
+  <svg viewBox="0 0 220 220">
+    <defs>
+      <filter id="ink" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="9" result="t"/>
+        <feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.4 1.6" result="m"/>
+        <feComposite in="SourceGraphic" in2="m" operator="in" result="c"/>
+        <feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="2" seed="2" result="w"/>
+        <feDisplacementMap in="c" in2="w" scale="3"/></filter>
+      <path id="ring" d="M110,110 m-80,0 a80,80 0 1,1 160,0 a80,80 0 1,1 -160,0"/>
+    </defs>
+    <g filter="url(#ink)" fill="${ink}" stroke="${ink}">
+      <circle cx="110" cy="110" r="104" fill="none" stroke-width="5"/>
+      <circle cx="110" cy="110" r="96" fill="none" stroke-width="1.6"/>
+      <circle cx="110" cy="110" r="60" fill="none" stroke-width="1.6"/>
+      <text font-family="IBM Plex Mono" font-weight="600" font-size="16" letter-spacing="1.5" stroke="none">
+        <textPath href="#ring" textLength="495">VENTA · INSTALACIÓN · MANTENIMIENTO ·</textPath></text>
+      <text x="110" y="106" text-anchor="middle" font-family="Anton" font-size="29" stroke="none">TRABAJO</text>
+      <text x="110" y="136" text-anchor="middle" font-family="Anton" font-size="29" stroke="none">DE CAMPO</text>
+    </g>
+  </svg></div>`;
+}
 
-const brand = () => `
-<div class="brand">
-  <div class="mark"><svg viewBox="0 0 48 48" stroke="#EFE6D2" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${I.molino.replace(/<\/?svg[^>]*>/g,'')}</svg></div>
-  <div><div class="name">${DATA.marca}</div><div class="sub">${DATA.subtitulo}</div></div>
-  <div class="chip">Campo · Agua · Energía</div>
-</div>`;
+const print = (src, x,y,w,h, rot, o={}) => `
+  <div class="print ${o.cap?'cap':''}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;transform:rotate(${rot}deg);z-index:${o.z||2}">
+    <div class="img" style="background-image:url(fotos/${src});background-position:${o.pos||'center'}"></div>
+    ${o.cap?`<div class="c">${o.cap}</div>`:''}
+    <div class="tape" style="left:${w/2-60+(o.tx||0)}px;top:-18px;transform:rotate(${o.tr ?? -4}deg)"></div>
+  </div>`;
 
-const hero = (lead) => `
-<section class="hero">
-  <img src="fotos/tanque.jpg" alt="">
-  <div class="hero-inner">
-    ${brand()}
-    <div class="headline">
-      <div class="kicker">Molinero profesional</div>
-      <h1>Agua en tu campo,<br><em>todo el año.</em></h1>
-      <p class="lead">${lead}</p>
-    </div>
-  </div>
-</section>`;
+const list = (items, start=1) => `<ul class="list">${items.map((s,i)=>`<li><em>${String(i+start).padStart(2,"0")}</em><b>${s}</b></li>`).join("")}</ul>`;
+const tels = (fs) => D.tel.map(([a,n])=>`<div class="tel" style="font-size:${fs}px"><small>(${a})</small>${n.slice(0,3)} ${n.slice(3)}</div>`).join("");
 
-const cta = () => `
-<div class="cta">
-  <div class="wa">${I.wa}</div>
-  <div>
-    <div class="lbl">Presupuesto sin cargo</div>
-    <div class="tel">${DATA.telefono}</div>
-  </div>
-  <div class="side"><b>${DATA.zona}</b><br>${DATA.instagram}</div>
-</div>`;
-
-const solar = (h) => `
-<div class="solar" style="${h?`height:${h}px`:''}">
-  <div class="ph"><img src="fotos/bombeo-solar.jpg" alt=""></div>
-  <div class="tx">
-    <div class="tag">${I.rayo} Energía solar</div>
-    <h3>Bombeo solar<br><em>sin red eléctrica</em></h3>
-    <ul><li>Paneles + estructura galvanizada</li><li>Controlador y bomba DC</li><li>Cero gasto de combustible</li></ul>
-  </div>
-</div>`;
-
-const trust = () => `
-<div class="trust">
-  <div><b>${DATA.anios}</b><span>Años de oficio</span></div>
-  <div><b>24/7</b><span>Urgencias</span></div>
-  <div><b>100%</b><span>Garantía</span></div>
-</div>`;
-
-/* ============ Render ============ */
 let html;
 if (FORMAT === "story") {
-  html = `
-  <div class="flyer story">
-    ${hero("Instalación, reparación y mantenimiento de todo tu sistema de agua: del pozo al bebedero, con energía solar.")}
-    ${seal()}
-    <div class="body">
-      <div class="sec-title"><h2>Servicios</h2><div class="line"></div></div>
-      <div class="services">${svcHTML()}</div>
-      ${solar()}
-      <div class="gallery">
-        <figure><img src="fotos/obra.jpg" alt=""><figcaption>Obra en campo</figcaption></figure>
-        <figure><img src="fotos/estructura-solar.jpg" alt="" style="object-position:40% 50%"><figcaption>Estructura</figcaption></figure>
-        <figure><img src="fotos/tanque.jpg" alt="" style="object-position:50% 60%"><figcaption>Tanque</figcaption></figure>
+  html = `<div class="flyer story">
+    <div class="ghost" style="right:-40px;top:110px;width:330px;height:620px">${molinoSVG()}</div>
+
+    <div class="abs" style="left:64px;right:64px;top:46px"><div class="top"><span>Servicios rurales</span><i></i><span>Agua · Energía</span></div></div>
+
+    <div class="abs name" style="left:60px;top:146px;font-size:214px"><span>${D.nombre[0]}</span><span class="ap">${D.nombre[1]}</span></div>
+    <div class="abs script" style="left:110px;top:488px;font-size:92px">molinero</div>
+    <svg class="abs" style="left:100px;top:570px" width="310" height="40" viewBox="0 0 310 40"><path class="swoosh" d="M6 30 C 80 10, 190 4, 302 16"/></svg>
+    <div class="abs" style="left:460px;top:520px;font-family:'IBM Plex Mono';font-weight:600;font-size:17px;letter-spacing:.2em;text-transform:uppercase;color:var(--musgo);line-height:1.5">Venta, instalación<br>y mantenimiento</div>
+
+    ${print("molino.jpg", 66,650,470,560, -3, {cap:"Molino FIASA", tr:3, z:3})}
+    ${print("tanque-agua.jpg", 590,640,420,290, 4, {tx:30})}
+    ${print("bombeo-solar.jpg", 600,960,410,300, -2.5, {tr:6, z:3})}
+    ${print("tractor.jpg", 90,1250,440,240, 2.5, {tx:-60})}
+    ${print("tanque.jpg", 590,1290,410,250, -3.5, {pos:"50% 60%", tr:-8, z:3})}
+
+    <div class="abs note" style="left:110px;top:1530px;font-size:44px;transform:rotate(-3deg)">trabajos hechos por nosotros</div>
+    <svg class="abs" style="left:520px;top:1500px" width="70" height="60" viewBox="0 0 70 60"><path class="arrow" d="M6 50 C 26 44, 44 30, 56 10 M44 12 L57 8 L60 22"/></svg>
+
+    <div class="band" style="height:300px">${edge()}<div class="bg"></div>
+      <div class="in" style="flex-direction:column;align-items:stretch;justify-content:center;gap:16px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;column-gap:28px;font-family:'DM Serif Display';font-size:27px;color:#EADFC6;line-height:1.45">
+          ${D.servicios.map((s,i)=>`<div><span style="font-family:'IBM Plex Mono';font-size:14px;color:#D9B26A;margin-right:10px">${String(i+1).padStart(2,"0")}</span>${s}</div>`).join("")}
+        </div>
+        <div style="height:0;border-top:1.5px dashed rgba(234,223,198,.35)"></div>
+        <div style="display:flex;align-items:flex-end;gap:30px">
+          <div><div class="lbl">Consultas y presupuestos</div><div style="display:flex;gap:34px">${tels(56)}</div></div>
+        </div>
       </div>
     </div>
-    ${cta()}
-    <div class="grain"></div>
+    <div class="abs" style="right:34px;top:1488px;z-index:6">${stamp(150,-12,"#8E3B22","multiply")}</div>
+    <div class="paper"></div>
   </div>`;
 } else {
-  html = `
-  <div class="flyer post">
-    ${hero("Del pozo al bebedero: instalamos, reparamos y mantenemos tu sistema de agua.")}
-    ${seal()}
-    <div class="body">
-      <div class="sec-title"><h2>Servicios</h2><div class="line"></div></div>
-      <div class="services">${svcHTML()}</div>
-      <div class="gallery">
-        <figure><img src="fotos/bombeo-solar.jpg" alt=""><figcaption>Bombeo solar</figcaption></figure>
-        <figure><img src="fotos/obra.jpg" alt="" style="object-position:30% 70%"><figcaption>Obra en campo</figcaption></figure>
-        <figure><img src="fotos/estructura-solar.jpg" alt="" style="object-position:45% 50%"><figcaption>Estructuras</figcaption></figure>
+  html = `<div class="flyer post">
+    <div class="ghost" style="left:330px;top:330px;width:340px;height:640px">${molinoSVG()}</div>
+
+    <div class="abs" style="left:60px;right:60px;top:40px"><div class="top"><span>Servicios rurales</span><i></i><span>Agua · Energía</span></div></div>
+
+    <div class="abs name" style="left:56px;top:122px;font-size:168px"><span>${D.nombre[0]}</span><span class="ap">${D.nombre[1]}</span></div>
+    <div class="abs script" style="left:110px;top:400px;font-size:74px">molinero</div>
+    <svg class="abs" style="left:104px;top:464px" width="250" height="34" viewBox="0 0 250 34"><path class="swoosh" d="M6 24 C 70 8, 160 4, 244 14"/></svg>
+
+    <div class="abs" style="left:60px;top:532px;width:520px">
+      <div class="list-head"><span>Lo que hacemos</span><span>↓</span></div>
+      ${list(D.servicios)}
+      <div style="margin-top:16px;font-family:'IBM Plex Mono';font-weight:600;font-size:16px;letter-spacing:.2em;text-transform:uppercase;color:var(--musgo)">Venta · Instalación · Mantenimiento</div>
+    </div>
+
+    ${print("molino.jpg", 630,112,390,470, 3, {cap:"Molino FIASA", tr:-6, z:3})}
+    ${print("bombeo-solar.jpg", 610,610,320,230, -4, {tr:5, tx:40})}
+    ${print("tanque-agua.jpg", 770,790,260,190, 5, {tx:20, z:3})}
+
+    ${print("tractor.jpg", 250,972,300,140, -3, {tx:-40, tr:4})}
+    <div class="abs note" style="left:620px;top:1016px;font-size:36px;transform:rotate(-4deg)">trabajos reales, en el campo</div>
+    <svg class="abs" style="left:560px;top:1000px" width="60" height="50" viewBox="0 0 60 50"><path class="arrow" d="M54 30 C 40 34, 24 30, 10 18 M10 30 L8 16 L22 14"/></svg>
+
+    <div class="band" style="height:212px">${edge()}<div class="bg"></div>
+      <div class="in">
+        <div><div class="lbl">Consultas y presupuestos</div>${tels(64)}</div>
+        <div class="note" style="margin-left:auto;margin-right:200px;font-size:40px;transform:rotate(-5deg);text-align:center">llamá o<br>escribí</div>
       </div>
     </div>
-    ${cta()}
-    <div class="grain"></div>
+    <div class="abs" style="right:56px;top:1166px;z-index:6">${stamp(165,-12)}</div>
+    <div class="paper"></div>
   </div>`;
 }
 document.getElementById("root").innerHTML = html;
