@@ -88,7 +88,7 @@ const L=FORMAT==="story"
 document.getElementById("root").innerHTML=`
 <div class="ad ${FORMAT}">
   <div class="hero" style="height:${L.hero}px"><img src="../video/hd/${d.img}" style="object-position:${d.pos}"></div>
-  <img class="logo" src="../marca/logo-badge-musgo.png" style="top:${L.logo[0]}px;width:${L.logo[1]}px;${d.logoLeft?"left:56px;transform:none":""}">
+  <img class="logo" src="../marca/logo-badge-musgo.png" style="top:${L.logo[0]}px;width:${L.logo[1]}px;${d.logoLeft?"left:auto;right:56px;transform:none":""}">
   <div style="position:absolute;right:56px;top:${L.stamp[0]}px;width:${L.stamp[1]}px;height:${L.stamp[1]}px;z-index:6">${stamp(L.stamp[1],-12)}</div>
 
   <div class="body" style="top:${L.body}px">
