@@ -57,7 +57,7 @@
   .hw{position:absolute;inset:0;opacity:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
   .hw .w{font-family:Anton;font-size:400px;line-height:1.02;letter-spacing:.005em;color:transparent;
     background-size:cover;background-position:50% 50%;-webkit-background-clip:text;background-clip:text;will-change:transform,clip-path}
-  .hw .k{margin-top:36px;font-size:24px}
+  .hw .k{margin-top:40px;font-size:34px}
   .beige .k{color:var(--musgo)} .musgo .k{color:var(--ocre-cl)}
 
   #intro .draw{position:absolute;left:50%;top:250px;width:420px;height:780px;margin-left:-210px}
@@ -102,7 +102,7 @@ const $=id=>document.getElementById(id);
 const HOOK=[{w:"Agua",fs:470,img:"tanque",pos:"50% 60%",k:"Tanques · Bebederos",th:"musgo"},
             {w:"Viento",fs:400,img:"molino",pos:"46% 20%",k:"Molinos",th:"beige"},
             {w:"Sol",fs:600,img:"bombeo-solar",pos:"55% 45%",k:"Bombas solares",th:"musgo"}];
-const HW=0.72, P=0.72;                       // palabra del gancho · subida de panel
+const HW=1.6, P=0.72;                       // palabra del gancho · subida de panel
 const INTRO_A=HOOK.length*HW;                // 2.16
 const S0=INTRO_A+2.6, D=3.5;
 const SC=[
@@ -222,11 +222,11 @@ window.seek=function(t){
 
   // gancho
   HOOK.forEach((h,i)=>{
-    const a=i*HW, w=$("hw"+i), p=eout(clamp((t-a)/0.42));
+    const a=i*HW, w=$("hw"+i), p=eout(clamp((t-a)/0.6));
     w.style.clipPath=`inset(${(1-p)*100}% 0 0 0)`;
-    w.style.transform=`scale(${1.14-0.14*eout(clamp((t-a)/0.6))})`;
+    w.style.transform=`scale(${1.1-0.1*eout(clamp((t-a)/1.0))})`;
     w.style.backgroundPosition=`${50+(clamp((t-a)/HW)-0.5)*14}% ${h.pos.split(" ")[1]}`;
-    const k=$(`hk${i}k`); k.style.opacity=eout(clamp((t-a-0.2)/0.3)); k.style.transform=`translateY(${(1-eout(clamp((t-a-0.2)/0.3)))*20}px)`;
+    const k=$(`hk${i}k`); k.style.opacity=eout(clamp((t-a-0.35)/0.45)); k.style.transform=`translateY(${(1-eout(clamp((t-a-0.35)/0.45)))*20}px)`;
   });
 
   // intro
