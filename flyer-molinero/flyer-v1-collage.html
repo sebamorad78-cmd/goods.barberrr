@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Julián Acebal · Flyer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Serif+Display:ital@0;1&family=Caveat:wght@600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --papel:#EADFC6;
+    --papel-2:#DCCDAA;
+    --musgo:#4A5733;
+    --musgo-osc:#252D18;
+    --ocre:#B98A3E;
+    --tinta:#1F2614;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#111}
+  body{display:flex;justify-content:center}
+
+  .flyer{position:relative;overflow:hidden;width:1080px;color:var(--tinta);
+    background:radial-gradient(120% 90% at 30% 20%, #F1E8D2 0%, var(--papel) 45%, var(--papel-2) 100%);}
+  .flyer.post{height:1350px}
+  .flyer.story{height:1920px}
+
+  /* papel: grano + fibras */
+  .paper{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.55;z-index:20;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .38  0 0 0 0 .25  0 0 0 .35 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='.012 .08' numOctaves='2' seed='4'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .42  0 0 0 0 .3  0 0 0 .18 0'/></filter><rect width='100%' height='100%' filter='url(%23f)'/></svg>");}
+
+  /* molino dibujado de fondo */
+  .ghost{position:absolute;pointer-events:none;opacity:.13}
+  .ghost svg{width:100%;height:100%;stroke:var(--musgo-osc);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+  .abs{position:absolute}
+
+  .top{display:flex;align-items:center;gap:16px;font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:17px;letter-spacing:.22em;text-transform:uppercase;color:var(--musgo)}
+  .top i{flex:1;height:0;border-top:2px solid var(--musgo);opacity:.7}
+
+  .name{font-family:Anton,sans-serif;text-transform:uppercase;color:var(--musgo-osc);line-height:.84;letter-spacing:.005em}
+  .name span{display:block}
+  .name .ap{color:var(--musgo)}
+  .script{font-family:Caveat,cursive;font-weight:700;color:var(--ocre);transform:rotate(-7deg);white-space:nowrap;line-height:1}
+  .swoosh{stroke:var(--ocre);fill:none;stroke-width:5;stroke-linecap:round}
+
+  /* lista estilo planilla */
+  .list{list-style:none}
+  .list li{display:flex;align-items:baseline;gap:18px;border-bottom:1.5px dashed rgba(37,45,24,.45);padding:9px 0 7px}
+  .list li em{font-style:normal;font-family:"IBM Plex Mono";font-weight:600;font-size:16px;color:var(--ocre);letter-spacing:.06em;width:30px;flex:none}
+  .list li b{font-family:"DM Serif Display",serif;font-weight:400;font-size:36px;line-height:1.05;color:var(--tinta)}
+  .list-head{font-family:"IBM Plex Mono";font-weight:600;font-size:15px;letter-spacing:.24em;text-transform:uppercase;color:var(--musgo);margin-bottom:6px;display:flex;justify-content:space-between}
+
+  /* fotos como copias impresas */
+  .print{position:absolute;background:#FBF7EC;padding:12px 12px 14px;box-shadow:0 1px 1px rgba(0,0,0,.15),0 12px 24px -8px rgba(40,30,10,.45),0 2px 6px rgba(40,30,10,.2)}
+  .print .img{width:100%;height:100%;background-size:cover;background-position:center;filter:saturate(.9) contrast(1.04) sepia(.06)}
+  .print.cap{padding-bottom:46px}
+  .print .c{position:absolute;left:14px;right:14px;bottom:8px;font-family:Caveat;font-weight:700;font-size:28px;color:#3b3a2a;line-height:1}
+  .tape{position:absolute;width:120px;height:34px;background:rgba(222,208,170,.8);box-shadow:0 1px 2px rgba(0,0,0,.12);
+    clip-path:polygon(0 6%,5% 0,10% 9%,100% 3%,95% 12%,100% 24%,100% 97%,93% 91%,88% 100%,0 94%,4% 82%,0 70%)}
+
+  .note{font-family:Caveat;font-weight:700;color:var(--musgo);line-height:1}
+  .arrow{stroke:var(--musgo);fill:none;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
+
+  .stamp{position:relative}
+  .stamp svg{width:100%;height:100%}
+
+  /* banda inferior con borde rasgado */
+  .band{position:absolute;left:0;right:0;bottom:0;color:var(--papel)}
+  .band .edge{position:absolute;left:0;top:-22px;width:100%;height:24px;display:block}
+  .band .bg{position:absolute;inset:0;background:var(--musgo-osc)}
+  .band .in{position:relative;height:100%;display:flex;align-items:center;padding:0 60px}
+  .band .lbl{font-family:"IBM Plex Mono";font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:#D9B26A;font-size:17px;margin-bottom:6px}
+  .band .tel{font-family:Anton;letter-spacing:.02em;line-height:1.04;color:#F3EAD5}
+  .band .tel small{font-size:.55em;color:#C9BC9A;margin-right:.2em;vertical-align:.2em}
+  .band .note{color:#E9DFC6}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+/* ===== Datos ===== */
+const D = {
+  nombre: ["Julián", "Acebal"],
+  servicios: ["Molinos de viento","Paneles y bombas solares","Tanques","Bebederos","Perforaciones","Movimientos de tierra"],
+  tel: [["2268","518941"],["2268","518665"]],
+};
+const FORMAT = new URLSearchParams(location.search).get("format") || "post";
+
+/* azar con semilla: el pulso "a mano" sale igual en cada render */
+let seed = 7; const rnd = () => (seed = (seed*16807) % 2147483647) / 2147483647;
+
+/* molino a mano alzada */
+function molinoSVG(){
+  let aspas = "";
+  for (let k=0;k<16;k++){
+    const a=(k/16)*Math.PI*2, a2=a+0.16;
+    const p=(r,ang)=>`${(130+Math.cos(ang)*r).toFixed(1)},${(110+Math.sin(ang)*r).toFixed(1)}`;
+    aspas += `<path d="M${p(14,a)} L${p(86,a)} L${p(86,a2)} L${p(14,a2+0.05)}"/>`;
+  }
+  return `<svg viewBox="0 0 300 560"><defs><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="4"/></filter></defs>
+  <g filter="url(#rough)">
+    <circle cx="130" cy="110" r="88"/><circle cx="130" cy="110" r="52"/><circle cx="130" cy="110" r="12"/>${aspas}
+    <path d="M140 108 L252 96 L262 70 L292 66 L288 132 L258 128 L252 116 L140 116"/>
+    <path d="M118 128 L70 552 M142 128 L190 552 M106 230 L154 230 M96 330 L164 330 M86 430 L174 430 M78 520 L182 520
+             M106 230 L164 330 L86 430 L182 520 M154 230 L96 330 L174 430 L78 520"/>
+  </g></svg>`;
+}
+
+function edge(){
+  let d="M0 24 L0 14"; let x=0;
+  while(x<1080){ x+=6+rnd()*14; d+=` L${x.toFixed(1)} ${(4+rnd()*14).toFixed(1)}`; }
+  return `<svg class="edge" viewBox="0 0 1080 24" preserveAspectRatio="none"><path d="${d} L1080 24 Z" fill="#252D18"/></svg>`;
+}
+
+/* sello de goma con tinta irregular */
+function stamp(size, rot, ink="#D9B26A", blend="normal"){
+  return `<div class="stamp" style="width:${size}px;height:${size}px;transform:rotate(${rot}deg);mix-blend-mode:${blend}">
+  <svg viewBox="0 0 220 220">
+    <defs>
+      <filter id="ink" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="9" result="t"/>
+        <feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.4 1.6" result="m"/>
+        <feComposite in="SourceGraphic" in2="m" operator="in" result="c"/>
+        <feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="2" seed="2" result="w"/>
+        <feDisplacementMap in="c" in2="w" scale="3"/></filter>
+      <path id="ring" d="M110,110 m-80,0 a80,80 0 1,1 160,0 a80,80 0 1,1 -160,0"/>
+    </defs>
+    <g filter="url(#ink)" fill="${ink}" stroke="${ink}">
+      <circle cx="110" cy="110" r="104" fill="none" stroke-width="5"/>
+      <circle cx="110" cy="110" r="96" fill="none" stroke-width="1.6"/>
+      <circle cx="110" cy="110" r="60" fill="none" stroke-width="1.6"/>
+      <text font-family="IBM Plex Mono" font-weight="600" font-size="16" letter-spacing="1.5" stroke="none">
+        <textPath href="#ring" textLength="495">VENTA · INSTALACIÓN · MANTENIMIENTO ·</textPath></text>
+      <text x="110" y="106" text-anchor="middle" font-family="Anton" font-size="29" stroke="none">TRABAJO</text>
+      <text x="110" y="136" text-anchor="middle" font-family="Anton" font-size="29" stroke="none">DE CAMPO</text>
+    </g>
+  </svg></div>`;
+}
+
+const print = (src, x,y,w,h, rot, o={}) => `
+  <div class="print ${o.cap?'cap':''}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;transform:rotate(${rot}deg);z-index:${o.z||2}">
+    <div class="img" style="background-image:url(fotos/${src});background-position:${o.pos||'center'}"></div>
+    ${o.cap?`<div class="c">${o.cap}</div>`:''}
+    <div class="tape" style="left:${w/2-60+(o.tx||0)}px;top:-18px;transform:rotate(${o.tr ?? -4}deg)"></div>
+  </div>`;
+
+const list = (items, start=1) => `<ul class="list">${items.map((s,i)=>`<li><em>${String(i+start).padStart(2,"0")}</em><b>${s}</b></li>`).join("")}</ul>`;
+const tels = (fs) => D.tel.map(([a,n])=>`<div class="tel" style="font-size:${fs}px"><small>(${a})</small>${n.slice(0,3)} ${n.slice(3)}</div>`).join("");
+
+let html;
+if (FORMAT === "story") {
+  html = `<div class="flyer story">
+    <div class="ghost" style="right:-40px;top:110px;width:330px;height:620px">${molinoSVG()}</div>
+
+    <div class="abs" style="left:64px;right:64px;top:22px"><div class="top"><img src="marca/logo-badge-musgo.png" style="width:100px;height:100px"><span>Servicios rurales</span><i></i><span>Agua · Energía</span></div></div>
+
+    <div class="abs name" style="left:60px;top:146px;font-size:214px"><span>${D.nombre[0]}</span><span class="ap">${D.nombre[1]}</span></div>
+    <div class="abs" style="left:64px;top:540px;font-family:'IBM Plex Mono';font-weight:600;font-size:17px;letter-spacing:.2em;text-transform:uppercase;color:var(--musgo);line-height:1.5">Venta, instalación<br>y mantenimiento</div>
+
+    ${print("molino.jpg", 66,650,470,560, -3, {cap:"Molino FIASA", tr:3, z:3})}
+    ${print("tanque-agua.jpg", 590,640,420,290, 4, {tx:30})}
+    ${print("bombeo-solar.jpg", 600,960,410,300, -2.5, {tr:6, z:3})}
+    ${print("tractor.jpg", 90,1250,440,240, 2.5, {tx:-60})}
+    ${print("tanque.jpg", 590,1290,410,250, -3.5, {pos:"50% 60%", tr:-8, z:3})}
+
+    <div class="abs note" style="left:110px;top:1530px;font-size:44px;transform:rotate(-3deg)">trabajos hechos por nosotros</div>
+    <svg class="abs" style="left:520px;top:1500px" width="70" height="60" viewBox="0 0 70 60"><path class="arrow" d="M6 50 C 26 44, 44 30, 56 10 M44 12 L57 8 L60 22"/></svg>
+
+    <div class="band" style="height:300px">${edge()}<div class="bg"></div>
+      <div class="in" style="flex-direction:column;align-items:stretch;justify-content:center;gap:16px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;column-gap:28px;font-family:'DM Serif Display';font-size:27px;color:#EADFC6;line-height:1.45">
+          ${D.servicios.map((s,i)=>`<div><span style="font-family:'IBM Plex Mono';font-size:14px;color:#D9B26A;margin-right:10px">${String(i+1).padStart(2,"0")}</span>${s}</div>`).join("")}
+        </div>
+        <div style="height:0;border-top:1.5px dashed rgba(234,223,198,.35)"></div>
+        <div style="display:flex;align-items:flex-end;gap:30px">
+          <div><div class="lbl">Consultas y presupuestos</div><div style="display:flex;gap:34px">${tels(56)}</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="abs" style="right:34px;top:1488px;z-index:6">${stamp(150,-12,"#8E3B22","multiply")}</div>
+    <div class="paper"></div>
+  </div>`;
+} else {
+  html = `<div class="flyer post">
+    <div class="ghost" style="left:330px;top:330px;width:340px;height:640px">${molinoSVG()}</div>
+
+    <div class="abs" style="left:60px;right:60px;top:14px"><div class="top"><img src="marca/logo-badge-musgo.png" style="width:92px;height:92px"><span>Servicios rurales</span><i></i><span>Agua · Energía</span></div></div>
+
+    <div class="abs name" style="left:56px;top:122px;font-size:168px"><span>${D.nombre[0]}</span><span class="ap">${D.nombre[1]}</span></div>
+
+    <div class="abs" style="left:60px;top:462px;width:520px">
+      <div class="list-head"><span>Lo que hacemos</span><span>↓</span></div>
+      ${list(D.servicios)}
+      <div style="margin-top:16px;font-family:'IBM Plex Mono';font-weight:600;font-size:16px;letter-spacing:.2em;text-transform:uppercase;color:var(--musgo)">Venta · Instalación · Mantenimiento</div>
+    </div>
+
+    ${print("molino.jpg", 630,112,390,470, 3, {cap:"Molino FIASA", tr:-6, z:3})}
+    ${print("bombeo-solar.jpg", 610,610,320,230, -4, {tr:5, tx:40})}
+    ${print("tanque-agua.jpg", 770,790,260,190, 5, {tx:20, z:3})}
+
+    ${print("tractor.jpg", 250,972,300,140, -3, {tx:-40, tr:4})}
+    <div class="abs note" style="left:620px;top:1016px;font-size:36px;transform:rotate(-4deg)">trabajos reales, en el campo</div>
+    <svg class="abs" style="left:560px;top:1000px" width="60" height="50" viewBox="0 0 60 50"><path class="arrow" d="M54 30 C 40 34, 24 30, 10 18 M10 30 L8 16 L22 14"/></svg>
+
+    <div class="band" style="height:212px">${edge()}<div class="bg"></div>
+      <div class="in">
+        <div><div class="lbl">Consultas y presupuestos</div>${tels(64)}</div>
+        <div class="note" style="margin-left:auto;margin-right:200px;font-size:40px;transform:rotate(-5deg);text-align:center">llamá o<br>escribí</div>
+      </div>
+    </div>
+    <div class="abs" style="right:56px;top:1166px;z-index:6">${stamp(165,-12)}</div>
+    <div class="paper"></div>
+  </div>`;
+}
+document.getElementById("root").innerHTML = html;
+</script>
+</body>
+</html>
