@@ -184,7 +184,7 @@ const K={}; document.querySelectorAll("[data-k]").forEach(e=>K[e.dataset.k]=e);
 function fit(){
   SC.forEach((s,i)=>{
     const im=document.getElementById("im"+i), cd=document.getElementById("cd"+i);
-    const r=im.naturalWidth/im.naturalHeight, W=936, H=1270;
+    const r=im.naturalWidth/im.naturalHeight, W=984, H=1270;
     let w=W,h=W/r; if(h>H){h=H;w=H*r;}
     cd.style.width=w+"px"; cd.style.height=h+"px";
   });
@@ -215,8 +215,9 @@ window.seek=function(t){
     if(t<a||t>b){sc.style.opacity=0;am.style.opacity=0;return;}
     const pin=eio(clamp((t-a)/X)), pout=eio(clamp((t-(b-X))/X));
     const last=i===SC.length-1;
-    const op=pin*(last?1:(1-pout));
-    sc.style.opacity=op; am.style.opacity=op;
+    // la toma que sale se va primero y recién después entra la nueva (sin doble exposición)
+    const fin=clamp((t-a-X*0.45)/(X*0.55)), fout=clamp((t-(b-X))/(X*0.55));
+    sc.style.opacity=eio(fin)*(last?1:1-eio(fout)); am.style.opacity=pin*(last?1:(1-pout));
     const q=eio(clamp((t-a)/(b-a))), m=s.m;
     // entra desde abajo y sale hacia arriba: la cámara avanza de una toma a la otra
     const y=lerp(m.y[0],m.y[1],q)+(1-pin)*70-(last?0:pout*70);
