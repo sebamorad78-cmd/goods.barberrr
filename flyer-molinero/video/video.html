@@ -7,10 +7,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Serif+Display&family=Caveat:wght@700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
-  :root{--papel:#EADFC6;--papel-2:#DCCDAA;--musgo:#4A5733;--musgo-osc:#1F2614;--ocre:#B98A3E;--ocre-cl:#D9B26A;--tinta:#1F2614}
+  :root{--papel:#EADFC6;--papel-2:#DCCDAA;--musgo:#4A5733;--musgo-osc:#1F2614;--ocre:#B98A3E;--ocre-cl:#D9B26A;--tinta:#1F2614;--crema:#F3EAD5}
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
-  #stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:var(--musgo-osc);color:var(--papel)}
+  #stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:var(--musgo-osc)}
 
   .mono{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing:.26em;text-transform:uppercase}
   .script{font-family:Caveat,cursive;font-weight:700}
@@ -18,106 +18,72 @@
   .line{display:block;overflow:hidden;padding:.08em 0 .02em;margin:-.08em 0 -.02em;white-space:nowrap}
   .ch{display:inline-block;will-change:transform}
 
-  .amb{position:absolute;inset:-80px;opacity:0}
-  .amb img{width:100%;height:100%;object-fit:cover;filter:blur(46px) saturate(.8) brightness(.55)}
-  .tint{position:absolute;inset:0;background:linear-gradient(180deg,rgba(31,38,20,.85) 0%,rgba(31,38,20,.45) 32%,rgba(31,38,20,.45) 70%,rgba(31,38,20,.92) 100%)}
+  /* paneles: cada escena es un bloque de color que sube y tapa al anterior */
+  .panel{position:absolute;inset:0;overflow:hidden;will-change:transform}
+  .panel .edge{position:absolute;left:0;right:0;top:0;height:10px;background:var(--ocre-cl);z-index:5}
+  .panel .dim{position:absolute;inset:0;background:#000;opacity:0;z-index:40;pointer-events:none}
+  .beige{background:radial-gradient(120% 90% at 30% 20%,#F1E8D2 0%,var(--papel) 45%,var(--papel-2) 100%);color:var(--tinta)}
+  .musgo{background:radial-gradient(120% 90% at 70% 10%,#2A331C 0%,var(--musgo-osc) 60%,#161B0E 100%);color:var(--crema)}
+  .paper{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.5;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .38  0 0 0 0 .25  0 0 0 .35 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+  .musgo .paper{display:none}
 
-  .scene{position:absolute;inset:0;opacity:0}
-  .bignum{position:absolute;right:-20px;top:300px;font-family:Anton;font-size:620px;line-height:1;color:transparent;-webkit-text-stroke:3px rgba(217,178,106,.48);will-change:transform}
-  .persp{position:absolute;left:0;right:0;top:450px;height:1200px;perspective:1800px;display:flex;align-items:center;justify-content:center}
-  .card{position:relative;overflow:hidden;will-change:transform;border-radius:4px;box-shadow:0 50px 90px -30px rgba(0,0,0,.8),0 0 0 1px rgba(234,223,198,.2)}
-  .card img{display:block;width:100%;height:100%;object-fit:contain;filter:contrast(1.05) saturate(.96)}
-  .shine{position:absolute;top:-10%;bottom:-10%;width:45%;left:0;transform:translateX(-150%) skewX(-18deg);
-    background:linear-gradient(90deg,rgba(255,240,210,0),rgba(255,240,210,.38),rgba(255,240,210,0));mix-blend-mode:screen}
+  .content{position:absolute;inset:0;will-change:transform}
+  .bignum{position:absolute;right:40px;top:70px;font-family:Anton;font-size:330px;line-height:1;color:transparent;will-change:transform}
+  .beige .bignum{-webkit-text-stroke:3px rgba(74,87,51,.30)}
+  .musgo .bignum{-webkit-text-stroke:3px rgba(217,178,106,.40)}
+  .head{position:absolute;left:72px;right:72px;top:118px}
+  .head .lbl{font-size:20px;display:flex;align-items:center;gap:16px}
+  .head .lbl i{height:0;border-top:2px solid currentColor}
+  .beige .lbl{color:var(--ocre)} .musgo .lbl{color:var(--ocre-cl)}
+  .head .ttl{font-size:100px;line-height:1;margin-top:18px}
+  .beige .ttl{color:var(--musgo-osc)} .musgo .ttl{color:var(--crema)}
 
-  .head{position:absolute;left:72px;right:72px;top:150px}
-  .head .lbl{font-size:20px;color:var(--ocre-cl);display:flex;align-items:center;gap:16px}
-  .head .lbl i{height:0;border-top:2px solid var(--ocre-cl);will-change:width}
-  .head .ttl{font-size:118px;line-height:.98;margin-top:20px;color:#F3EAD5}
-  .foot-note{position:absolute;left:72px;right:72px;top:1690px;font-size:54px;color:var(--ocre-cl);transform-origin:left}
+  .photos{position:absolute;left:0;right:0;top:330px;height:1370px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+  .ph{position:relative;overflow:hidden;will-change:clip-path}
+  .ph img{display:block;width:100%;height:100%;object-fit:cover;will-change:transform;filter:contrast(1.05) saturate(.95) sepia(.05)}
+  .ph .shine{position:absolute;top:-10%;bottom:-10%;width:40%;left:0;transform:translateX(-160%) skewX(-18deg);
+    background:linear-gradient(90deg,rgba(255,240,210,0),rgba(255,240,210,.32),rgba(255,240,210,0));mix-blend-mode:screen}
 
-  /* destello cálido de película */
-  #leak{position:absolute;width:1700px;height:1700px;left:-310px;top:110px;border-radius:50%;pointer-events:none;z-index:25;mix-blend-mode:screen;
-    background:radial-gradient(circle,rgba(255,196,120,.75) 0%,rgba(240,150,70,.35) 30%,rgba(200,110,40,0) 62%)}
-  #flash{position:absolute;inset:0;background:#FFF3DC;opacity:0;z-index:26;pointer-events:none;mix-blend-mode:soft-light}
+  .note{position:absolute;left:72px;right:72px;top:1712px;font-size:52px;transform-origin:left}
+  .beige .note{color:var(--ocre)} .musgo .note{color:var(--ocre-cl)}
+  .bar{position:absolute;left:72px;right:72px;bottom:52px;display:flex;justify-content:space-between;align-items:center;font-size:18px}
+  .bar b{font-weight:600;display:flex;align-items:center;gap:12px}
+  .bar svg{width:30px;height:30px}
+  .beige .bar{color:rgba(31,38,20,.7)} .beige .bar b{color:var(--musgo-osc)}
+  .musgo .bar{color:rgba(234,223,198,.75)} .musgo .bar b{color:var(--papel)}
 
-  #bar{position:absolute;left:72px;right:72px;bottom:70px;display:flex;justify-content:space-between;align-items:center;font-size:18px;color:rgba(234,223,198,.8);z-index:15}
-  #bar b{color:var(--papel);font-weight:600;display:flex;align-items:center;gap:12px}
-  #bar svg{width:30px;height:30px}
-  #progress{position:absolute;left:72px;right:72px;bottom:120px;height:2px;background:rgba(234,223,198,.15);z-index:15}
-  #progress i{display:block;height:100%;background:var(--ocre-cl);width:0}
+  /* gancho: palabras rellenas con la foto */
+  .hw{position:absolute;inset:0;opacity:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .hw .w{font-family:Anton;font-size:400px;line-height:1.02;letter-spacing:.005em;color:transparent;
+    background-size:cover;background-position:50% 50%;-webkit-background-clip:text;background-clip:text;will-change:transform,clip-path}
+  .hw .k{margin-top:36px;font-size:24px}
+  .beige .k{color:var(--musgo)} .musgo .k{color:var(--ocre-cl)}
 
-  /* gancho inicial */
-  #hook{position:absolute;inset:0;z-index:12}
-  .hw{position:absolute;inset:0;opacity:0;display:flex;align-items:center;justify-content:center}
-  .hw img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.42) saturate(.85)}
-  .hw .w{position:relative;font-family:Anton;font-size:330px;line-height:1;color:#F3EAD5;letter-spacing:.01em}
-  .hw .k{position:absolute;left:0;right:0;top:calc(50% + 200px);text-align:center;font-size:22px;color:var(--ocre-cl)}
-
-  #intro{position:absolute;inset:0;z-index:11;opacity:0}
-  #intro .draw{position:absolute;left:50%;top:260px;width:420px;height:780px;margin-left:-210px}
+  #intro .draw{position:absolute;left:50%;top:250px;width:420px;height:780px;margin-left:-210px}
   #intro .draw path,#intro .draw circle{fill:none;stroke:var(--ocre-cl);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 
-  #outro{position:absolute;inset:0;z-index:20;opacity:0;color:var(--tinta);
-    background:radial-gradient(120% 90% at 30% 20%,#F1E8D2 0%,var(--papel) 45%,var(--papel-2) 100%)}
-  #outro .paper{position:absolute;inset:0;mix-blend-mode:multiply;opacity:.5;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .38  0 0 0 0 .25  0 0 0 .35 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
-  #outro .list{list-style:none}
-  #outro .list li{display:flex;align-items:baseline;gap:18px;border-bottom:1.5px dashed rgba(37,45,24,.45);padding:12px 0 9px}
-  #outro .list em{font-style:normal;font-family:"IBM Plex Mono";font-weight:600;font-size:18px;color:var(--ocre);width:34px}
-  #outro .list b{font-family:"DM Serif Display";font-weight:400;font-size:52px;line-height:1.05}
-  .band{position:absolute;left:0;right:0;bottom:0;height:400px;background:#252D18;color:#F3EAD5}
-  .band .edge{position:absolute;left:0;top:-22px;width:100%;height:24px}
+  /* cierre */
+  .list{list-style:none}
+  .list li{display:flex;align-items:baseline;gap:18px;border-bottom:1.5px dashed rgba(37,45,24,.45);padding:12px 0 9px}
+  .list em{font-style:normal;font-family:"IBM Plex Mono";font-weight:600;font-size:18px;color:var(--ocre);width:34px}
+  .list b{font-family:"DM Serif Display";font-weight:400;font-size:52px;line-height:1.05}
+  .band{position:absolute;left:0;right:0;bottom:0;height:400px;background:#252D18;color:var(--crema)}
+  .band .tear{position:absolute;left:0;top:-22px;width:100%;height:24px}
   .tel{font-family:Anton;font-size:100px;line-height:1.05;letter-spacing:.02em}
   .tel small{font-size:.5em;color:#C9BC9A;margin-right:.2em;vertical-align:.22em}
   .t{position:absolute;opacity:0;will-change:transform,opacity}
 
-  .grain{position:absolute;inset:-60px;pointer-events:none;z-index:30;opacity:.08;mix-blend-mode:overlay;
+  #leak{position:absolute;width:1700px;height:1700px;left:-310px;top:110px;border-radius:50%;pointer-events:none;z-index:90;mix-blend-mode:screen;
+    background:radial-gradient(circle,rgba(255,196,120,.6) 0%,rgba(240,150,70,.28) 30%,rgba(200,110,40,0) 62%)}
+  .grain{position:absolute;inset:-60px;pointer-events:none;z-index:95;opacity:.08;mix-blend-mode:overlay;
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 </style>
 </head>
 <body>
 <div id="stage">
-  <div id="ambs"></div>
-  <div class="tint"></div>
-  <div id="scenes"></div>
-
-  <div id="intro">
-    <div class="t mono" data-k="i-top" style="left:72px;right:72px;top:150px;font-size:20px;color:var(--ocre-cl);display:flex;gap:16px;align-items:center">
-      <span>Servicios rurales</span><i style="flex:1;border-top:2px solid var(--ocre-cl);opacity:.6"></i><span>Agua · Energía</span></div>
-    <svg class="draw" viewBox="0 0 300 560" id="windmill"></svg>
-    <div class="anton" id="i-name" style="position:absolute;left:0;right:0;text-align:center;top:1070px;font-size:236px;line-height:.86"></div>
-    <div class="t mono" data-k="i-sub" style="left:0;right:0;text-align:center;top:1540px;font-size:22px;color:var(--papel)">Venta · Instalación · Mantenimiento</div>
-  </div>
-
-  <div id="hook"></div>
-
-  <div id="progress"><i id="pbar"></i></div>
-  <div id="bar" class="mono"><b><svg viewBox="0 0 60 60" id="mini"></svg>Julián Acebal</b><span>(2268) 518 941</span></div>
-
-  <div id="outro">
-    <div class="paper"></div>
-    <div class="t mono" data-k="o-top" style="left:64px;right:64px;top:110px;font-size:20px;color:var(--musgo);display:flex;gap:16px;align-items:center">
-      <span>Servicios rurales</span><i style="flex:1;border-top:2px solid var(--musgo);opacity:.7"></i><span>Agua · Energía</span></div>
-    <div class="anton" id="o-name" style="position:absolute;left:58px;top:190px;font-size:250px;line-height:.84"></div>
-    <div class="t" data-k="o-list" style="left:64px;right:64px;top:700px">
-      <div class="mono" style="font-size:17px;color:var(--musgo);margin-bottom:8px">Lo que hacemos</div>
-      <ul class="list" id="olist"></ul>
-    </div>
-    <div class="t" data-k="o-band" style="left:0;right:0;bottom:0;height:400px">
-      <div class="band">
-        <svg class="edge" viewBox="0 0 1080 24" preserveAspectRatio="none"><path id="edgepath" fill="#252D18"/></svg>
-        <div style="padding:70px 64px 0">
-          <div class="mono" style="font-size:20px;color:var(--ocre-cl);margin-bottom:12px">Consultas y presupuestos</div>
-          <div class="tel" data-k="tel1"><small>(2268)</small>518 941</div>
-          <div class="tel" data-k="tel2"><small>(2268)</small>518 665</div>
-        </div>
-      </div>
-    </div>
-    <div class="t" data-k="o-stamp" style="right:60px;top:1450px;width:250px;height:250px;z-index:12" id="stamp"></div>
-  </div>
+  <div id="panels"></div>
   <div id="leak"></div>
-  <div id="flash"></div>
   <div class="grain" id="grain"></div>
 </div>
 
@@ -126,181 +92,187 @@ const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
 const lerp=(a,b,p)=>a+(b-a)*p;
 const eio=p=>-(Math.cos(Math.PI*p)-1)/2;
 const eout=p=>1-Math.pow(1-p,3);
+const eout5=p=>1-Math.pow(1-p,5);
 const ein=p=>p*p*p;
 const eback=p=>{const c1=1.45,c3=c1+1;return 1+c3*Math.pow(p-1,3)+c1*Math.pow(p-1,2);};
 let seed=11; const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const $=id=>document.getElementById(id);
 
 /* ---------- guion ---------- */
-const HOOK=[ {w:"Agua",img:"tanque",k:"Tanques · Bebederos"}, {w:"Viento",img:"molino",k:"Molinos"}, {w:"Sol",img:"bombeo-solar",k:"Bombas solares"} ];
-const HW=0.62;                     // cada palabra del gancho
-const INTRO_A=HOOK.length*HW;      // 1.86
-const D=3.3, X=0.55;               // duración de escena y cruce
-const S0=INTRO_A+2.7;              // primera escena
+const HOOK=[{w:"Agua",fs:470,img:"tanque",pos:"50% 60%",k:"Tanques · Bebederos",th:"musgo"},
+            {w:"Viento",fs:400,img:"molino",pos:"45% 30%",k:"Molinos",th:"beige"},
+            {w:"Sol",fs:600,img:"bombeo-solar",pos:"55% 45%",k:"Bombas solares",th:"musgo"}];
+const HW=0.72, P=0.72;                       // palabra del gancho · subida de panel
+const INTRO_A=HOOK.length*HW;                // 2.16
+const S0=INTRO_A+2.6, D=3.5;
 const SC=[
-  {img:"tanque",          lbl:"Agua",          ttl:["Tanques"],                 note:"armados en el campo"},
-  {img:"molino",          lbl:"Viento",        ttl:["Molinos","de viento"],     note:"instalación y service"},
-  {img:"bombeo-solar",    lbl:"Energía solar", ttl:["Paneles y","bombas solares"], note:"agua sin red eléctrica"},
-  {img:"estructura-solar",lbl:"Energía solar", ttl:["Montaje","de paneles"],    note:"estructura y bases de hormigón"},
-  {img:"tanque-agua",     lbl:"Hacienda",      ttl:["Bebederos"],               note:"agua para los animales"},
-  {img:"tractor",         lbl:"Obra",          ttl:["Movimientos","de tierra"], note:"y perforaciones"},
-].map((s,i)=>({...s,a:S0+i*D,b:S0+(i+1)*D,dir:i%2?-1:1}));
-const OUTRO_A=S0+SC.length*D, DURATION=OUTRO_A+6.2;
-const CUTS=[...HOOK.map((_,i)=>i*HW), INTRO_A, ...SC.map(s=>s.a), OUTRO_A];
+  {th:"beige", lbl:"Agua",          ttl:"Tanques",               note:"armados en el campo",           photos:["obra"]},
+  {th:"musgo", lbl:"Viento",        ttl:"Molinos de viento",     note:"instalación y service",         photos:["molino"]},
+  {th:"beige", lbl:"Energía solar", ttl:"Paneles y bombas",      note:"agua sin red eléctrica",        photos:["bombeo-solar","estructura-solar"]},
+  {th:"musgo", lbl:"Hacienda",      ttl:"Bebederos",             note:"agua para los animales",        photos:["tanque-agua"]},
+  {th:"beige", lbl:"Obra",          ttl:"Movimientos de tierra", note:"y perforaciones",               photos:["tractor"]},
+].map((s,i)=>({...s,a:S0+i*D}));
+const OUTRO_A=S0+SC.length*D, DURATION=OUTRO_A+6.4;
 
-/* ---------- texto letra por letra ---------- */
-const split=(lines,cls="")=>lines.map(l=>`<span class="line">${[...l].map(c=>`<span class="ch ${cls}">${c===" "?"&nbsp;":c}</span>`).join("")}</span>`).join("");
-function chars(el,t,a,{stag=0.028,dur=0.55,out=null}={}){
-  el.querySelectorAll(".ch").forEach((c,j)=>{
-    const p=eout(clamp((t-a-j*stag)/dur)), o=out==null?0:ein(clamp((t-out-j*0.012)/0.35));
-    c.style.transform=`translateY(${(1-p)*110 - o*110}%)`;
-  });
+/* ---------- helpers ---------- */
+const split=(lines)=>lines.map(l=>`<span class="line">${[...l].map(c=>`<span class="ch">${c===" "?"&nbsp;":c}</span>`).join("")}</span>`).join("");
+function chars(el,t,a,{stag=0.028,dur=0.5}={}){
+  el.querySelectorAll(".ch").forEach((c,j)=>{const p=eout(clamp((t-a-j*stag)/dur)); c.style.transform=`translateY(${(1-p)*110}%)`;});
 }
-
-/* ---------- construir ---------- */
-const ambs=document.getElementById("ambs"), scenes=document.getElementById("scenes"), hook=document.getElementById("hook");
-HOOK.forEach((h,i)=>hook.insertAdjacentHTML("beforeend",
-  `<div class="hw" id="hw${i}"><img src="hd/${h.img}.jpg"><div class="w">${split([h.w.toUpperCase()])}</div><div class="k mono">${h.k}</div></div>`));
-ambs.insertAdjacentHTML("beforeend",`<div class="amb" id="amb-i"><img src="hd/obra.jpg"></div>`);
-SC.forEach((s,i)=>{
-  ambs.insertAdjacentHTML("beforeend",`<div class="amb" id="amb${i}"><img src="hd/${s.img}.jpg"></div>`);
-  scenes.insertAdjacentHTML("beforeend",`
-  <div class="scene" id="sc${i}">
-    <div class="bignum" id="bn${i}">0${i+1}</div>
-    <div class="head">
-      <div class="mono lbl" id="lb${i}"><i></i><span>${s.lbl}</span></div>
-      <div class="anton ttl" id="tt${i}">${split(s.ttl)}</div>
-    </div>
-    <div class="persp"><div class="card" id="cd${i}"><img id="im${i}" src="hd/${s.img}.jpg"><div class="shine" id="sh${i}"></div></div></div>
-    <div class="script foot-note" id="nt${i}">${s.note}</div>
-  </div>`);
-});
-document.getElementById("i-name").innerHTML=`<div style="color:#F3EAD5">${split(["JULIÁN"])}</div><div style="color:var(--ocre-cl)">${split(["ACEBAL"])}</div>`;
-document.getElementById("o-name").innerHTML=`<div style="color:#252D18">${split(["JULIÁN"])}</div><div style="color:var(--musgo)">${split(["ACEBAL"])}</div>`;
-
-// molino dibujado + mini logo girando
+function reveal(el,t,a,{dy=36,rot=0}={}){
+  const p=eout(clamp((t-a)/0.6)); el.style.opacity=p.toFixed(3); el.style.transform=`translateY(${(1-p)*dy}px) rotate(${rot}deg)`;
+}
 function rotorSVG(id){let s="";for(let k=0;k<16;k++){const a=(k/16)*Math.PI*2,a2=a+0.16;
   const p=(r,ang)=>`${(130+Math.cos(ang)*r).toFixed(1)},${(110+Math.sin(ang)*r).toFixed(1)}`;
   s+=`<path d="M${p(14,a)} L${p(86,a)} L${p(86,a2)} L${p(14,a2+0.05)}"/>`;}
-  return `<g id="${id}"><circle cx="130" cy="110" r="88"/><circle cx="130" cy="110" r="52"/><circle cx="130" cy="110" r="12"/>${s}</g>`;}
-document.getElementById("windmill").innerHTML=rotorSVG("rotor")+`
+  return `<g class="${id}"><circle cx="130" cy="110" r="88"/><circle cx="130" cy="110" r="52"/><circle cx="130" cy="110" r="12"/>${s}</g>`;}
+const bar=(th)=>`<div class="bar mono"><b><svg viewBox="0 0 60 60"><g transform="translate(30 30) scale(0.32) translate(-130 -110)" fill="none" stroke="${th==="beige"?"#4A5733":"#D9B26A"}" stroke-width="7">${rotorSVG("mini")}</g></svg>Julián Acebal</b><span>(2268) 518 941</span></div>`;
+
+/* ---------- construir paneles (en orden de apilado) ---------- */
+const panels=$("panels"); let z=1; const PANELS=[];
+function addPanel(id,th,inner,a){panels.insertAdjacentHTML("beforeend",
+  `<div class="panel ${th}" id="${id}" style="z-index:${z++}"><div class="paper"></div><div class="content">${inner}</div><div class="edge"></div><div class="dim"></div></div>`);
+  PANELS.push({id,a});}
+
+HOOK.forEach((h,i)=>addPanel("hk"+i,h.th,
+  `<div class="hw" style="opacity:1"><div class="w" id="hw${i}" style="font-size:${h.fs}px;background-image:url(hd/${h.img}.jpg);background-position:${h.pos}">${h.w.toUpperCase()}</div><div class="k mono" id="hk${i}k">${h.k}</div></div>`, i*HW));
+
+addPanel("intro","musgo",`
+  <div class="t mono" id="i-top" style="left:72px;right:72px;top:150px;font-size:20px;color:var(--ocre-cl);display:flex;gap:16px;align-items:center">
+    <span>Servicios rurales</span><i style="flex:1;border-top:2px solid var(--ocre-cl);opacity:.6"></i><span>Agua · Energía</span></div>
+  <div id="intro"><svg class="draw" viewBox="0 0 300 560" id="windmill"></svg></div>
+  <div class="anton" id="i-name" style="position:absolute;left:0;right:0;text-align:center;top:1070px;font-size:236px;line-height:.86">
+    <div style="color:var(--crema)">${split(["JULIÁN"])}</div><div style="color:var(--ocre-cl)">${split(["ACEBAL"])}</div></div>
+  <div class="t mono" id="i-sub" style="left:0;right:0;text-align:center;top:1540px;font-size:22px;color:var(--papel)">Venta · Instalación · Mantenimiento</div>`, INTRO_A);
+
+SC.forEach((s,i)=>addPanel("sc"+i,s.th,`
+  <div class="bignum" id="bn${i}">0${i+1}</div>
+  <div class="head"><div class="mono lbl" id="lb${i}"><i></i><span>${s.lbl}</span></div><div class="anton ttl" id="tt${i}">${split([s.ttl])}</div></div>
+  <div class="photos">${s.photos.map((p,j)=>`<div class="ph" id="ph${i}_${j}" data-img="${p}"><img src="hd/${p}.jpg"><div class="shine"></div></div>`).join("")}</div>
+  <div class="script note" id="nt${i}">${s.note}</div>
+  ${bar(s.th)}`, s.a));
+
+const SERV=["Molinos de viento","Paneles y bombas solares","Tanques","Bebederos","Perforaciones","Movimientos de tierra"];
+let dd="M0 24 L0 14",x=0; while(x<1080){x+=6+rnd()*14; dd+=` L${x.toFixed(1)} ${(4+rnd()*14).toFixed(1)}`;}
+addPanel("outro","beige",`
+  <div class="t mono" id="o-top" style="left:64px;right:64px;top:110px;font-size:20px;color:var(--musgo);display:flex;gap:16px;align-items:center">
+    <span>Servicios rurales</span><i style="flex:1;border-top:2px solid var(--musgo);opacity:.7"></i><span>Agua · Energía</span></div>
+  <div class="anton" id="o-name" style="position:absolute;left:58px;top:190px;font-size:250px;line-height:.84">
+    <div style="color:#252D18">${split(["JULIÁN"])}</div><div style="color:var(--musgo)">${split(["ACEBAL"])}</div></div>
+  <div class="t" id="o-list" style="left:64px;right:64px;top:700px">
+    <div class="mono" style="font-size:17px;color:var(--musgo);margin-bottom:8px">Lo que hacemos</div>
+    <ul class="list">${SERV.map((s,i)=>`<li data-li="${i}" style="opacity:0"><em>0${i+1}</em><b>${s}</b></li>`).join("")}</ul></div>
+  <div class="t" id="o-band" style="left:0;right:0;bottom:0;height:400px;opacity:1"><div class="band">
+    <svg class="tear" viewBox="0 0 1080 24" preserveAspectRatio="none"><path d="${dd} L1080 24 Z" fill="#252D18"/></svg>
+    <div style="padding:70px 64px 0">
+      <div class="mono" style="font-size:20px;color:var(--ocre-cl);margin-bottom:12px">Consultas y presupuestos</div>
+      <div class="tel" id="tel1"><small>(2268)</small>518 941</div>
+      <div class="tel" id="tel2"><small>(2268)</small>518 665</div></div></div></div>
+  <div class="t" id="o-stamp" style="right:60px;top:1450px;width:250px;height:250px;z-index:12"><svg viewBox="0 0 220 220" width="250" height="250">
+    <defs><filter id="ink" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="9" result="t"/>
+      <feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.4 1.6" result="m"/>
+      <feComposite in="SourceGraphic" in2="m" operator="in" result="c"/>
+      <feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="2" seed="2" result="w"/>
+      <feDisplacementMap in="c" in2="w" scale="3"/></filter>
+      <path id="ring" d="M110,110 m-80,0 a80,80 0 1,1 160,0 a80,80 0 1,1 -160,0"/></defs>
+    <g filter="url(#ink)" fill="#D9B26A" stroke="#D9B26A">
+      <circle cx="110" cy="110" r="104" fill="none" stroke-width="5"/><circle cx="110" cy="110" r="96" fill="none" stroke-width="1.6"/>
+      <circle cx="110" cy="110" r="60" fill="none" stroke-width="1.6"/>
+      <text font-family="IBM Plex Mono" font-weight="600" font-size="16" letter-spacing="1.5" stroke="none"><textPath href="#ring" textLength="495">VENTA · INSTALACIÓN · MANTENIMIENTO ·</textPath></text>
+      <text x="110" y="106" text-anchor="middle" font-family="Anton" font-size="29" stroke="none">TRABAJO</text>
+      <text x="110" y="136" text-anchor="middle" font-family="Anton" font-size="29" stroke="none">DE CAMPO</text></g></svg></div>`, OUTRO_A);
+
+panels.insertAdjacentHTML("beforeend",`<div style="display:none">${HOOK.map(h=>`<img src="hd/${h.img}.jpg">`).join("")}</div>`);
+$("windmill").innerHTML=rotorSVG("rotor")+`
   <path d="M140 108 L252 96 L262 70 L292 66 L288 132 L258 128 L252 116 L140 116"/>
   <path d="M118 128 L70 552 M142 128 L190 552 M106 230 L154 230 M96 330 L164 330 M86 430 L174 430 M78 520 L182 520 M106 230 L164 330 L86 430 L182 520 M154 230 L96 330 L174 430 L78 520"/>`;
-document.getElementById("mini").innerHTML=`<g transform="translate(30 30) scale(0.32) translate(-130 -110)" fill="none" stroke="#D9B26A" stroke-width="7">${rotorSVG("rotor2")}</g>`;
 const drawEls=[...document.querySelectorAll("#windmill path,#windmill circle")];
 drawEls.forEach(e=>{const L=e.getTotalLength(); e.dataset.len=L; e.style.strokeDasharray=L;});
 
-const SERV=["Molinos de viento","Paneles y bombas solares","Tanques","Bebederos","Perforaciones","Movimientos de tierra"];
-document.getElementById("olist").innerHTML=SERV.map((s,i)=>`<li data-li="${i}" style="opacity:0"><em>0${i+1}</em><b>${s}</b></li>`).join("");
-let dd="M0 24 L0 14",x=0; while(x<1080){x+=6+rnd()*14; dd+=` L${x.toFixed(1)} ${(4+rnd()*14).toFixed(1)}`;}
-document.getElementById("edgepath").setAttribute("d",dd+" L1080 24 Z");
-document.getElementById("stamp").innerHTML=`<svg viewBox="0 0 220 220" width="250" height="250">
-  <defs><filter id="ink" x="-5%" y="-5%" width="110%" height="110%">
-    <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="9" result="t"/>
-    <feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.4 1.6" result="m"/>
-    <feComposite in="SourceGraphic" in2="m" operator="in" result="c"/>
-    <feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="2" seed="2" result="w"/>
-    <feDisplacementMap in="c" in2="w" scale="3"/></filter>
-    <path id="ring" d="M110,110 m-80,0 a80,80 0 1,1 160,0 a80,80 0 1,1 -160,0"/></defs>
-  <g filter="url(#ink)" fill="#D9B26A" stroke="#D9B26A">
-    <circle cx="110" cy="110" r="104" fill="none" stroke-width="5"/><circle cx="110" cy="110" r="96" fill="none" stroke-width="1.6"/>
-    <circle cx="110" cy="110" r="60" fill="none" stroke-width="1.6"/>
-    <text font-family="IBM Plex Mono" font-weight="600" font-size="16" letter-spacing="1.5" stroke="none"><textPath href="#ring" textLength="495">VENTA · INSTALACIÓN · MANTENIMIENTO ·</textPath></text>
-    <text x="110" y="106" text-anchor="middle" font-family="Anton" font-size="29" stroke="none">TRABAJO</text>
-    <text x="110" y="136" text-anchor="middle" font-family="Anton" font-size="29" stroke="none">DE CAMPO</text></g></svg>`;
-
-const K={}; document.querySelectorAll("[data-k]").forEach(e=>K[e.dataset.k]=e);
-const $=id=>document.getElementById(id);
-
+/* fotos completas: ancho total salvo que no entren en alto (máx. 1370 para el grupo) */
 function fit(){
   SC.forEach((s,i)=>{
-    const im=$("im"+i), cd=$("cd"+i), r=im.naturalWidth/im.naturalHeight, W=984, H=1150;
-    let w=W,h=W/r; if(h>H){h=H;w=H*r;}
-    cd.style.width=w+"px"; cd.style.height=h+"px";
+    const els=s.photos.map((_,j)=>$(`ph${i}_${j}`));
+    const rs=els.map(e=>{const im=e.querySelector("img");return im.naturalWidth/im.naturalHeight;});
+    const gap=12*(els.length-1), MAXH=1340;
+    let w=1080, total=rs.reduce((h,r)=>h+w/r,0)+gap;
+    if(total>MAXH){w=(MAXH-gap)/rs.reduce((h,r)=>h+1/r,0);}
+    els.forEach((e,j)=>{e.style.width=w+"px"; e.style.height=(w/rs[j])+"px";});
   });
 }
-function reveal(el,t,a,b,{dy=36,outDy=-24,rot=0}={}){
-  const pi=eout(clamp((t-a)/0.6)), po=b==null?0:ein(clamp((t-(b-0.4))/0.4));
-  el.style.opacity=(pi*(1-po)).toFixed(3);
-  el.style.transform=`translateY(${(1-pi)*dy+po*outDy}px) rotate(${rot}deg)`;
-}
 
+/* ---------- render ---------- */
 window.seek=function(t){
-  /* gancho: cortes rápidos */
-  HOOK.forEach((h,i)=>{
-    const el=$("hw"+i), a=i*HW, b=a+HW;
-    const on=t>=a&&t<b+ (i===HOOK.length-1?0.25:0);
-    el.style.opacity=on?(i===HOOK.length-1?1-clamp((t-b)/0.25):1):0;
-    const p=clamp((t-a)/HW);
-    el.querySelector("img").style.transform=`scale(${1.06-0.05*eout(p)})`;
-    const w=el.querySelector(".w"); w.style.transform=`scale(${1.12-0.12*eout(clamp((t-a)/0.35))})`;
-    chars(w,t,a,{stag:0.035,dur:0.3});
-    el.querySelector(".k").style.opacity=eout(clamp((t-a-0.15)/0.25));
+  // paneles: suben y tapan al anterior; el anterior se va un poco para arriba y se oscurece
+  PANELS.forEach((p,k)=>{
+    const el=$(p.id), next=PANELS[k+1];
+    const isHook=p.id.startsWith("hk");
+    const dur=isHook?0.001:P;              // en el gancho son cortes secos
+    const pin=eout5(clamp((t-p.a)/(dur)));
+    const pout=next?eio(clamp((t-next.a)/(next.id.startsWith("hk")||next.id==="intro"?0.001:P))):0;
+    const visible=t>=p.a-0.0001 && (!next || t<next.a+P+0.05);
+    el.style.display=visible?"block":"none";
+    if(!visible) return;
+    el.style.transform=`translateY(${(1-pin)*1920}px)`;
+    el.querySelector(".content").style.transform=`translateY(${-pout*260}px)`;
+    el.querySelector(".dim").style.opacity=(pout*0.55).toFixed(3);
+    el.querySelector(".edge").style.opacity=pin<1&&!isHook?1:0;
   });
 
-  /* intro: nombre */
-  const ia=eout(clamp((t-INTRO_A)/0.25)), io=1-eio(clamp((t-(S0-X))/X));
-  $("intro").style.opacity=Math.min(ia,io);
-  $("amb-i").style.opacity=Math.min(ia,io)*0.9;
+  // gancho
+  HOOK.forEach((h,i)=>{
+    const a=i*HW, w=$("hw"+i), p=eout(clamp((t-a)/0.42));
+    w.style.clipPath=`inset(${(1-p)*100}% 0 0 0)`;
+    w.style.transform=`scale(${1.14-0.14*eout(clamp((t-a)/0.6))})`;
+    w.style.backgroundPosition=`${50+(clamp((t-a)/HW)-0.5)*14}% ${h.pos.split(" ")[1]}`;
+    const k=$(`hk${i}k`); k.style.opacity=eout(clamp((t-a-0.2)/0.3)); k.style.transform=`translateY(${(1-eout(clamp((t-a-0.2)/0.3)))*20}px)`;
+  });
+
+  // intro
   drawEls.forEach((e,j)=>{const p=eio(clamp((t-INTRO_A-0.05-j*0.01)/1.3)); e.style.strokeDashoffset=e.dataset.len*(1-p);});
-  $("rotor").setAttribute("transform",`rotate(${t*60} 130 110)`);
-  $("rotor2").setAttribute("transform",`rotate(${t*90} 130 110)`);
-  reveal(K["i-top"],t,INTRO_A+0.2,null,{dy:-16});
+  document.querySelectorAll(".rotor").forEach(r=>r.setAttribute("transform",`rotate(${t*60} 130 110)`));
+  document.querySelectorAll(".mini").forEach(r=>r.setAttribute("transform",`rotate(${t*90} 130 110)`));
+  reveal($("i-top"),t,INTRO_A+0.2,{dy:-16});
   chars($("i-name"),t,INTRO_A+0.3,{stag:0.045,dur:0.5});
-  reveal(K["i-sub"],t,INTRO_A+1.0,null);
+  reveal($("i-sub"),t,INTRO_A+1.0);
   $("windmill").style.transform=`translateY(${-(t-INTRO_A)*10}px)`;
 
-  /* escenas */
+  // escenas
   SC.forEach((s,i)=>{
-    const sc=$("sc"+i), am=$("amb"+i), cd=$("cd"+i), last=i===SC.length-1;
-    const a=s.a-X/2, b=s.b+X/2;
-    if(t<a||t>b){sc.style.opacity=0;am.style.opacity=0;return;}
-    const pin=clamp((t-a)/X), pout=clamp((t-(b-X))/X);
-    sc.style.opacity=eio(clamp(pin*1.6))*(last?1:1-eio(clamp((pout-0.1)*1.6)));
-    am.style.opacity=eio(pin)*(last?1:1-eio(pout));
-    // tarjeta: entra girando con rebote, deriva y sale de costado
-    const pe=eback(clamp((t-a)/0.9)), q=eio(clamp((t-a)/(b-a))), px=ein(pout)*(last?0:1);
-    const dir=s.dir;
-    cd.style.transform=`translate3d(${(1-pe)*260*dir - px*520*dir}px,${lerp(16,-16,q)}px,0) rotateY(${(1-pe)*-32*dir + lerp(-3,3,q)*dir - px*28*dir}deg) rotateX(${lerp(3,-2,q)}deg) scale(${lerp(0.94,1,pe)*(1-px*0.06)})`;
-    // reflejo de luz cuando aterriza
-    const ps=clamp((t-(s.a+0.45))/0.9); $("sh"+i).style.transform=`translateX(${lerp(-150,330,eio(ps))}%) skewX(-18deg)`;
-    // número gigante en paralaje
-    $("bn"+i).style.transform=`translate3d(${(1-eout(clamp((t-a)/0.9)))*160*dir + lerp(30,-30,q)*dir}px,${lerp(60,-60,q)}px,0)`;
-    // títulos
-    const lbl=$("lb"+i); lbl.style.opacity=eout(clamp((t-s.a)/0.4))*(1-ein(clamp((t-(s.b-0.4))/0.3)));
-    lbl.querySelector("i").style.width=eout(clamp((t-s.a+0.1)/0.6))*70+"px";
-    chars($("tt"+i),t,s.a+0.02,{stag:0.03,dur:0.45,out:s.b-0.42});
-    reveal($("nt"+i),t,s.a+0.5,s.b-0.1,{rot:-3});
-    am.firstChild.style.transform=`scale(1.1) translateY(${lerp(20,-20,q)}px)`;
+    const land=s.a+P*0.55;
+    const lb=$("lb"+i); lb.style.opacity=eout(clamp((t-land)/0.4)); lb.querySelector("i").style.width=eout(clamp((t-land)/0.6))*70+"px";
+    chars($("tt"+i),t,land+0.05,{stag:0.03,dur:0.45});
+    $("bn"+i).style.transform=`translateY(${lerp(40,-40,clamp((t-s.a)/D))}px)`;
+    s.photos.forEach((_,j)=>{
+      const el=$(`ph${i}_${j}`), a=land+0.1+j*0.22, p=eio(clamp((t-a)/0.85));
+      // cortina: de abajo hacia arriba (una foto) o desde el costado (la segunda)
+      el.style.clipPath=j===0?`inset(${(1-p)*100}% 0 0 0)`:`inset(0 0 0 ${(1-p)*100}%)`;
+      el.querySelector("img").style.transform=`scale(${1+0.08*(1-eout(clamp((t-a)/1.2)))})`;
+      el.querySelector(".shine").style.transform=`translateX(${lerp(-160,360,eio(clamp((t-a-0.8)/0.9)))}%) skewX(-18deg)`;
+    });
+    reveal($("nt"+i),t,land+0.75,{rot:-3});
   });
 
-  /* destello cálido: fuerte en cada corte, suave el resto */
-  let bump=0; CUTS.forEach(c=>{const d=Math.abs(t-c); bump=Math.max(bump,clamp(1-d/0.32));});
-  $("leak").style.opacity=(0.10+0.55*eio(bump)).toFixed(3);
-  $("leak").style.transform=`translate(${Math.sin(t*0.55)*420}px,${Math.cos(t*0.4)*520}px) scale(${0.9+0.25*bump})`;
-  $("flash").style.opacity=(t<INTRO_A+0.3?0.5:0.32)*Math.pow(bump,3);
-
-  /* barra */
-  const inScenes=t>S0-0.4&&t<OUTRO_A+0.4;
-  const bo=Math.min(eout(clamp((t-(S0-0.4))/0.5)),1-eout(clamp((t-OUTRO_A)/0.4)));
-  $("bar").style.opacity=inScenes?bo:0; $("progress").style.opacity=inScenes?bo:0;
-  $("pbar").style.width=(clamp((t-S0)/(OUTRO_A-S0))*100)+"%";
-
-  /* cierre */
-  const o=$("outro"), po=eio(clamp((t-OUTRO_A)/0.7));
-  o.style.opacity=po; o.style.transform=`translateY(${(1-po)*80}px)`;
-  reveal(K["o-top"],t,OUTRO_A+0.3,null,{dy:-20});
-  chars($("o-name"),t,OUTRO_A+0.35,{stag:0.045,dur:0.5});
-  reveal(K["o-list"],t,OUTRO_A+1.0,null,{dy:0});
-  document.querySelectorAll("[data-li]").forEach((li,j)=>{const p=eout(clamp((t-(OUTRO_A+1.1+j*0.14))/0.5)); li.style.opacity=p; li.style.transform=`translateX(${(1-p)*-36}px)`;});
-  const pb=eout(clamp((t-(OUTRO_A+1.8))/0.7));
-  K["o-band"].style.opacity=pb>0?1:0; K["o-band"].style.transform=`translateY(${(1-pb)*420}px)`;
-  [K.tel1,K.tel2].forEach((el,j)=>{const p=eback(clamp((t-(OUTRO_A+2.3+j*0.18))/0.6)); el.style.opacity=clamp((t-(OUTRO_A+2.3+j*0.18))/0.2); el.style.transform=`translateX(${(1-p)*-120}px)`;});
-  const ts=t-(OUTRO_A+3.1), st=K["o-stamp"];
+  // cierre
+  const oa=OUTRO_A+P*0.5;
+  reveal($("o-top"),t,oa,{dy:-20});
+  chars($("o-name"),t,oa+0.05,{stag:0.045,dur:0.5});
+  reveal($("o-list"),t,oa+0.7,{dy:0});
+  document.querySelectorAll("[data-li]").forEach((li,j)=>{const p=eout(clamp((t-(oa+0.8+j*0.14))/0.5)); li.style.opacity=p; li.style.transform=`translateX(${(1-p)*-36}px)`;});
+  const pb=eout(clamp((t-(oa+1.5))/0.7)); $("o-band").style.transform=`translateY(${(1-pb)*440}px)`;
+  [$("tel1"),$("tel2")].forEach((el,j)=>{const a=oa+2.0+j*0.18; el.style.opacity=clamp((t-a)/0.2); el.style.transform=`translateX(${(1-eback(clamp((t-a)/0.6)))*-120}px)`;});
+  const ts=t-(oa+2.8), st=$("o-stamp");
   if(ts<0) st.style.opacity=0;
   else{const p=clamp(ts/0.22),b2=ts>0.22?Math.sin(clamp((ts-0.22)/0.25)*Math.PI)*0.04:0;
     st.style.opacity=clamp(ts/0.12); st.style.transform=`rotate(-12deg) scale(${lerp(1.9,1,ein(p))-b2})`;}
   const shake=ts>0.2&&ts<0.45?Math.sin(ts*90)*(0.45-ts)*12:0;
-  o.style.translate=`${shake}px ${shake*0.6}px`;
+  $("outro").querySelector(".content").style.translate=`${shake}px ${shake*0.6}px`;
+
+  // destello cálido en cada corte
+  let bump=0; PANELS.forEach(p=>{bump=Math.max(bump,clamp(1-Math.abs(t-p.a-0.15)/0.35));});
+  $("leak").style.opacity=(0.06+0.42*eio(bump)).toFixed(3);
+  $("leak").style.transform=`translate(${Math.sin(t*0.55)*420}px,${Math.cos(t*0.4)*520}px) scale(${0.9+0.25*bump})`;
 
   const g=$("grain"); seed=1+Math.floor(t*24); g.style.transform=`translate(${(rnd()*60-30)|0}px,${(rnd()*60-30)|0}px)`;
 };
