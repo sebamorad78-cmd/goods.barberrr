@@ -5,67 +5,89 @@
 <title>Julián Acebal · Video</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Serif+Display&family=Caveat:wght@700&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Serif+Display&family=Caveat:wght@700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
-  :root{--papel:#EADFC6;--papel-2:#DCCDAA;--musgo:#4A5733;--musgo-osc:#252D18;--ocre:#B98A3E;--ocre-cl:#D9B26A;--tinta:#1F2614}
+  :root{--papel:#EADFC6;--papel-2:#DCCDAA;--musgo:#4A5733;--musgo-osc:#1F2614;--ocre:#B98A3E;--ocre-cl:#D9B26A;--tinta:#1F2614}
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
-  #stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:#000}
+  #stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:var(--musgo-osc);color:var(--papel)}
 
-  .shot{position:absolute;inset:0;overflow:hidden;perspective:1500px;opacity:0}
-  .shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;will-change:transform;
-    filter:saturate(.88) contrast(1.06) sepia(.08)}
-
-  /* grade + viñeta + grano */
-  .grade{position:absolute;inset:0;pointer-events:none;z-index:5;
-    background:linear-gradient(180deg,rgba(37,45,24,.55) 0%,rgba(37,45,24,0) 22%,rgba(37,45,24,0) 55%,rgba(30,36,18,.88) 100%),
-               radial-gradient(110% 80% at 50% 45%,transparent 55%,rgba(10,12,6,.55) 100%)}
-  .grain{position:absolute;inset:-60px;pointer-events:none;z-index:30;opacity:.10;mix-blend-mode:overlay;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
-
-  .t{position:absolute;z-index:10;opacity:0;will-change:transform,opacity}
-  .mono{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing:.24em;text-transform:uppercase}
+  .mono{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing:.26em;text-transform:uppercase}
   .script{font-family:Caveat,cursive;font-weight:700}
-  .serif{font-family:"DM Serif Display",serif}
+  .serif{font-family:"DM Serif Display",serif;font-weight:400}
   .anton{font-family:Anton,sans-serif;text-transform:uppercase}
-
-  .mask{overflow:hidden;display:block;padding-top:.12em;margin-top:-.12em}
+  .mask{overflow:hidden;display:block;padding:.1em 0 .04em;margin:-.1em 0 -.04em}
   .mask>span{display:block;will-change:transform}
 
-  /* lower third de cada toma */
-  .lt{left:64px;right:64px;bottom:150px;color:var(--papel)}
-  .lt .num{font-size:20px;color:var(--ocre-cl);display:flex;align-items:center;gap:14px}
-  .lt .num::after{content:"";width:90px;border-top:2px solid var(--ocre-cl)}
-  .lt .ttl{font-size:92px;line-height:1;margin-top:14px;text-shadow:0 4px 30px rgba(0,0,0,.45)}
-  .lt .sub{font-size:46px;color:var(--ocre-cl);margin-top:10px;transform:rotate(-3deg);transform-origin:left}
+  /* fondo ambiental: la misma foto, desenfocada y teñida */
+  .amb{position:absolute;inset:-80px;opacity:0;will-change:opacity}
+  .amb img{width:100%;height:100%;object-fit:cover;filter:blur(46px) saturate(.8) brightness(.55)}
+  .tint{position:absolute;inset:0;background:
+      linear-gradient(180deg,rgba(31,38,20,.82) 0%,rgba(31,38,20,.45) 30%,rgba(31,38,20,.45) 70%,rgba(31,38,20,.9) 100%)}
 
-  /* cierre */
+  .scene{position:absolute;inset:0;opacity:0;will-change:opacity}
+  .persp{position:absolute;left:0;right:0;top:380px;height:1290px;perspective:2200px;display:flex;align-items:center;justify-content:center}
+  .card{position:relative;will-change:transform;box-shadow:0 40px 80px -30px rgba(0,0,0,.75),0 0 0 1px rgba(234,223,198,.18)}
+  .card img{display:block;width:100%;height:100%;object-fit:contain;border-radius:3px;filter:contrast(1.04) saturate(.94)}
+  .card::after{content:"";position:absolute;inset:0;border-radius:3px;pointer-events:none;
+      background:linear-gradient(115deg,rgba(255,255,255,.10) 0%,rgba(255,255,255,0) 35%)}
+
+  .head{position:absolute;left:72px;right:72px;top:150px}
+  .head .lbl{font-size:19px;color:var(--ocre-cl);display:flex;align-items:center;gap:16px}
+  .head .lbl i{width:64px;border-top:2px solid var(--ocre-cl)}
+  .head .ttl{font-size:86px;line-height:1.02;margin-top:18px;color:#F3EAD5}
+  .foot-note{position:absolute;left:72px;right:72px;top:1700px;font-size:50px;color:var(--ocre-cl);transform-origin:left}
+
+  #bar{position:absolute;left:72px;right:72px;bottom:70px;display:flex;justify-content:space-between;align-items:center;font-size:17px;color:rgba(234,223,198,.75);z-index:15}
+  #bar b{color:var(--papel);font-weight:600}
+  #progress{position:absolute;left:72px;right:72px;bottom:118px;height:2px;background:rgba(234,223,198,.15);z-index:15}
+  #progress i{display:block;height:100%;background:var(--ocre-cl);width:0}
+
+  #intro{position:absolute;inset:0;z-index:10}
+  #intro .draw{position:absolute;left:50%;top:300px;width:420px;height:780px;margin-left:-210px}
+  #intro .draw path,#intro .draw circle{fill:none;stroke:var(--ocre-cl);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
   #outro{position:absolute;inset:0;z-index:20;opacity:0;color:var(--tinta);
     background:radial-gradient(120% 90% at 30% 20%,#F1E8D2 0%,var(--papel) 45%,var(--papel-2) 100%)}
-  #outro .paper{position:absolute;inset:0;mix-blend-mode:multiply;opacity:.55;
+  #outro .paper{position:absolute;inset:0;mix-blend-mode:multiply;opacity:.5;
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .38  0 0 0 0 .25  0 0 0 .35 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
   #outro .list{list-style:none}
   #outro .list li{display:flex;align-items:baseline;gap:18px;border-bottom:1.5px dashed rgba(37,45,24,.45);padding:12px 0 9px}
   #outro .list em{font-style:normal;font-family:"IBM Plex Mono";font-weight:600;font-size:18px;color:var(--ocre);width:34px}
   #outro .list b{font-family:"DM Serif Display";font-weight:400;font-size:50px;line-height:1.05}
-  .band{position:absolute;left:0;right:0;bottom:0;height:400px;background:var(--musgo-osc);color:#F3EAD5}
+  .band{position:absolute;left:0;right:0;bottom:0;height:400px;background:#252D18;color:#F3EAD5}
   .band .edge{position:absolute;left:0;top:-22px;width:100%;height:24px}
   .tel{font-family:Anton;font-size:96px;line-height:1.05;letter-spacing:.02em}
   .tel small{font-size:.5em;color:#C9BC9A;margin-right:.2em;vertical-align:.22em}
+  .t{position:absolute;opacity:0;will-change:transform,opacity}
+
+  .grain{position:absolute;inset:-60px;pointer-events:none;z-index:30;opacity:.07;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.95' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 </style>
 </head>
 <body>
 <div id="stage">
-  <svg width="0" height="0" style="position:absolute"><defs id="filters"></defs></svg>
-  <div id="shots"></div>
-  <div class="grade" id="grade"></div>
-  <div id="texts"></div>
+  <div id="ambs"></div>
+  <div class="tint"></div>
+  <div id="scenes"></div>
+
+  <div id="intro">
+    <div class="t mono" data-k="i-top" style="left:72px;right:72px;top:150px;font-size:19px;color:var(--ocre-cl);display:flex;gap:16px;align-items:center">
+      <span>Servicios rurales</span><i style="flex:1;border-top:2px solid var(--ocre-cl);opacity:.6"></i><span>Agua · Energía</span></div>
+    <svg class="draw" viewBox="0 0 300 560" id="windmill"></svg>
+    <div class="t anton" data-k="i-n1" style="left:0;right:0;text-align:center;top:1080px;font-size:210px;line-height:.86;color:#F3EAD5"><span class="mask"><span>Julián</span></span></div>
+    <div class="t anton" data-k="i-n2" style="left:0;right:0;text-align:center;top:1262px;font-size:210px;line-height:.86;color:var(--ocre-cl)"><span class="mask"><span>Acebal</span></span></div>
+    <div class="t script" data-k="i-mol" style="left:0;right:0;text-align:center;top:1480px;font-size:96px;color:var(--papel)">molinero</div>
+  </div>
+
+  <div id="progress"><i id="pbar"></i></div>
+  <div id="bar" class="mono"><span><b>Julián Acebal</b> · Molinero</span><span>(2268) 518 941</span></div>
 
   <div id="outro">
     <div class="paper"></div>
     <div class="t mono" data-k="o-top" style="left:64px;right:64px;top:110px;font-size:20px;color:var(--musgo);display:flex;gap:16px;align-items:center">
       <span>Servicios rurales</span><i style="flex:1;border-top:2px solid var(--musgo);opacity:.7"></i><span>Agua · Energía</span></div>
-    <div class="t anton" data-k="o-n1" style="left:58px;top:190px;font-size:230px;line-height:.84;color:var(--musgo-osc)"><span class="mask"><span>Julián</span></span></div>
+    <div class="t anton" data-k="o-n1" style="left:58px;top:190px;font-size:230px;line-height:.84;color:#252D18"><span class="mask"><span>Julián</span></span></div>
     <div class="t anton" data-k="o-n2" style="left:58px;top:383px;font-size:230px;line-height:.84;color:var(--musgo)"><span class="mask"><span>Acebal</span></span></div>
     <div class="t script" data-k="o-mol" style="left:120px;top:590px;font-size:100px;color:var(--ocre);transform-origin:left">molinero</div>
     <div class="t" data-k="o-list" style="left:64px;right:64px;top:770px">
@@ -88,72 +110,59 @@
 </div>
 
 <script>
-/* ---------- utilidades ---------- */
 const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
 const lerp=(a,b,p)=>a+(b-a)*p;
-const eio=p=>p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;      // cámara suave
+const eio=p=>-(Math.cos(Math.PI*p)-1)/2;
 const eout=p=>1-Math.pow(1-p,3);
 const ein=p=>p*p*p;
 let seed=11; const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
 
-/* ---------- tomas tipo dron ----------
-   x,y en px · s escala · rx inclinación (cabeceo) · rz giro (órbita)
-   dir: hacia dónde "barre" la salida (x / y)                    */
-const T=0.45; // solapamiento de transición
-const SHOTS=[
-  {img:"tanque.jpg", a:0.0,  b:4.6,  pos:"60% 55%", origin:"55% 55%", dir:"y",
-   from:{x:0,y:-60,s:1.55,rx:24,rz:-6}, to:{x:0,y:40,s:1.18,rx:6,rz:4}},        // descenso con giro sobre el tanque
-  {img:"obra.jpg",   a:4.6-T,b:8.6,  pos:"35% 70%", origin:"40% 65%", dir:"x",
-   from:{x:90,y:0,s:1.62,rx:14,rz:4}, to:{x:-90,y:-30,s:1.5,rx:10,rz:-4}},   // pasada lateral en órbita
-  {img:"molino.jpg", a:8.6-T,b:12.6, pos:"40% 50%", origin:"45% 30%", dir:"y",
-   from:{x:0,y:-230,s:1.42,rx:-8,rz:0}, to:{x:-10,y:150,s:1.18,rx:4,rz:-1.5}},  // subida por la torre del molino
-  {img:"bombeo-solar.jpg", a:12.6-T,b:16.4, pos:"45% 40%", origin:"50% 50%", dir:"x",
-   from:{x:200,y:0,s:1.3,rx:10,rz:2}, to:{x:-140,y:-20,s:1.42,rx:4,rz:-2}},     // travelling frente a los paneles
-  {img:"tanque-agua.jpg", a:16.4-T,b:19.4, pos:"30% 60%", origin:"35% 70%", dir:"x",
-   from:{x:40,y:30,s:1.3,rx:7,rz:-2.5}, to:{x:0,y:-10,s:1.42,rx:2,rz:2.5}},       // acercamiento al flotante
-  {img:"tractor.jpg", a:19.4-T,b:22.4, pos:"50% 55%", origin:"50% 60%", dir:"x",
-   from:{x:-140,y:0,s:1.35,rx:12,rz:-3}, to:{x:120,y:-20,s:1.22,rx:6,rz:2}},    // paneo sobre la obra
+/* ---------- guion ----------
+   cada escena: la foto completa + movimiento de cámara suave (inclinación y deriva, sin recorte) */
+const X=0.8; // fundido entre escenas
+const SC=[
+  {img:"tanque",          lbl:"Agua",          ttl:"Tanques",                     note:"armados en el campo",            a:3.4,  b:7.4,  m:{rx:[7,-2], ry:[-5,4], y:[30,-20]}},
+  {img:"molino",          lbl:"Viento",        ttl:"Molinos de viento",           note:"instalación y service",          a:7.4,  b:11.4, m:{rx:[-6,3], ry:[4,-4], y:[-30,20]}},
+  {img:"bombeo-solar",    lbl:"Energía solar", ttl:"Paneles y bombas<br>solares", note:"agua sin red eléctrica",         a:11.4, b:15.4, m:{rx:[5,-3], ry:[-6,5], y:[20,-20]}},
+  {img:"estructura-solar",lbl:"Energía solar", ttl:"Montaje de paneles",          note:"estructura y bases de hormigón", a:15.4, b:19.0, m:{rx:[-4,4], ry:[6,-5], y:[-20,20]}},
+  {img:"tanque-agua",     lbl:"Hacienda",      ttl:"Bebederos",                   note:"agua para los animales",         a:19.0, b:22.8, m:{rx:[6,-3], ry:[-4,5], y:[30,-10]}},
+  {img:"tractor",         lbl:"Obra",          ttl:"Movimientos de tierra",       note:"y perforaciones",                a:22.8, b:26.6, m:{rx:[-5,3], ry:[5,-5], y:[-20,20]}},
 ];
-const OUTRO_A=22.0, DURATION=28.0;
+const INTRO_B=3.4+X/2, OUTRO_A=26.6, DURATION=33;
 
-const LT=[
-  {i:1,num:"01",ttl:"Tanques",sub:"armados en el campo"},
-  {i:2,num:"02",ttl:"Molinos de viento",sub:"instalación y service"},
-  {i:3,num:"03",ttl:"Paneles y bombas<br>solares",sub:"agua sin red eléctrica"},
-  {i:4,num:"04",ttl:"Bebederos",sub:"agua para la hacienda"},
-  {i:5,num:"05",ttl:"Movimientos<br>de tierra",sub:"y perforaciones"},
-];
-
-/* ---------- construir DOM ---------- */
-const shotsEl=document.getElementById("shots"), filt=document.getElementById("filters"), textsEl=document.getElementById("texts");
-SHOTS.forEach((s,i)=>{
-  filt.insertAdjacentHTML("beforeend",`<filter id="mb${i}" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur id="gb${i}" stdDeviation="0 0"/></filter>`);
-  shotsEl.insertAdjacentHTML("beforeend",`<div class="shot" id="s${i}"><img src="assets/${s.img}" style="object-position:${s.pos};transform-origin:${s.origin}"></div>`);
-});
-
-// intro: nombre sobre la primera toma
-textsEl.insertAdjacentHTML("beforeend",`
-  <div class="t mono" data-k="i-top" style="left:64px;right:64px;top:120px;font-size:20px;color:var(--papel);display:flex;gap:16px;align-items:center">
-    <span>Servicios rurales</span><i style="flex:1;border-top:2px solid var(--papel);opacity:.6"></i><span>Agua · Energía</span></div>
-  <div class="t anton" data-k="i-n1" style="left:58px;bottom:420px;font-size:200px;line-height:.84;color:var(--papel)"><span class="mask"><span>Julián</span></span></div>
-  <div class="t anton" data-k="i-n2" style="left:58px;bottom:252px;font-size:200px;line-height:.84;color:var(--ocre-cl)"><span class="mask"><span>Acebal</span></span></div>
-  <div class="t script" data-k="i-mol" style="left:110px;bottom:150px;font-size:92px;color:var(--papel);transform-origin:left">molinero</div>
-`);
-LT.forEach(l=>{
-  textsEl.insertAdjacentHTML("beforeend",`
-  <div class="t lt" data-k="lt${l.i}">
-    <div class="mono num">${l.num}</div>
-    <div class="serif ttl"><span class="mask"><span>${l.ttl}</span></span></div>
-    <div class="script sub">${l.sub}</div>
+const ambs=document.getElementById("ambs"), scenes=document.getElementById("scenes");
+ambs.insertAdjacentHTML("beforeend",`<div class="amb" id="amb-i"><img src="hd/obra.jpg"></div>`);
+SC.forEach((s,i)=>{
+  ambs.insertAdjacentHTML("beforeend",`<div class="amb" id="amb${i}"><img src="hd/${s.img}.jpg"></div>`);
+  scenes.insertAdjacentHTML("beforeend",`
+  <div class="scene" id="sc${i}">
+    <div class="head">
+      <div class="mono lbl" data-k="l${i}"><i></i>${s.lbl}</div>
+      <div class="serif ttl" data-k="h${i}"><span class="mask"><span>${s.ttl}</span></span></div>
+    </div>
+    <div class="persp"><div class="card" id="cd${i}"><img id="im${i}" src="hd/${s.img}.jpg"></div></div>
+    <div class="script foot-note" data-k="n${i}">${s.note}</div>
   </div>`);
 });
 
+// molino dibujado (intro)
+(function(){
+  let aspas="";
+  for(let k=0;k<16;k++){const a=(k/16)*Math.PI*2,a2=a+0.16;
+    const p=(r,ang)=>`${(130+Math.cos(ang)*r).toFixed(1)},${(110+Math.sin(ang)*r).toFixed(1)}`;
+    aspas+=`<path d="M${p(14,a)} L${p(86,a)} L${p(86,a2)} L${p(14,a2+0.05)}"/>`;}
+  document.getElementById("windmill").innerHTML=`<g id="rotor">
+    <circle cx="130" cy="110" r="88"/><circle cx="130" cy="110" r="52"/><circle cx="130" cy="110" r="12"/>${aspas}</g>
+    <path d="M140 108 L252 96 L262 70 L292 66 L288 132 L258 128 L252 116 L140 116"/>
+    <path d="M118 128 L70 552 M142 128 L190 552 M106 230 L154 230 M96 330 L164 330 M86 430 L174 430 M78 520 L182 520 M106 230 L164 330 L86 430 L182 520 M154 230 L96 330 L174 430 L78 520"/>`;
+})();
+const drawEls=[...document.querySelectorAll("#windmill path,#windmill circle")];
+drawEls.forEach(e=>{const L=e.getTotalLength(); e.dataset.len=L; e.style.strokeDasharray=L;});
+
 const SERV=["Molinos de viento","Paneles y bombas solares","Tanques","Bebederos","Perforaciones","Movimientos de tierra"];
 document.getElementById("olist").innerHTML=SERV.map((s,i)=>`<li data-li="${i}" style="opacity:0"><em>0${i+1}</em><b>${s}</b></li>`).join("");
-
 let d="M0 24 L0 14",x=0; while(x<1080){x+=6+rnd()*14; d+=` L${x.toFixed(1)} ${(4+rnd()*14).toFixed(1)}`;}
 document.getElementById("edgepath").setAttribute("d",d+" L1080 24 Z");
-
 document.getElementById("stamp").innerHTML=`<svg viewBox="0 0 220 220" width="250" height="250">
   <defs><filter id="ink" x="-5%" y="-5%" width="110%" height="110%">
     <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="9" result="t"/>
@@ -171,78 +180,81 @@ document.getElementById("stamp").innerHTML=`<svg viewBox="0 0 220 220" width="25
 
 const K={}; document.querySelectorAll("[data-k]").forEach(e=>K[e.dataset.k]=e);
 
-/* aparición: sube + fade; si tiene .mask, el texto emerge desde abajo */
-function reveal(el,t,a,b,{dy=40,outDy=-30,rot=0}={}){
-  const pi=eout(clamp((t-a)/0.7)), po=b==null?0:ein(clamp((t-(b-0.45))/0.45));
-  el.style.opacity=(pi*(1-po)).toFixed(3);
-  el.style.transform=`translateY(${(1-pi)*dy+po*outDy}px) rotate(${rot}deg)`;
-  const m=el.querySelector(".mask>span"); if(m) m.style.transform=`translateY(${(1-eout(clamp((t-a)/0.8)))*105}%)`;
+// cada foto entra completa en la caja (936 x 1270)
+function fit(){
+  SC.forEach((s,i)=>{
+    const im=document.getElementById("im"+i), cd=document.getElementById("cd"+i);
+    const r=im.naturalWidth/im.naturalHeight, W=936, H=1270;
+    let w=W,h=W/r; if(h>H){h=H;w=H*r;}
+    cd.style.width=w+"px"; cd.style.height=h+"px";
+  });
 }
 
-/* ---------- render de un instante ---------- */
+function reveal(el,t,a,b,{dy=36,outDy=-24,rot=0}={}){
+  const pi=eout(clamp((t-a)/0.75)), po=b==null?0:ein(clamp((t-(b-0.5))/0.5));
+  el.style.opacity=(pi*(1-po)).toFixed(3);
+  el.style.transform=`translateY(${(1-pi)*dy+po*outDy}px) rotate(${rot}deg)`;
+  const m=el.querySelector(".mask>span"); if(m) m.style.transform=`translateY(${(1-eout(clamp((t-a)/0.85)))*105}%)`;
+}
+
 window.seek=function(t){
-  SHOTS.forEach((s,i)=>{
-    const el=document.getElementById("s"+i), img=el.firstChild;
-    if(t<s.a-0.01||t>s.b+0.01){el.style.opacity=0;return;}
-    const p=clamp((t-s.a)/(s.b-s.a)), q=eio(p*0.85+p*0.15*p);   // casi lineal: el dron no frena en seco
-    const f=s.from,g=s.to;
-    // whip de salida / entrada
-    const out=clamp((t-(s.b-T))/T), inn=clamp((t-s.a)/T);
-    const isFirst=i===0, isLast=i===SHOTS.length-1;
-    const kick=ein(out)*(s.dir==="x"?-170:-200);
-    const kin =(1-eout(inn))*(isFirst?0:(s.dir==="x"?150:180));
-    const boost=(isLast?0:ein(out))*0.34+(isFirst?0:1-eout(inn))*0.34;
-    const X=lerp(f.x,g.x,q)+(s.dir==="x"?kick+kin:0);
-    const Y=lerp(f.y,g.y,q)+(s.dir==="y"?kick+kin:0);
-    img.style.transform=`translate3d(${X}px,${Y}px,0) rotateX(${lerp(f.rx,g.rx,q)}deg) rotateZ(${lerp(f.rz,g.rz,q)}deg) scale(${lerp(f.s,g.s,q)+boost})`;
-    const blur=Math.max(ein(out)*(isLast?0:46),(1-eout(inn))*(isFirst?0:46));
-    document.getElementById("gb"+i).setAttribute("stdDeviation",s.dir==="x"?`${blur} 0`:`0 ${blur}`);
-    el.style.filter=blur>0.3?`url(#mb${i})`:"none";
-    let op=isFirst?clamp(t/0.6):eout(inn);
-    if(isLast) op*=1-clamp((t-(OUTRO_A))/0.5);
-    el.style.opacity=op;
-    el.style.zIndex=i+1;
+  // intro
+  const io=1-eio(clamp((t-(INTRO_B-X))/X));
+  document.getElementById("intro").style.opacity=io;
+  document.getElementById("amb-i").style.opacity=io*0.9;
+  drawEls.forEach((e,j)=>{const p=eio(clamp((t-0.15-j*0.012)/1.6)); e.style.strokeDashoffset=e.dataset.len*(1-p);});
+  document.getElementById("rotor").setAttribute("transform",`rotate(${t*38} 130 110)`);
+  reveal(K["i-top"],t,0.3,null,{dy:-16});
+  reveal(K["i-n1"],t,0.8,null); reveal(K["i-n2"],t,1.05,null); reveal(K["i-mol"],t,1.6,null,{rot:-6});
+  document.getElementById("windmill").style.transform=`translateY(${-t*8}px)`;
+
+  // escenas
+  SC.forEach((s,i)=>{
+    const sc=document.getElementById("sc"+i), am=document.getElementById("amb"+i), cd=document.getElementById("cd"+i);
+    const a=s.a-X/2, b=s.b+X/2;
+    if(t<a||t>b){sc.style.opacity=0;am.style.opacity=0;return;}
+    const pin=eio(clamp((t-a)/X)), pout=eio(clamp((t-(b-X))/X));
+    const last=i===SC.length-1;
+    const op=pin*(last?1:(1-pout));
+    sc.style.opacity=op; am.style.opacity=op;
+    const q=eio(clamp((t-a)/(b-a))), m=s.m;
+    // entra desde abajo y sale hacia arriba: la cámara avanza de una toma a la otra
+    const y=lerp(m.y[0],m.y[1],q)+(1-pin)*70-(last?0:pout*70);
+    cd.style.transform=`translate3d(0,${y}px,0) rotateX(${lerp(m.rx[0],m.rx[1],q)}deg) rotateY(${lerp(m.ry[0],m.ry[1],q)}deg) scale(${lerp(0.965,1.0,q)})`;
+    am.firstChild.style.transform=`scale(1.1) translateY(${lerp(20,-20,q)}px)`;
+    reveal(K["l"+i],t,s.a-0.15,s.b+0.1,{dy:-14});
+    reveal(K["h"+i],t,s.a-0.05,s.b+0.1);
+    reveal(K["n"+i],t,s.a+0.35,s.b+0.1,{rot:-3});
   });
 
-  // intro
-  reveal(K["i-top"],t,0.5,4.1,{dy:-20});
-  reveal(K["i-n1"],t,0.9,4.1);
-  reveal(K["i-n2"],t,1.15,4.1);
-  reveal(K["i-mol"],t,1.7,4.1,{rot:-7});
-  // lower thirds
-  LT.forEach(l=>{const s=SHOTS[l.i]; reveal(K["lt"+l.i],t,s.a+0.55,s.b-0.25);});
+  // barra y progreso
+  const inScenes=t>INTRO_B-0.4&&t<OUTRO_A+0.4;
+  const bo=Math.min(eout(clamp((t-(INTRO_B-0.4))/0.6)),1-eout(clamp((t-OUTRO_A)/0.4)));
+  document.getElementById("bar").style.opacity=inScenes?bo:0;
+  document.getElementById("progress").style.opacity=inScenes?bo:0;
+  document.getElementById("pbar").style.width=(clamp((t-SC[0].a)/(OUTRO_A-SC[0].a))*100)+"%";
 
   // cierre
-  const o=document.getElementById("outro");
-  const po=eout(clamp((t-OUTRO_A)/0.55));
-  o.style.opacity=po; o.style.transform=`scale(${1.06-0.06*po})`;
-  document.getElementById("grade").style.opacity=1-po;
-  reveal(K["o-top"],t,OUTRO_A+0.3,null,{dy:-20});
-  reveal(K["o-n1"],t,OUTRO_A+0.45,null);
-  reveal(K["o-n2"],t,OUTRO_A+0.65,null);
-  reveal(K["o-mol"],t,OUTRO_A+1.1,null,{rot:-7});
-  reveal(K["o-list"],t,OUTRO_A+1.2,null,{dy:0});
-  document.querySelectorAll("[data-li]").forEach((li,j)=>{
-    const p=eout(clamp((t-(OUTRO_A+1.3+j*0.16))/0.5));
-    li.style.opacity=p; li.style.transform=`translateX(${(1-p)*-40}px)`;
-  });
-  const pb=eout(clamp((t-(OUTRO_A+1.9))/0.7));
+  const o=document.getElementById("outro"), po=eio(clamp((t-OUTRO_A)/0.8));
+  o.style.opacity=po; o.style.transform=`translateY(${(1-po)*80}px)`;
+  reveal(K["o-top"],t,OUTRO_A+0.4,null,{dy:-20});
+  reveal(K["o-n1"],t,OUTRO_A+0.55,null); reveal(K["o-n2"],t,OUTRO_A+0.75,null);
+  reveal(K["o-mol"],t,OUTRO_A+1.2,null,{rot:-7});
+  reveal(K["o-list"],t,OUTRO_A+1.3,null,{dy:0});
+  document.querySelectorAll("[data-li]").forEach((li,j)=>{const p=eout(clamp((t-(OUTRO_A+1.4+j*0.16))/0.55)); li.style.opacity=p; li.style.transform=`translateX(${(1-p)*-36}px)`;});
+  const pb=eout(clamp((t-(OUTRO_A+2.1))/0.8));
   K["o-band"].style.opacity=pb>0?1:0; K["o-band"].style.transform=`translateY(${(1-pb)*420}px)`;
-  // sello: golpe
-  const ts=t-(OUTRO_A+3.0), st=K["o-stamp"];
-  if(ts<0){st.style.opacity=0;}
-  else{const p=clamp(ts/0.22); const bounce=ts>0.22?Math.sin(clamp((ts-0.22)/0.25)*Math.PI)*0.04:0;
-    st.style.opacity=clamp(ts/0.12); st.style.transform=`rotate(-12deg) scale(${lerp(1.9,1,ein(p))-bounce})`;}
+  const ts=t-(OUTRO_A+3.3), st=K["o-stamp"];
+  if(ts<0) st.style.opacity=0;
+  else{const p=clamp(ts/0.22),b2=ts>0.22?Math.sin(clamp((ts-0.22)/0.25)*Math.PI)*0.04:0;
+    st.style.opacity=clamp(ts/0.12); st.style.transform=`rotate(-12deg) scale(${lerp(1.9,1,ein(p))-b2})`;}
+  const shake=ts>0.2&&ts<0.45?Math.sin(ts*90)*(0.45-ts)*10:0;
+  o.style.translate=`${shake}px ${shake*0.6}px`;
 
-  // sacudón sutil cuando cae el sello
-  const shake=ts>0.2&&ts<0.45?Math.sin(ts*90)*(0.45-ts)*14:0;
-  document.getElementById("outro").style.translate=`${shake}px ${shake*0.6}px`;
-
-  // grano vivo
   const g=document.getElementById("grain"); seed=1+Math.floor(t*24); g.style.transform=`translate(${(rnd()*60-30)|0}px,${(rnd()*60-30)|0}px)`;
 };
 window.DURATION=DURATION;
-seek(Number(new URLSearchParams(location.search).get("t")||0));
+window.ready=Promise.all([...document.images].map(im=>im.decode().catch(()=>{}))).then(fit);
 </script>
 </body>
 </html>
