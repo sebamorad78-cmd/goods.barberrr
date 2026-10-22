@@ -6,7 +6,7 @@ const FORMATS = { post: [1080, 1350], story: [1080, 1920] };
 (async () => {
   const browser = await chromium.launch();
   for (const [fmt, [w, h]] of Object.entries(FORMATS)) {
-    const page = await browser.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 2 });
+    const page = await browser.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 3 });
     const url = 'file://' + path.join(__dirname, 'flyer.html') + `?format=${fmt}&data=${encodeURIComponent(data)}`;
     await page.goto(url, { waitUntil: 'networkidle' });
     await page.evaluate(() => document.fonts.ready);
