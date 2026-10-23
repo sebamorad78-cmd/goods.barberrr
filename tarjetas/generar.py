@@ -27,9 +27,10 @@ BLEED = 3                 # mm
 MARK = 10                 # mm extra para marcas de corte
 
 TELEFONO = "+54 9 2268 51-6801"
-QR_URL = "https://wa.me/5492268516801"
+QR_URL = "https://goods.ar"
 INSTAGRAM = "@sebamoraddd"
-NOMBRE = "Sebastian Morad"
+NOMBRE = "Sebastián Morad"
+CARGO = "DISEÑADOR & DESARROLLADOR WEB"
 
 # Colores CMYK (0..1). Negro enriquecido sólo para fondos; texto chico en K puro.
 NEGRO_RICO = CMYKColor(0.60, 0.40, 0.40, 1.00)
@@ -38,6 +39,7 @@ BLANCO = CMYKColor(0, 0, 0, 0)
 HUESO = CMYKColor(0, 0.02, 0.06, 0)
 CHAMPAGNE = CMYKColor(0, 0.18, 0.45, 0.20)
 GRIS = CMYKColor(0, 0, 0, 0.62)
+TONO = CMYKColor(0.60, 0.40, 0.40, 0.78)  # tono sobre tono del frente
 
 
 class Fuente:
@@ -89,6 +91,28 @@ def ancho(fuente, texto, pt, tracking=0):
     return total / mm * 1  # pt -> mm
 
 
+# En modo máscara sólo se dibujan los elementos dorados, en 100% K,
+# para el archivo de hot-stamping (laminado metálico).
+MASCARA = False
+
+
+def pintar(c, color, trazo=False):
+    if MASCARA:
+        if color is not CHAMPAGNE:
+            return False
+        color = NEGRO_K
+    (c.setStrokeColor if trazo else c.setFillColor)(color)
+    return True
+
+
+def fondo(c, color, x=None, y=None, w=None, h=None):
+    """Rectángulo en mm; sin medidas cubre toda la tarjeta con sangrado."""
+    if x is None:
+        x, y, w, h = -BLEED, -BLEED, TRIM_W + 2 * BLEED, TRIM_H + 2 * BLEED
+    if pintar(c, color):
+        c.rect(x * mm, y * mm, w * mm, h * mm, stroke=0, fill=1)
+
+
 def texto(c, fuente, cadena, x, y, pt, color, tracking=0, align="left"):
     """Dibuja texto como curvas. x, y en mm (línea base)."""
     w = ancho(fuente, cadena, pt, tracking)
@@ -102,8 +126,8 @@ def texto(c, fuente, cadena, x, y, pt, color, tracking=0, align="left"):
     for nombre, adv in fuente.shape(cadena):
         fuente.glyphs[nombre].draw(PathPen(fuente.glyphs, path, cx, cy, s))
         cx += adv * s + tracking / 1000 * pt
-    c.setFillColor(color)
-    c.drawPath(path, stroke=0, fill=1, fillMode=1)  # nonzero winding
+    if pintar(c, color):
+        c.drawPath(path, stroke=0, fill=1, fillMode=1)  # nonzero winding
     return w
 
 
@@ -127,50 +151,75 @@ def qr(c, data, x, y, lado, color):
                           (col - ini) * mod * mm + 0.01, mod * mm + 0.01)
             else:
                 col += 1
-    c.setFillColor(color)
-    c.drawPath(path, stroke=0, fill=1)
+    if pintar(c, color):
+        c.drawPath(path, stroke=0, fill=1)
 
 
 def linea(c, x1, y1, x2, y2, color, grosor_pt):
-    c.setStrokeColor(color)
-    c.setLineWidth(grosor_pt)
-    c.line(x1 * mm, y1 * mm, x2 * mm, y2 * mm)
+    if pintar(c, color, trazo=True):
+        c.setLineWidth(grosor_pt)
+        c.line(x1 * mm, y1 * mm, x2 * mm, y2 * mm)
 
 
 F = {}
 
 
-def frente(c):
-    W, H = TRIM_W, TRIM_H
-    c.setFillColor(NEGRO_RICO)
-    c.rect(-BLEED * mm, -BLEED * mm, (W + 2 * BLEED) * mm, (H + 2 * BLEED) * mm, stroke=0, fill=1)
-
-    # Wordmark: SM en Bold + STUDIO en Light, centrado ópticamente
-    pt, tr = 23, 140
+def wordmark(c, x, yb, pt, tr, color=BLANCO, align="left"):
     w_sm = ancho(F["display_bold"], "SM", pt, tr)
-    w_st = ancho(F["display_light"], "STUDIO", pt, tr)
     gap = tr / 1000 * pt / mm
-    total = w_sm + gap + w_st
-    x0, yb = W / 2 - total / 2, H / 2 + 0.6
-    texto(c, F["display_bold"], "SM", x0, yb, pt, BLANCO, tr)
-    texto(c, F["display_light"], "STUDIO", x0 + w_sm + gap, yb, pt, BLANCO, tr)
+    total = w_sm + gap + ancho(F["display_light"], "STUDIO", pt, tr)
+    if align == "center":
+        x -= total / 2
+    texto(c, F["display_bold"], "SM", x, yb, pt, color, tr)
+    texto(c, F["display_light"], "STUDIO", x + w_sm + gap, yb, pt, color, tr)
+    return total
 
-    linea(c, W / 2 - 6, H / 2 - 4.2, W / 2 + 6, H / 2 - 4.2, CHAMPAGNE, 0.5)
+
+# Las líneas doradas van a 0.75 pt (0.26 mm): mínimo seguro para hot-stamping.
+FILETE = 0.75
+
+
+def frente_clasico(c):
+    W, H = TRIM_W, TRIM_H
+    fondo(c, NEGRO_RICO)
+    wordmark(c, W / 2, H / 2 + 0.6, 23, 140, align="center")
+    linea(c, W / 2 - 6, H / 2 - 4.2, W / 2 + 6, H / 2 - 4.2, CHAMPAGNE, FILETE)
     texto(c, F["medium"], "DISEÑO & DESARROLLO WEB", W / 2, H / 2 - 9.2, 6.5, CHAMPAGNE, 320, "center")
+
+
+def frente_monograma(c):
+    W, H = TRIM_W, TRIM_H
+    fondo(c, NEGRO_RICO)
+    # SM gigante tono sobre tono, cortado por los bordes superior y derecho
+    texto(c, F["display_bold"], "SM", W + 5, H - 21, 120, TONO, -20, "right")
+    x = 7.5
+    linea(c, x, H - 7.5, x + 8, H - 7.5, CHAMPAGNE, FILETE)
+    wordmark(c, x, 13.6, 17, 140)
+    texto(c, F["medium"], "DISEÑO & DESARROLLO WEB", x, 7.4, 6.2, CHAMPAGNE, 300)
+
+
+def frente_codigo(c):
+    W, H = TRIM_W, TRIM_H
+    fondo(c, NEGRO_RICO)
+    texto(c, F["mono"], "</>", 7.5, H - 9.5, 8, CHAMPAGNE, 0)
+    wordmark(c, W / 2, H / 2 + 0.6, 23, 140, align="center")
+    linea(c, W / 2 - 6, H / 2 - 4.2, W / 2 + 6, H / 2 - 4.2, CHAMPAGNE, FILETE)
+    texto(c, F["medium"], "DISEÑO & DESARROLLO WEB", W / 2, H / 2 - 9.2, 6.5, CHAMPAGNE, 320, "center")
+    linea(c, W - 7.5 - 8, 7.5, W - 7.5, 7.5, CHAMPAGNE, FILETE)
+
+
+FRENTES = {"monograma": frente_monograma, "codigo": frente_codigo, "clasico": frente_clasico}
 
 
 def dorso(c):
     W, H = TRIM_W, TRIM_H
-    c.setFillColor(HUESO)
-    c.rect(-BLEED * mm, -BLEED * mm, (W + 2 * BLEED) * mm, (H + 2 * BLEED) * mm, stroke=0, fill=1)
+    fondo(c, HUESO)
     # franja champagne al borde izquierdo (corre por el sangrado)
-    c.setFillColor(CHAMPAGNE)
-    c.rect(-BLEED * mm, -BLEED * mm, (BLEED + 1.6) * mm, (H + 2 * BLEED) * mm, stroke=0, fill=1)
+    fondo(c, CHAMPAGNE, -BLEED, -BLEED, BLEED + 1.6, H + 2 * BLEED)
 
     x = 7.5
-    # nombre (la marca va en el frente)
     texto(c, F["display_semibold"], NOMBRE, x, H - 9.8, 11.5, NEGRO_K, 0)
-    texto(c, F["medium"], "DISEÑO & DESARROLLO WEB", x, H - 14.2, 5.8, GRIS, 260)
+    texto(c, F["medium"], CARGO, x, H - 14.2, 5.6, GRIS, 180)
 
     def bloque(y, etiqueta, valor, fuente="semibold", pt=8.6):
         texto(c, F["semibold"], etiqueta, x, y + 3.9, 5.6, CHAMPAGNE, 260)
@@ -178,16 +227,15 @@ def dorso(c):
 
     bloque(25.0, "WHATSAPP", TELEFONO)
     bloque(16.2, "INSTAGRAM", INSTAGRAM)
-
     bloque(7.4, "PROYECTO", "goods.ar")
 
-    # divisor + QR
+    # divisor + QR a goods.ar
     lado = 21.0
     qx, qy = W - 6.0 - lado, 12.6
     linea(c, qx - 5.0, 8.0, qx - 5.0, H - 8.0, CHAMPAGNE, 0.35)
     qr(c, QR_URL, qx, qy, lado, NEGRO_K)
     texto(c, F["semibold"], "ESCANEÁ", qx + lado / 2, qy - 3.6, 5.6, NEGRO_K, 260, "center")
-    texto(c, F["medium"], "y escribime", qx + lado / 2, qy - 6.6, 5.6, GRIS, 20, "center")
+    texto(c, F["medium"], "y mirá mi trabajo", qx + lado / 2, qy - 6.6, 5.6, GRIS, 20, "center")
 
 
 def pagina(c, dibujar, marcas):
@@ -201,25 +249,27 @@ def pagina(c, dibujar, marcas):
         reg = CMYKColor(1, 1, 1, 1)
         x0, y0, x1, y1 = off, off, off + TRIM_W, off + TRIM_H
         largo, sep = 6, BLEED + 1
+        global MASCARA
+        m, MASCARA = MASCARA, False
         for x in (x0, x1):
             for y, d in ((y0, -1), (y1, 1)):
                 linea(c, x, y + d * sep, x, y + d * (sep + largo), reg, 0.25)
         for y in (y0, y1):
             for x, d in ((x0, -1), (x1, 1)):
                 linea(c, x + d * sep, y, x + d * (sep + largo), y, reg, 0.25)
+        MASCARA = m
     c.showPage()
 
 
-def pdf(nombre, marcas):
+def pdf(ruta, paginas, marcas):
     extra = BLEED + (MARK if marcas else 0)
     pw, ph = TRIM_W + 2 * extra, TRIM_H + 2 * extra
-    ruta = os.path.join(OUT, nombre)
     c = canvas.Canvas(ruta, pagesize=(pw * mm, ph * mm))
     c.setTitle("SMSTUDIO — Tarjeta de presentación")
     c.setAuthor("SMSTUDIO")
-    for dibujar in (frente, dorso):
+    for dibujar in paginas:
         m = MARK if marcas else 0
-        c.setTrimBox(((extra) * mm, extra * mm, (extra + TRIM_W) * mm, (extra + TRIM_H) * mm))
+        c.setTrimBox((extra * mm, extra * mm, (extra + TRIM_W) * mm, (extra + TRIM_H) * mm))
         c.setBleedBox((m * mm, m * mm, (pw - m) * mm, (ph - m) * mm))
         pagina(c, dibujar, marcas)
     c.save()
@@ -240,13 +290,45 @@ def _quitar_fuentes(ruta):
         doc.save(ruta)
 
 
-def png(pdf_ruta, prefijo, *args):
-    subprocess.run(["pdftoppm", "-png", "-aa", "yes", "-aaVector", "yes", *args, pdf_ruta,
-                    os.path.join(OUT, prefijo)], check=True)
+def png(pdf_ruta, destino, *args):
+    """Renderiza un PDF de 2 páginas a destino_frente.png y destino_dorso.png."""
+    subprocess.run(["pdftoppm", "-png", "-aa", "yes", "-aaVector", "yes", *args, pdf_ruta, destino], check=True)
+    for n, cara in (("1", "frente"), ("2", "dorso")):
+        os.replace(f"{destino}-{n}.png", f"{destino}_{cara}.png")
+
+
+def vista_previa(frente, dorso, destino, escala=0.5):
+    from PIL import Image, ImageDraw, ImageFilter
+    caras = [Image.open(f).convert("RGB") for f in (frente, dorso)]
+    caras = [im.resize((int(im.width * escala), int(im.height * escala)), Image.LANCZOS) for im in caras]
+    cw, ch = caras[0].size
+    W, H = cw + 300, ch * 2 + 400
+    bg = Image.new("RGB", (W, H), (214, 210, 203))
+    for i, im in enumerate(caras):
+        x, y = 150, 150 + i * (ch + 100)
+        sombra = Image.new("L", (W, H), 0)
+        ImageDraw.Draw(sombra).rounded_rectangle((x + 10, y + 25, x + cw + 10, y + ch + 25), 12, fill=110)
+        bg.paste((60, 55, 50), (0, 0), sombra.filter(ImageFilter.GaussianBlur(28)))
+        recorte = Image.new("L", im.size, 0)
+        ImageDraw.Draw(recorte).rounded_rectangle((0, 0, cw, ch), 10, fill=255)
+        bg.paste(im, (x, y), recorte)
+    bg.save(destino)
+    return bg
+
+
+def comparativa(previas, destino):
+    from PIL import Image
+    ims = [Image.open(p) for p in previas]
+    out = Image.new("RGB", (sum(i.width for i in ims), ims[0].height), (214, 210, 203))
+    x = 0
+    for im in ims:
+        out.paste(im, (x, 0))
+        x += im.width
+    out.save(destino)
 
 
 def main():
-    os.makedirs(OUT, exist_ok=True)
+    global BLEED, MASCARA
     F.update(
         display_bold=Fuente("InterDisplay-Bold.otf"),
         display_light=Fuente("InterDisplay-Light.otf"),
@@ -254,25 +336,30 @@ def main():
         regular=Fuente("Inter-Regular.otf"),
         medium=Fuente("Inter-Medium.otf"),
         semibold=Fuente("Inter-SemiBold.otf"),
+        mono=Fuente("../../truetype/jetbrains-mono/JetBrainsMono-Medium.ttf"),
     )
-    con_sangrado = pdf("SMSTUDIO_imprenta_sangrado.pdf", marcas=False)
-    pdf("SMSTUDIO_imprenta_marcas_de_corte.pdf", marcas=True)
+    previas = []
+    for nombre, frente in FRENTES.items():
+        d = os.path.join(OUT, nombre)
+        os.makedirs(d, exist_ok=True)
+        base = os.path.join(d, "SMSTUDIO_" + nombre)
+        con_sangrado = pdf(base + "_imprenta_sangrado.pdf", (frente, dorso), marcas=False)
+        pdf(base + "_imprenta_marcas_de_corte.pdf", (frente, dorso), marcas=True)
+        # máscara de hot-stamping: sólo el frente (en el dorso el dorado es muy fino para laminar)
+        MASCARA = True
+        pdf(base + "_hotstamping_frente.pdf", (frente,), marcas=True)
+        MASCARA = False
 
-    # PDF al corte (sin sangrado) sólo para renders de pantalla
-    global BLEED
-    b = BLEED
-    BLEED = 0
-    al_corte = pdf("_al_corte.pdf", marcas=False)
-    BLEED = b
-
-    png(al_corte, "SMSTUDIO_4K", "-scale-to-x", "3840", "-scale-to-y", "-1")
-    png(con_sangrado, "SMSTUDIO_1200dpi_sangrado", "-r", "1200")
-    os.remove(al_corte)
-    for viejo, nuevo in (("SMSTUDIO_4K-1.png", "SMSTUDIO_4K_frente.png"),
-                         ("SMSTUDIO_4K-2.png", "SMSTUDIO_4K_dorso.png"),
-                         ("SMSTUDIO_1200dpi_sangrado-1.png", "SMSTUDIO_1200dpi_sangrado_frente.png"),
-                         ("SMSTUDIO_1200dpi_sangrado-2.png", "SMSTUDIO_1200dpi_sangrado_dorso.png")):
-        os.replace(os.path.join(OUT, viejo), os.path.join(OUT, nuevo))
+        # PDF al corte (sin sangrado) sólo para renders de pantalla
+        b, BLEED = BLEED, 0
+        al_corte = pdf(base + "_al_corte.pdf", (frente, dorso), marcas=False)
+        BLEED = b
+        png(al_corte, base + "_4K", "-scale-to-x", "3840", "-scale-to-y", "-1")
+        png(con_sangrado, base + "_1200dpi_sangrado", "-r", "1200")
+        os.remove(al_corte)
+        previas.append(base + "_vista_previa.png")
+        vista_previa(base + "_4K_frente.png", base + "_4K_dorso.png", previas[-1])
+    comparativa(previas, os.path.join(OUT, "SMSTUDIO_comparativa_frentes.png"))
 
 
 if __name__ == "__main__":
