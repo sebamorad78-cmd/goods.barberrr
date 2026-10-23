@@ -29,6 +29,7 @@ MARK = 10                 # mm extra para marcas de corte
 TELEFONO = "+54 9 2268 51-6801"
 QR_URL = "https://wa.me/5492268516801"
 INSTAGRAM = "@sebamoraddd"
+NOMBRE = "Sebastian Morad"
 
 # Colores CMYK (0..1). Negro enriquecido sólo para fondos; texto chico en K puro.
 NEGRO_RICO = CMYKColor(0.60, 0.40, 0.40, 1.00)
@@ -167,11 +168,9 @@ def dorso(c):
     c.rect(-BLEED * mm, -BLEED * mm, (BLEED + 1.6) * mm, (H + 2 * BLEED) * mm, stroke=0, fill=1)
 
     x = 7.5
-    # marca
-    w_sm = ancho(F["display_bold"], "SM", 10, 120)
-    texto(c, F["display_bold"], "SM", x, H - 9.5, 10, NEGRO_K, 120)
-    texto(c, F["display_light"], "STUDIO", x + w_sm + 120 / 1000 * 10 / mm, H - 9.5, 10, NEGRO_K, 120)
-    texto(c, F["medium"], "DISEÑO & DESARROLLO WEB", x, H - 13.6, 5.8, GRIS, 260)
+    # nombre (la marca va en el frente)
+    texto(c, F["display_semibold"], NOMBRE, x, H - 9.8, 11.5, NEGRO_K, 0)
+    texto(c, F["medium"], "DISEÑO & DESARROLLO WEB", x, H - 14.2, 5.8, GRIS, 260)
 
     def bloque(y, etiqueta, valor, fuente="semibold", pt=8.6):
         texto(c, F["semibold"], etiqueta, x, y + 3.9, 5.6, CHAMPAGNE, 260)
@@ -180,13 +179,7 @@ def dorso(c):
     bloque(25.0, "WHATSAPP", TELEFONO)
     bloque(16.2, "INSTAGRAM", INSTAGRAM)
 
-    texto(c, F["semibold"], "PROYECTOS", x, 11.3, 5.6, CHAMPAGNE, 260)
-    w = texto(c, F["semibold"], "goods.ar", x, 7.0, 8.0, NEGRO_K)
-    c.setFillColor(CHAMPAGNE)
-    c.circle((x + w + 2.0) * mm, 7.95 * mm, 0.42 * mm, stroke=0, fill=1)
-    texto(c, F["semibold"], "Magic Studio", x + w + 4.0, 7.0, 8.0, NEGRO_K)
-    w2 = ancho(F["semibold"], "Magic Studio", 8.0)
-    texto(c, F["regular"], "· barbería", x + w + 4.0 + w2 + 1.0, 7.0, 8.0, GRIS)
+    bloque(7.4, "PROYECTO", "goods.ar")
 
     # divisor + QR
     lado = 21.0
@@ -257,6 +250,7 @@ def main():
     F.update(
         display_bold=Fuente("InterDisplay-Bold.otf"),
         display_light=Fuente("InterDisplay-Light.otf"),
+        display_semibold=Fuente("InterDisplay-SemiBold.otf"),
         regular=Fuente("Inter-Regular.otf"),
         medium=Fuente("Inter-Medium.otf"),
         semibold=Fuente("Inter-SemiBold.otf"),
