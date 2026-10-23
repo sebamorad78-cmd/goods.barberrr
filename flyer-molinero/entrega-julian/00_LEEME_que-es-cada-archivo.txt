@@ -1,0 +1,53 @@
+JULIÁN ACEBAL · SERVICIOS RURALES
+Material de marca: qué es cada archivo y dónde se usa
+=====================================================
+
+VIDEOS
+------
+01_VIDEO_para-Instagram-y-Facebook.mp4
+   Reel de 31 segundos. Para Reels de Instagram, publicaciones e historias de Facebook.
+   Consejo: al subirlo, agregarle música desde la app (no tiene sonido propio).
+
+02_VIDEO_para-estados-de-WhatsApp.mp4
+   El mismo video, más liviano. Para estados de WhatsApp y para mandar por chat.
+
+
+FLYER PRINCIPAL (presentación de todos los servicios)
+-----------------------------------------------------
+03_FLYER_publicacion-Instagram-Facebook.jpg
+   Formato vertical 4:5. Para publicar en el feed de Instagram, en Facebook
+   y en Marketplace. Ideal para dejarlo fijado en el perfil.
+
+04_FLYER_historias-y-estados.jpg
+   Formato pantalla completa 9:16. Para historias de Instagram/Facebook
+   y estados de WhatsApp.
+
+
+PIEZAS DE CAMPAÑA (una oferta por pieza; publicar de a una, por ejemplo una por semana)
+--------------------------------------------------------------------------------------
+05_CAMPANA-MOLINOS_publicacion.jpg   -> "¿Molino parado?"  · feed Instagram / Facebook
+06_CAMPANA-MOLINOS_historia.jpg      -> "¿Molino parado?"  · historias y estados
+07_CAMPANA-SOLAR_publicacion.jpg     -> "Agua sin luz eléctrica" · feed Instagram / Facebook
+08_CAMPANA-SOLAR_historia.jpg        -> "Agua sin luz eléctrica" · historias y estados
+09_CAMPANA-TANQUES_publicacion.jpg   -> "Tanques y bebederos" · feed Instagram / Facebook
+10_CAMPANA-TANQUES_historia.jpg      -> "Tanques y bebederos" · historias y estados
+
+
+LOGO
+----
+11_LOGO_foto-de-perfil.png
+   Sello circular. Para la foto de perfil de WhatsApp, Instagram y Facebook.
+
+12_LOGO_para-fondo-claro.png
+   Logo horizontal oscuro, fondo transparente. Para usar sobre fondos claros
+   (presupuestos, papelería, remeras claras).
+
+13_LOGO_para-fondo-oscuro.png
+   Logo horizontal claro, fondo transparente. Para fondos oscuros
+   (camioneta oscura, ropa de trabajo oscura).
+
+
+REGLA SIMPLE
+------------
+"publicacion" = feed de Instagram / Facebook
+"historia"    = historias de Instagram / Facebook y estados de WhatsApp
