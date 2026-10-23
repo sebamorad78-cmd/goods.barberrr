@@ -15,7 +15,7 @@ import qrcode
 import uharfbuzz as hb
 from fontTools.pens.basePen import BasePen
 from fontTools.ttLib import TTFont
-from reportlab.lib.colors import CMYKColor
+from reportlab.lib.colors import CMYKColor, CMYKColorSep
 from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas
 
@@ -98,14 +98,15 @@ def ancho(fuente, texto, pt, tracking=0):
     return total / mm * 1  # pt -> mm
 
 
-# En modo máscara sólo se dibujan los elementos dorados, en 100% K,
-# para el archivo de hot-stamping (laminado metálico).
+# Modo máscara: sólo se dibujan, en 100% K, los elementos de una terminación.
+#   "dorado": lo champagne, para hot-stamping (laminado metálico)
+#   "barniz": las olas, para barniz sectorizado
 MASCARA = False
 
 
 def pintar(c, color, trazo=False):
     if MASCARA:
-        if color is not CHAMPAGNE:
+        if MASCARA != "dorado" or color is not CHAMPAGNE:
             return False
         color = NEGRO_K
     (c.setStrokeColor if trazo else c.setFillColor)(color)
@@ -218,7 +219,7 @@ def frente_codigo(c):
 def ola(c, x0, x1, base, amp, largo, fase, colores):
     """Ola con degradé horizontal: rellena desde la curva hasta el borde inferior (con sangrado)."""
     import math
-    if MASCARA:
+    if MASCARA and MASCARA != "barniz":
         return
     path = c.beginPath()
     path.moveTo(x0 * mm, -BLEED * mm - 1)
@@ -229,10 +230,26 @@ def ola(c, x0, x1, base, amp, largo, fase, colores):
         path.lineTo(x * mm, y * mm)
     path.lineTo(x1 * mm, -BLEED * mm - 1)
     path.close()
+    if MASCARA == "barniz":
+        c.setFillColor(NEGRO_K)
+        c.drawPath(path, stroke=0, fill=1)
+        return
     c.saveState()
     c.clipPath(path, stroke=0, fill=0)
     c.linearGradient(x0 * mm, 0, x1 * mm, 0, colores, extend=True)
     c.restoreState()
+
+
+RADIO = 4  # mm, esquinas redondeadas
+TROQUEL = CMYKColorSep(0, 1, 0, 0, spotName="Troquel")
+
+
+def troquel(c):
+    """Línea de corte con esquinas redondeadas, en tinta plana "Troquel" con sobreimpresión."""
+    c.setStrokeColor(TROQUEL)
+    c.setStrokeOverprint(True)
+    c.setLineWidth(0.25)
+    c.roundRect(0, 0, TRIM_W * mm, TRIM_H * mm, RADIO * mm, stroke=1, fill=0)
 
 
 def olas(c, trasera=(CELESTE_SUAVE, VIOLETA_SUAVE)):
@@ -364,8 +381,8 @@ def png(pdf_ruta, destino, *args):
 
 
 def vista_previa(frente, dorso, destino, escala=0.5):
-    from PIL import Image, ImageDraw, ImageFilter
-    caras = [Image.open(f).convert("RGB") for f in (frente, dorso)]
+    from PIL import Image, ImageChops, ImageDraw, ImageFilter
+    caras = [Image.open(f).convert("RGBA") for f in (frente, dorso)]
     caras = [im.resize((int(im.width * escala), int(im.height * escala)), Image.LANCZOS) for im in caras]
     cw, ch = caras[0].size
     W, H = cw + 300, ch * 2 + 400
@@ -377,7 +394,8 @@ def vista_previa(frente, dorso, destino, escala=0.5):
         bg.paste((60, 55, 50), (0, 0), sombra.filter(ImageFilter.GaussianBlur(28)))
         recorte = Image.new("L", im.size, 0)
         ImageDraw.Draw(recorte).rounded_rectangle((0, 0, cw, ch), 10, fill=255)
-        bg.paste(im, (x, y), recorte)
+        recorte = ImageChops.multiply(recorte, im.getchannel("A"))
+        bg.paste(im.convert("RGB"), (x, y), recorte)
     bg.save(destino)
     return bg
 
@@ -414,7 +432,7 @@ def main():
         pdf(base + "_imprenta_marcas_de_corte.pdf", (frente, dorso_v), marcas=True)
         if nombre != "ola":  # la ola no lleva dorado
             # máscara de hot-stamping: sólo el frente (en el dorso el dorado es muy fino para laminar)
-            MASCARA = True
+            MASCARA = "dorado"
             pdf(base + "_hotstamping_frente.pdf", (frente,), marcas=True)
             MASCARA = False
 
@@ -429,6 +447,60 @@ def main():
         previas.append(base + "_vista_previa.png")
         vista_previa(base + "_4K_frente.png", base + "_4K_dorso.png", previas[-1])
     comparativa(previas, os.path.join(OUT, "SMSTUDIO_comparativa_frentes.png"))
+    final()
+
+
+def redondear_y_barniz(arte, barniz, destino):
+    """Simula en pantalla las esquinas redondeadas y el brillo del barniz sobre la ola."""
+    from PIL import Image, ImageChops, ImageDraw
+    im = Image.open(arte).convert("RGBA")
+    w, h = im.size
+    # brillo: reflejo diagonal suave, sólo donde va barniz
+    import numpy as np
+    zona = np.asarray(Image.open(barniz).convert("L").resize(im.size), dtype=np.float32)
+    zona = 1 - zona / 255
+    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+    d = (xx / w - 0.62) + (yy / h - 0.5) * 0.9  # distancia a la diagonal del reflejo
+    banda = np.exp(-(d / 0.11) ** 2) * 0.32 + np.exp(-(d / 0.025) ** 2) * 0.18
+    brillo = Image.fromarray((np.clip(banda * zona, 0, 1) * 255).astype(np.uint8))
+    im = Image.composite(Image.new("RGBA", im.size, (255, 255, 255, 255)), im, brillo)
+    esquinas = Image.new("L", im.size, 0)
+    ImageDraw.Draw(esquinas).rounded_rectangle((0, 0, w - 1, h - 1), round(w * RADIO / TRIM_W), fill=255)
+    im.putalpha(esquinas)
+    im.save(destino)
+
+
+def final():
+    """Carpeta para llevar a la imprenta: versión Ola + barniz + troquel + vistas."""
+    global BLEED, MASCARA
+    d = os.path.join(os.path.dirname(OUT), "FINAL_imprenta")
+    os.makedirs(d, exist_ok=True)
+    b = os.path.join(d, "SMSTUDIO_tarjeta_")
+    paginas = (frente_ola, dorso_ola)
+    pdf(b + "IMPRENTA.pdf", paginas, marcas=False)
+    pdf(b + "IMPRENTA_marcas_de_corte.pdf", paginas, marcas=True)
+    MASCARA = "barniz"
+    pdf(b + "BARNIZ_sectorizado.pdf", paginas, marcas=False)
+    pdf(b + "BARNIZ_sectorizado_marcas_de_corte.pdf", paginas, marcas=True)
+    MASCARA = False
+    pdf(b + "TROQUEL_esquinas_redondeadas.pdf", (troquel, troquel), marcas=False)
+
+    tmp = os.path.join(d, "_tmp")
+    os.makedirs(tmp, exist_ok=True)
+    BLEED, bleed = 0, BLEED
+    arte = pdf(os.path.join(tmp, "arte.pdf"), paginas, marcas=False)
+    MASCARA = "barniz"
+    barniz = pdf(os.path.join(tmp, "barniz.pdf"), paginas, marcas=False)
+    MASCARA, BLEED = False, bleed
+    for etiqueta, ancho_px in (("FullHD", 1920), ("4K", 3840), ("8K", 7680)):
+        png(arte, os.path.join(tmp, "a"), "-scale-to-x", str(ancho_px), "-scale-to-y", "-1")
+        png(barniz, os.path.join(tmp, "m"), "-scale-to-x", str(ancho_px), "-scale-to-y", "-1")
+        for cara in ("frente", "dorso"):
+            redondear_y_barniz(os.path.join(tmp, f"a_{cara}.png"), os.path.join(tmp, f"m_{cara}.png"),
+                               f"{b}{etiqueta}_{cara}.png")
+    vista_previa(b + "4K_frente.png", b + "4K_dorso.png", b + "vista_previa.png")
+    import shutil
+    shutil.rmtree(tmp)
 
 
 if __name__ == "__main__":
