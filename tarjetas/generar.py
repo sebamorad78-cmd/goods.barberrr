@@ -39,6 +39,13 @@ BLANCO = CMYKColor(0, 0, 0, 0)
 HUESO = CMYKColor(0, 0.02, 0.06, 0)
 CHAMPAGNE = CMYKColor(0, 0.18, 0.45, 0.20)
 GRIS = CMYKColor(0, 0, 0, 0.62)
+VIOLETA = CMYKColor(0.62, 0.72, 0, 0)
+VIOLETA_OSC = CMYKColor(0.72, 0.85, 0, 0.05)  # textos chicos
+CELESTE = CMYKColor(0.70, 0.08, 0, 0)
+VIOLETA_SUAVE = CMYKColor(0.25, 0.29, 0, 0)
+CELESTE_SUAVE = CMYKColor(0.28, 0.03, 0, 0)
+VIOLETA_PROFUNDO = CMYKColor(0.70, 0.82, 0, 0.45)  # ola trasera sobre fondo negro
+CELESTE_PROFUNDO = CMYKColor(0.78, 0.25, 0, 0.42)
 TONO = CMYKColor(0.60, 0.40, 0.40, 0.78)  # tono sobre tono del frente
 
 
@@ -208,7 +215,66 @@ def frente_codigo(c):
     linea(c, W - 7.5 - 8, 7.5, W - 7.5, 7.5, CHAMPAGNE, FILETE)
 
 
-FRENTES = {"monograma": frente_monograma, "codigo": frente_codigo, "clasico": frente_clasico}
+def ola(c, x0, x1, base, amp, largo, fase, colores):
+    """Ola con degradé horizontal: rellena desde la curva hasta el borde inferior (con sangrado)."""
+    import math
+    if MASCARA:
+        return
+    path = c.beginPath()
+    path.moveTo(x0 * mm, -BLEED * mm - 1)
+    n = 240
+    for i in range(n + 1):
+        x = x0 + (x1 - x0) * i / n
+        y = base + amp * math.sin(2 * math.pi * x / largo + fase) + amp * 0.35 * math.sin(2 * math.pi * x / (largo * 0.55) + fase * 1.7)
+        path.lineTo(x * mm, y * mm)
+    path.lineTo(x1 * mm, -BLEED * mm - 1)
+    path.close()
+    c.saveState()
+    c.clipPath(path, stroke=0, fill=0)
+    c.linearGradient(x0 * mm, 0, x1 * mm, 0, colores, extend=True)
+    c.restoreState()
+
+
+def olas(c, trasera=(CELESTE_SUAVE, VIOLETA_SUAVE)):
+    x0, x1 = -BLEED, TRIM_W + BLEED
+    ola(c, x0, x1, 6.2, 1.6, 70, 1.2, trasera)
+    ola(c, x0, x1, 4.0, 1.7, 80, 3.4, (VIOLETA, CELESTE))
+
+
+def frente_ola(c):
+    W, H = TRIM_W, TRIM_H
+    fondo(c, NEGRO_RICO)
+    wordmark(c, W / 2, H / 2 + 4.0, 23, 140, align="center")
+    texto(c, F["medium"], "DISEÑO & DESARROLLO WEB", W / 2, H / 2 - 3.6, 6.5, CELESTE, 320, "center")
+    olas(c, (CELESTE_PROFUNDO, VIOLETA_PROFUNDO))
+
+
+FRENTES = {"monograma": frente_monograma, "codigo": frente_codigo, "clasico": frente_clasico, "ola": frente_ola}
+
+
+def dorso_ola(c):
+    W, H = TRIM_W, TRIM_H
+    fondo(c, HUESO)
+    olas(c)
+
+    x = 7.5
+    texto(c, F["display_semibold"], NOMBRE, x, H - 8.6, 11.5, NEGRO_K, 0)
+    texto(c, F["medium"], CARGO, x, H - 13.0, 5.6, GRIS, 180)
+
+    def bloque(y, etiqueta, valor):
+        texto(c, F["semibold"], etiqueta, x, y + 3.7, 5.6, VIOLETA_OSC, 260)
+        texto(c, F["semibold"], valor, x, y, 8.6, NEGRO_K, 0)
+
+    bloque(28.6, "WHATSAPP", TELEFONO)
+    bloque(20.6, "INSTAGRAM", INSTAGRAM)
+    bloque(12.6, "PROYECTO", "goods.ar")
+
+    lado = 19.0
+    qx, qy = W - 7.0 - lado, H - 7.0 - lado
+    linea(c, qx - 5.0, 12.0, qx - 5.0, H - 7.0, VIOLETA, 0.35)
+    qr(c, QR_URL, qx, qy, lado, NEGRO_K)
+    texto(c, F["semibold"], "ESCANEÁ", qx + lado / 2, qy - 3.4, 5.6, NEGRO_K, 260, "center")
+    texto(c, F["medium"], "y mirá mi trabajo", qx + lado / 2, qy - 6.2, 5.6, GRIS, 20, "center")
 
 
 def dorso(c):
@@ -340,19 +406,21 @@ def main():
     )
     previas = []
     for nombre, frente in FRENTES.items():
+        dorso_v = dorso_ola if nombre == "ola" else dorso
         d = os.path.join(OUT, nombre)
         os.makedirs(d, exist_ok=True)
         base = os.path.join(d, "SMSTUDIO_" + nombre)
-        con_sangrado = pdf(base + "_imprenta_sangrado.pdf", (frente, dorso), marcas=False)
-        pdf(base + "_imprenta_marcas_de_corte.pdf", (frente, dorso), marcas=True)
-        # máscara de hot-stamping: sólo el frente (en el dorso el dorado es muy fino para laminar)
-        MASCARA = True
-        pdf(base + "_hotstamping_frente.pdf", (frente,), marcas=True)
-        MASCARA = False
+        con_sangrado = pdf(base + "_imprenta_sangrado.pdf", (frente, dorso_v), marcas=False)
+        pdf(base + "_imprenta_marcas_de_corte.pdf", (frente, dorso_v), marcas=True)
+        if nombre != "ola":  # la ola no lleva dorado
+            # máscara de hot-stamping: sólo el frente (en el dorso el dorado es muy fino para laminar)
+            MASCARA = True
+            pdf(base + "_hotstamping_frente.pdf", (frente,), marcas=True)
+            MASCARA = False
 
         # PDF al corte (sin sangrado) sólo para renders de pantalla
         b, BLEED = BLEED, 0
-        al_corte = pdf(base + "_al_corte.pdf", (frente, dorso), marcas=False)
+        al_corte = pdf(base + "_al_corte.pdf", (frente, dorso_v), marcas=False)
         BLEED = b
         png(al_corte, base + "_4K", "-scale-to-x", "3840", "-scale-to-y", "-1")
         png(con_sangrado, base + "_1200dpi_sangrado", "-r", "1200")
