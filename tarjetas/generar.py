@@ -423,6 +423,7 @@ def main():
         al_corte = pdf(base + "_al_corte.pdf", (frente, dorso_v), marcas=False)
         BLEED = b
         png(al_corte, base + "_4K", "-scale-to-x", "3840", "-scale-to-y", "-1")
+        png(al_corte, base + "_8K", "-scale-to-x", "7680", "-scale-to-y", "-1")
         png(con_sangrado, base + "_1200dpi_sangrado", "-r", "1200")
         os.remove(al_corte)
         previas.append(base + "_vista_previa.png")
