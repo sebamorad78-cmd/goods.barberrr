@@ -248,14 +248,48 @@
   .today-head.next-day{margin-top:22px; padding-top:18px; border-top:1px solid var(--line-dark);}
   .today-head.next-day h4{font-size:18px;}
 
-  /* Entrada al panel después de iniciar sesión: corta, de a bloques */
-  @keyframes dashIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;}}
-  .admin-dashboard.enter-head > .admin-header{animation:dashIn .3s cubic-bezier(.2,.7,.2,1) both;}
-  .admin-dashboard.enter-body > .today{animation:dashIn .3s cubic-bezier(.2,.7,.2,1) both;}
-  .admin-dashboard.enter-body > .admin-filters{animation:dashIn .3s cubic-bezier(.2,.7,.2,1) .06s both;}
-  .admin-dashboard.enter-body > .admin-list{animation:dashIn .3s cubic-bezier(.2,.7,.2,1) .12s both;}
+  /* ---------- Entrada al panel después de iniciar sesión ---------- */
+  .panel-intro{
+    position:fixed; inset:0; z-index:700; cursor:pointer;
+    background:radial-gradient(120% 100% at 50% 40%, var(--ink-2) 0%, var(--ink) 70%);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    transition:opacity .5s ease;
+  }
+  .panel-intro[hidden]{display:none;}
+  .panel-intro.out{opacity:0; pointer-events:none;}
+  .pi-icon{width:52px; height:70px; opacity:0; transform:scale(.82) translateY(6px); animation:piIcon .6s cubic-bezier(.2,.8,.2,1) .05s forwards;}
+  .pi-word{margin-top:18px; font-family:'Baloo 2', sans-serif; font-weight:800; font-size:40px; color:var(--paper);
+    opacity:0; transform:translateY(10px); animation:piText .5s ease .35s forwards;}
+  .pi-hello{margin-top:18px; font-family:'Bodoni Moda', serif; font-size:26px; color:var(--paper);
+    opacity:0; transform:translateY(10px); animation:piText .5s ease .6s forwards;}
+  .pi-date{margin-top:8px; font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:.24em; text-transform:uppercase;
+    color:var(--blue-light); opacity:0; transform:translateY(8px); animation:piText .5s ease .8s forwards;}
+  .pi-line{margin-top:22px; height:2px; width:0; background:linear-gradient(90deg, var(--blue-deep), var(--blue-accent), var(--blue-light));
+    animation:piLine .5s ease .95s forwards;}
+  @keyframes piIcon{to{opacity:1; transform:none;}}
+  @keyframes piText{to{opacity:1; transform:none;}}
+  @keyframes piLine{to{width:120px;}}
+  @media (max-width:640px){ .pi-word{font-size:34px;} .pi-hello{font-size:22px;} }
+
+  /* después de la entrada, el panel aparece de a bloques */
+  @keyframes dashIn{from{opacity:0; transform:translateY(18px);} to{opacity:1; transform:none;}}
+  .admin-dashboard.enter-head > .admin-header{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) both;}
+  .admin-dashboard.enter-body > .today{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) .08s both;}
+  .admin-dashboard.enter-body .today-col{animation:dashIn .45s cubic-bezier(.2,.7,.2,1) both;}
+  .admin-dashboard.enter-body .today-col:nth-child(1){animation-delay:.2s;}
+  .admin-dashboard.enter-body .today-col:nth-child(2){animation-delay:.27s;}
+  .admin-dashboard.enter-body .today-col:nth-child(3){animation-delay:.34s;}
+  .admin-dashboard.enter-body .today-col:nth-child(4){animation-delay:.41s;}
+  .admin-dashboard.enter-body > .admin-filters{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) .3s both;}
+  .admin-dashboard.enter-body > .admin-list{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) .38s both;}
+
+  /* con "reducir animaciones" activado en el dispositivo: sin movimiento, solo fundidos */
   @media (prefers-reduced-motion: reduce){
-    .admin-dashboard.enter-head > *, .admin-dashboard.enter-body > *{animation:none !important;}
+    @keyframes piIcon{from{opacity:0;} to{opacity:1;}}
+    @keyframes piText{from{opacity:0;} to{opacity:1;}}
+    @keyframes dashIn{from{opacity:0;} to{opacity:1;}}
+    .pi-icon, .pi-word, .pi-hello, .pi-date{transform:none;}
+    .pi-line{animation:none; width:120px;}
   }
   .today-next{font-size:13.5px; margin:-4px 0 14px; color:rgba(238,242,247,0.8);}
   .today-next strong{color:var(--paper);}
@@ -341,6 +375,26 @@
     <a class="panel-back" href="index.html">← Ver la página</a>
   </div>
 </header>
+
+<!-- Entrada al panel después de iniciar sesión (se saltea con un toque) -->
+<div class="panel-intro" id="panelIntro" hidden aria-hidden="true">
+  <svg class="pi-icon" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="9" y="3" width="42" height="23" rx="7" fill="#EEF2F7"/>
+        <rect x="15" y="21" width="4" height="6" fill="#0A1930"/>
+        <rect x="23" y="21" width="4" height="6" fill="#0A1930"/>
+        <rect x="31" y="21" width="4" height="6" fill="#0A1930"/>
+        <rect x="39" y="21" width="4" height="6" fill="#0A1930"/>
+        <circle cx="30" cy="40" r="13" fill="#EEF2F7"/>
+        <text x="30" y="45" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="14" fill="#0A1930">8</text>
+        <rect x="13" y="52" width="34" height="26" rx="9" fill="#EEF2F7"/>
+        <rect x="18" y="62" width="24" height="2.5" rx="1.25" fill="#0A1930" opacity="0.5"/>
+        <rect x="18" y="68" width="16" height="2.5" rx="1.25" fill="#0A1930" opacity="0.5"/>
+      </svg>
+  <div class="pi-word">goods</div>
+  <div class="pi-hello" id="piHello"></div>
+  <div class="pi-date" id="piDate"></div>
+  <div class="pi-line"></div>
+</div>
 
 <!-- ================= PANEL DEL DUEÑO ================= -->
 <main class="admin-panel open" id="adminPanel">
@@ -622,15 +676,43 @@
     if (adminPollTimer){ clearInterval(adminPollTimer); adminPollTimer = null; }
   }
 
+  // Entrada: logo, saludo y fecha durante poco más de un segundo (un toque la saltea).
+  // Mientras tanto se cargan los turnos, así al terminar la agenda ya está lista.
+  const panelIntro = document.getElementById('panelIntro');
+  function saludoSegunHora(){
+    const h = new Date().getHours();
+    return h >= 5 && h < 12 ? 'Buen día' : h >= 12 && h < 20 ? 'Buenas tardes' : 'Buenas noches';
+  }
+  function playPanelIntro(){
+    return new Promise(resolve => {
+      const now = new Date();
+      document.getElementById('piHello').textContent = saludoSegunHora();
+      document.getElementById('piDate').textContent = now.toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long'});
+      panelIntro.classList.remove('out');
+      panelIntro.hidden = false;
+      let done = false;
+      function finish(){
+        if (done) return; done = true;
+        panelIntro.classList.add('out');
+        setTimeout(() => { panelIntro.hidden = true; panelIntro.classList.remove('out'); }, 520);
+        resolve();
+      }
+      panelIntro.onclick = finish;
+      setTimeout(finish, 1650);
+    });
+  }
+
   async function openDashboard(){
     adminPinScreen.style.display = 'none';
     adminDashboard.classList.remove('enter-head', 'enter-body');
+    const loading = loadAndRenderBookings();
+    await playPanelIntro();
     adminDashboard.hidden = false;
     adminDashboard.classList.add('enter-head');
-    await loadAndRenderBookings();
     // la agenda y la lista entran cuando ya tienen los turnos cargados
+    await loading;
     adminDashboard.classList.add('enter-body');
-    setTimeout(() => adminDashboard.classList.remove('enter-head', 'enter-body'), 800);
+    setTimeout(() => adminDashboard.classList.remove('enter-head', 'enter-body'), 1200);
     startAdminPolling();
   }
 
@@ -1046,8 +1128,7 @@
         (adminBarberFilter === 'all' || b.barberId === adminBarberFilter))
       .sort((a, b) => toMin(a.time) - toMin(b.time));
     const next = upcoming[0];
-    const h = now.getHours();
-    const saludo = h >= 5 && h < 12 ? 'Buen día' : h >= 12 && h < 20 ? 'Buenas tardes' : 'Buenas noches';
+    const saludo = saludoSegunHora();
 
     const today = agendaCols(now, true, nowMin);
     let html = '<div class="today-head"><h4>' + saludo + '</h4><span class="when">Hoy · ' + escapeHtml(dateLabelFor(now)) + ' · ' + plural(today.count) + '</span></div>';
