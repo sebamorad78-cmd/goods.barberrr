@@ -245,9 +245,23 @@
   .today-head{display:flex; justify-content:space-between; align-items:baseline; gap:6px 14px; flex-wrap:wrap; margin-bottom:14px;}
   .today-head h4{font-size:21px; color:var(--paper);}
   .today-head .when{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--blue-light); letter-spacing:0.08em; text-transform:uppercase;}
+  .today-head.next-day{margin-top:22px; padding-top:18px; border-top:1px solid var(--line-dark);}
+  .today-head.next-day h4{font-size:18px;}
+
+  /* Entrada al panel después de iniciar sesión: corta, de a bloques */
+  @keyframes dashIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;}}
+  .admin-dashboard.enter-head > .admin-header{animation:dashIn .3s cubic-bezier(.2,.7,.2,1) both;}
+  .admin-dashboard.enter-body > .today{animation:dashIn .3s cubic-bezier(.2,.7,.2,1) both;}
+  .admin-dashboard.enter-body > .admin-filters{animation:dashIn .3s cubic-bezier(.2,.7,.2,1) .06s both;}
+  .admin-dashboard.enter-body > .admin-list{animation:dashIn .3s cubic-bezier(.2,.7,.2,1) .12s both;}
+  @media (prefers-reduced-motion: reduce){
+    .admin-dashboard.enter-head > *, .admin-dashboard.enter-body > *{animation:none !important;}
+  }
   .today-next{font-size:13.5px; margin:-4px 0 14px; color:rgba(238,242,247,0.8);}
   .today-next strong{color:var(--paper);}
-  .today-cols{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:12px;}
+  .today-cols{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px;}
+  @media (max-width:560px){ .today-cols{grid-template-columns:1fr;} }
+  .today-none{font-size:13px; opacity:0.6; font-style:italic;}
   .today-col{background:rgba(238,242,247,0.05); border:1px solid var(--line-dark); border-radius:6px; padding:12px 12px 6px;}
   .today-col h5{font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--blue-light); margin:0 0 6px; display:flex; justify-content:space-between;}
   .today-slot{display:flex; gap:10px; align-items:baseline; font-size:13.5px; padding:7px 6px; border-top:1px solid var(--line-dark);}
@@ -483,14 +497,33 @@
   // Trae TODOS los datos de los turnos (incluye nombre y teléfono) —
   // solo funciona si el dueño inició sesión, por las reglas de seguridad
   // configuradas en Supabase (Row Level Security).
+  // Toda consulta a la base tiene tiempo límite: si la respuesta no llega
+  // (señal floja, red móvil que se corta), se cancela y el panel sigue
+  // funcionando en vez de quedar esperando para siempre.
+  const DB_TIMEOUT_MS = 12000;
+  function withTimeout(query, ms){
+    const ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+    if (ctrl && typeof query.abortSignal === 'function') query = query.abortSignal(ctrl.signal);
+    let timer;
+    const limit = new Promise((_, reject) => {
+      timer = setTimeout(() => {
+        if (ctrl) ctrl.abort();
+        const err = new Error('La conexión tardó demasiado');
+        err.isTimeout = true;
+        reject(err);
+      }, ms || DB_TIMEOUT_MS);
+    });
+    return Promise.race([Promise.resolve(query), limit]).finally(() => clearTimeout(timer));
+  }
+
   async function fetchAllBookings(){
     const todayKey = localDateKey(new Date());
-    const { data, error } = await supabase
+    const { data, error } = await withTimeout(supabase
       .from('bookings')
       .select('*')
       .gte('date', todayKey)
       .order('date', {ascending:true})
-      .order('time', {ascending:true});
+      .order('time', {ascending:true}));
     if (error) throw error;
     return (data || []).map(row => ({
       id: row.id,
@@ -508,7 +541,7 @@
   }
 
   async function updateBookingStatusRemote(id, newStatus){
-    const { error } = await supabase.from('bookings').update({status:newStatus}).eq('id', id);
+    const { error } = await withTimeout(supabase.from('bookings').update({status:newStatus}).eq('id', id));
     if (error) throw error;
   }
 
@@ -591,8 +624,13 @@
 
   async function openDashboard(){
     adminPinScreen.style.display = 'none';
+    adminDashboard.classList.remove('enter-head', 'enter-body');
     adminDashboard.hidden = false;
+    adminDashboard.classList.add('enter-head');
     await loadAndRenderBookings();
+    // la agenda y la lista entran cuando ya tienen los turnos cargados
+    adminDashboard.classList.add('enter-body');
+    setTimeout(() => adminDashboard.classList.remove('enter-head', 'enter-body'), 800);
     startAdminPolling();
   }
 
@@ -831,7 +869,7 @@
     adminDeleteDone.disabled = true;
     adminDeleteDone.textContent = 'Borrando…';
     try {
-      const { error } = await supabase.from('bookings').delete().eq('status', 'done');
+      const { error } = await withTimeout(supabase.from('bookings').delete().eq('status', 'done'));
       if (error) throw error;
       await loadAndRenderBookings();
     } catch(err){
@@ -916,11 +954,11 @@
       console.error('Goods: Supabase no está disponible.');
       throw new Error('Supabase no disponible');
     }
-    const { data, error } = await supabase
+    const { data, error } = await withTimeout(supabase
       .from('bookings_public')
       .select('time')
       .eq('barber_id', barberId)
-      .eq('date', dateKey);
+      .eq('date', dateKey));
     if (error){
       console.error('Error consultando disponibilidad:', error.message);
       throw error;
@@ -963,44 +1001,69 @@
 
   // ---- Agenda de hoy, separada por barbero
   const adminToday = document.getElementById('adminToday');
-  function renderToday(){
-    const now = new Date();
-    const todayKey = localDateKey(now);
-    const nowMin = now.getHours()*60 + now.getMinutes();
+  // Agenda de arriba: hoy y el próximo día de atención (mañana, o el lunes si
+  // mañana es domingo), con el mismo formato, así los turnos para el día
+  // siguiente se ven de un vistazo apenas entran.
+  function agendaCols(dayDate, isToday, nowMin){
+    const key = localDateKey(dayDate);
     const barbers = BARBERS.filter(b => adminBarberFilter === 'all' || b.id === adminBarberFilter);
-    const todays = adminBookingsCache
-      .filter(b => b.date === todayKey && b.status !== 'cancelled')
+    const list = adminBookingsCache
+      .filter(b => b.date === key && b.status !== 'cancelled')
       .sort((a, b) => toMin(a.time) - toMin(b.time));
-    const upcoming = todays.filter(b => b.status === 'confirmed' && toMin(b.time) + STEP_MIN > nowMin &&
-      (adminBarberFilter === 'all' || b.barberId === adminBarberFilter));
-    const next = upcoming[0];
-
-    let html = '<div class="today-head"><h4>Hoy</h4><span class="when">' + escapeHtml(dateLabelFor(now)) + ' · ' +
-      todays.filter(b => adminBarberFilter === 'all' || b.barberId === adminBarberFilter).length + ' turno(s)</span></div>';
-    html += next
-      ? '<p class="today-next">Próximo: <strong>' + escapeHtml(next.time) + ' · ' + escapeHtml(next.customerName || 'Sin nombre') + '</strong> con ' + escapeHtml(next.barberName || '') + '</p>'
-      : '<p class="today-next">No quedan turnos pendientes por hoy.</p>';
-    html += '<div class="today-cols">';
-    barbers.forEach(br => {
-      const mine = todays.filter(b => b.barberId === br.id);
-      const nextMine = mine.find(b => b.status === 'confirmed' && toMin(b.time) + STEP_MIN > nowMin);
+    // en el día siguiente se muestran solo los barberos que ya tienen turnos
+    const shown = isToday ? barbers : barbers.filter(br => list.some(b => b.barberId === br.id));
+    const count = list.filter(b => adminBarberFilter === 'all' || b.barberId === adminBarberFilter).length;
+    if (!shown.length) return { html: '<p class="today-none">Todavía no hay turnos reservados para este día.</p>', count };
+    let html = '<div class="today-cols">';
+    shown.forEach(br => {
+      const mine = list.filter(b => b.barberId === br.id);
+      const nextMine = isToday ? mine.find(b => b.status === 'confirmed' && toMin(b.time) + STEP_MIN > nowMin) : null;
       html += '<div class="today-col"><h5><span>' + escapeHtml(br.name) + '</span><span>' + mine.length + '</span></h5>';
-      if (isBlockedDay(todayKey, br.id)){
+      if (isBlockedDay(key, br.id)){
         html += '<p class="today-blocked">Día bloqueado</p>';
       } else if (!mine.length){
-        html += '<p class="today-empty">' + (getTimesForBarberDay(br.id, DOW_SHORT[now.getDay()]).length ? 'Sin turnos' : 'Hoy no atiende') + '</p>';
+        html += '<p class="today-empty">' + (getTimesForBarberDay(br.id, DOW_SHORT[dayDate.getDay()]).length ? 'Sin turnos' : (isToday ? 'Hoy no atiende' : 'No atiende')) + '</p>';
       }
       mine.forEach(b => {
         const cls = ['today-slot'];
         if (b.status === 'done') cls.push('done');
-        else if (toMin(b.time) + STEP_MIN <= nowMin) cls.push('past');
+        else if (isToday && toMin(b.time) + STEP_MIN <= nowMin) cls.push('past');
         if (b === nextMine) cls.push('next');
         html += '<div class="' + cls.join(' ') + '"><span class="t">' + escapeHtml(b.time) + '</span><span class="n">' +
           escapeHtml(b.customerName || 'Sin nombre') + '</span><span class="s">' + escapeHtml(b.note || '') + '</span></div>';
       });
       html += '</div>';
     });
-    adminToday.innerHTML = html + '</div>';
+    return { html: html + '</div>', count };
+  }
+  const plural = n => n + (n === 1 ? ' turno' : ' turnos');
+  function renderToday(){
+    const now = new Date();
+    const todayKey = localDateKey(now);
+    const nowMin = now.getHours()*60 + now.getMinutes();
+    const upcoming = adminBookingsCache
+      .filter(b => b.date === todayKey && b.status === 'confirmed' && toMin(b.time) + STEP_MIN > nowMin &&
+        (adminBarberFilter === 'all' || b.barberId === adminBarberFilter))
+      .sort((a, b) => toMin(a.time) - toMin(b.time));
+    const next = upcoming[0];
+    const h = now.getHours();
+    const saludo = h >= 5 && h < 12 ? 'Buen día' : h >= 12 && h < 20 ? 'Buenas tardes' : 'Buenas noches';
+
+    const today = agendaCols(now, true, nowMin);
+    let html = '<div class="today-head"><h4>' + saludo + '</h4><span class="when">Hoy · ' + escapeHtml(dateLabelFor(now)) + ' · ' + plural(today.count) + '</span></div>';
+    html += next
+      ? '<p class="today-next">Próximo: <strong>' + escapeHtml(next.time) + ' · ' + escapeHtml(next.customerName || 'Sin nombre') + '</strong> con ' + escapeHtml(next.barberName || '') + '</p>'
+      : '<p class="today-next">No quedan turnos pendientes por hoy.</p>';
+    html += today.html;
+
+    // próximo día de atención (el domingo el local está cerrado)
+    const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    if (nextDay.getDay() === 0) nextDay.setDate(nextDay.getDate() + 1);
+    const isTomorrow = nextDay.getDate() === new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getDate();
+    const nd = agendaCols(nextDay, false, 0);
+    html += '<div class="today-head next-day"><h4>' + (isTomorrow ? 'Mañana' : 'Lunes') + '</h4><span class="when">' + escapeHtml(dateLabelFor(nextDay)) + ' · ' + plural(nd.count) + '</span></div>';
+    html += nd.html;
+    adminToday.innerHTML = html;
   }
   // la agenda se actualiza sola cada minuto (para marcar el próximo turno)
   setInterval(() => { if (!adminDashboard.hidden) renderToday(); }, 60000);
@@ -1083,7 +1146,7 @@
         return;
       }
       const ticket = String(Math.floor(1000 + Math.random()*8999));
-      const { error } = await supabase.from('bookings').insert({
+      const { error } = await withTimeout(supabase.from('bookings').insert({
         barber_id: barber.id,
         barber_name: barber.name,
         date: key,
@@ -1094,7 +1157,7 @@
         note: mService.value,
         status: 'confirmed',
         ticket_num: ticket
-      });
+      }));
       if (error) throw error;
       closeManualForm();
       adminFlash.textContent = '✓ Turno cargado: ' + dateLabelFor(keyToDate(key)) + ' · ' + time + ' · ' + name + ' con ' + barber.name + ' (ticket #' + ticket + ').';
@@ -1118,15 +1181,15 @@
   // Lee los horarios guardados y los días bloqueados. Si fallara, quedan los horarios escritos arriba.
   async function loadOwnerSettings(){
     try {
-      const { data, error } = await supabase.from('goods_settings').select('schedule').limit(1);
+      const { data, error } = await withTimeout(supabase.from('goods_settings').select('schedule').limit(1));
       if (!error && data && data[0] && data[0].schedule && typeof data[0].schedule === 'object'){
         Object.keys(SCHEDULE).forEach(k => delete SCHEDULE[k]);
         Object.assign(SCHEDULE, data[0].schedule);
       }
     } catch(e){ console.error('Goods: no se pudieron leer los horarios:', e); }
     try {
-      const { data, error } = await supabase.from('blocked_days').select('id,date,barber_id,reason')
-        .gte('date', localDateKey(new Date())).order('date', {ascending:true});
+      const { data, error } = await withTimeout(supabase.from('blocked_days').select('id,date,barber_id,reason')
+        .gte('date', localDateKey(new Date())).order('date', {ascending:true}));
       if (!error) BLOCKS = data || [];
     } catch(e){ console.error('Goods: no se pudieron leer los días bloqueados:', e); }
   }
@@ -1178,7 +1241,7 @@
     if (bad){ hintIn(schedHint, 'Revisá ' + bad + ': la hora de salida tiene que ser después de la de entrada.', true); return; }
     schedSave.disabled = true; schedSave.textContent = 'Guardando…';
     try {
-      const { error } = await supabase.from('goods_settings').upsert({ id: true, schedule: next, updated_at: new Date().toISOString() });
+      const { error } = await withTimeout(supabase.from('goods_settings').upsert({ id: true, schedule: next, updated_at: new Date().toISOString() }));
       if (error) throw error;
       Object.keys(SCHEDULE).forEach(k => delete SCHEDULE[k]);
       Object.assign(SCHEDULE, next);
@@ -1207,7 +1270,7 @@
       del.addEventListener('click', async () => {
         del.disabled = true;
         try {
-          const { error } = await supabase.from('blocked_days').delete().eq('id', b.id);
+          const { error } = await withTimeout(supabase.from('blocked_days').delete().eq('id', b.id));
           if (error) throw error;
           BLOCKS = BLOCKS.filter(x => x.id !== b.id);
           renderBlockList(); renderToday();
@@ -1233,7 +1296,7 @@
     }
     bSave.disabled = true;
     try {
-      const { data, error } = await supabase.from('blocked_days').insert({ date: key, barber_id: barberId, reason: bReason.value.trim() || null }).select('id,date,barber_id,reason');
+      const { data, error } = await withTimeout(supabase.from('blocked_days').insert({ date: key, barber_id: barberId, reason: bReason.value.trim() || null }).select('id,date,barber_id,reason'));
       if (error) throw error;
       BLOCKS = BLOCKS.concat(data || []).sort((a, b) => a.date < b.date ? -1 : 1);
       bReason.value = '';

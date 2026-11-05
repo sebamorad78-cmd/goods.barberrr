@@ -1535,6 +1535,31 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   let state = { barber: null, date: null, time: null };
 
+  // Toda consulta a la base tiene tiempo límite: si la respuesta no llega
+  // (señal floja, red móvil que se corta), se cancela y la página sigue
+  // funcionando en vez de quedar esperando para siempre.
+  const READ_TIMEOUT_MS = 9000;
+  const WRITE_TIMEOUT_MS = 15000;
+  function withTimeout(query, ms){
+    const ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+    if (ctrl && typeof query.abortSignal === 'function') query = query.abortSignal(ctrl.signal);
+    let timer;
+    const limit = new Promise((_, reject) => {
+      timer = setTimeout(() => {
+        if (ctrl) ctrl.abort();
+        const err = new Error('La conexión tardó demasiado');
+        err.isTimeout = true;
+        reject(err);
+      }, ms);
+    });
+    return Promise.race([Promise.resolve(query), limit]).finally(() => clearTimeout(timer));
+  }
+
+  // Horarios reservados desde esta pestaña: se cuentan como ocupados al instante,
+  // aunque la consulta a la base todavía no los traiga.
+  const justBooked = new Set();
+  const bookedKey = (barberId, dateKey, time) => barberId + '|' + dateKey + '|' + time;
+
   // Trae los horarios ya ocupados para un barbero y un día, consultando
   // la vista pública (sin nombres ni teléfonos) para no exponer datos de clientes.
   async function getStoredBooked(barberId, dateKey){
@@ -1542,21 +1567,26 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       console.error('Goods: Supabase no está disponible.');
       throw new Error('Supabase no disponible');
     }
-    const { data, error } = await supabase
+    const { data, error } = await withTimeout(supabase
       .from('bookings_public')
       .select('time')
       .eq('barber_id', barberId)
-      .eq('date', dateKey);
+      .eq('date', dateKey), READ_TIMEOUT_MS);
     if (error){
       console.error('Error consultando disponibilidad:', error.message);
       throw error;
     }
-    return new Set((data || []).map(row => row.time));
+    const taken = new Set((data || []).map(row => row.time));
+    justBooked.forEach(k => {
+      const [b, d, t] = k.split('|');
+      if (b === barberId && d === dateKey) taken.add(t);
+    });
+    return taken;
   }
 
   // Guarda un turno nuevo en la base de datos real.
   async function addStoredBooking(booking){
-    const { error } = await supabase.from('bookings').insert({
+    const { error } = await withTimeout(supabase.from('bookings').insert({
       barber_id: booking.barberId,
       barber_name: booking.barberName,
       date: booking.date,
@@ -1567,7 +1597,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       note: booking.note,
       status: 'confirmed',
       ticket_num: booking.ticketNum
-    });
+    }), WRITE_TIMEOUT_MS);
     if (error) throw error;
   }
 
@@ -1625,15 +1655,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   }
   async function loadOwnerSettings(){
     try {
-      const { data, error } = await supabase.from('goods_settings').select('schedule').limit(1);
+      const { data, error } = await withTimeout(supabase.from('goods_settings').select('schedule').limit(1), READ_TIMEOUT_MS);
       if (!error && data && data[0] && data[0].schedule && typeof data[0].schedule === 'object'){
         Object.keys(SCHEDULE).forEach(k => delete SCHEDULE[k]);
         Object.assign(SCHEDULE, data[0].schedule);
       }
     } catch(e){ console.error('Goods: no se pudieron leer los horarios del panel:', e); }
     try {
-      const { data, error } = await supabase.from('blocked_days').select('date,barber_id')
-        .gte('date', DAYS[0].key).lte('date', DAYS[DAYS.length-1].key);
+      const { data, error } = await withTimeout(supabase.from('blocked_days').select('date,barber_id')
+        .gte('date', DAYS[0].key).lte('date', DAYS[DAYS.length-1].key), READ_TIMEOUT_MS);
       if (!error) BLOCKED = data || [];
     } catch(e){ console.error('Goods: no se pudieron leer los días bloqueados:', e); }
     markClosedDays();
@@ -1851,72 +1881,74 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     isSubmitting = true;
     submitBtn.disabled = true;
     submitBtn.textContent = 'Confirmando…';
+    const pick = { barber: state.barber, date: state.date, time: state.time };
 
     try {
-      // 2) Re-chequeo de disponibilidad justo antes de guardar: si dos
-      // personas eligieron el mismo horario casi al mismo tiempo, esto
-      // evita que la segunda reserva pise a la primera (condición de carrera).
-      const taken = await getStoredBooked(state.barber.id, state.date.key);
+      // 2) Re-chequeo de disponibilidad justo antes de guardar. Si la consulta
+      // falla o tarda, se sigue igual: la base de datos no acepta dos turnos
+      // en el mismo horario, así que nunca se pisa una reserva.
+      let taken = null;
+      try { taken = await getStoredBooked(pick.barber.id, pick.date.key); } catch(e){ taken = null; }
 
-      if (taken.has(state.time) || isPastToday(state.date, state.time)) {
-        showFormError(isPastToday(state.date, state.time)
+      if (isPastToday(pick.date, pick.time) || (taken && taken.has(pick.time))) {
+        showFormError(isPastToday(pick.date, pick.time)
           ? 'Ese horario ya pasó. Elegí otro disponible en la grilla.'
           : 'Justo se ocupó ese horario. Elegí otro disponible en la grilla.');
         state.time = null;
-        await renderTimeGrid();
         updateTicket();
-        isSubmitting = false;
-        submitBtn.textContent = 'Confirmar turno';
-        checkReady();
+        renderTimeGrid();
         return;
       }
 
       const num = randomTicketNum();
       await addStoredBooking({
-        barberId: state.barber.id,
-        barberName: state.barber.name,
-        date: state.date.key,
-        dateLabel: fmtDate(state.date),
-        time: state.time,
+        barberId: pick.barber.id,
+        barberName: pick.barber.name,
+        date: pick.date.key,
+        dateLabel: fmtDate(pick.date),
+        time: pick.time,
         customerName: fname.value.trim(),
         phone: fphone.value.trim(),
         note: document.getElementById('fnote').value.trim(),
         ticketNum: num
       });
 
+      // Guardado. El horario queda ocupado al instante y el formulario se libera
+      // ya mismo, sin esperar a que se vuelva a consultar la grilla.
+      justBooked.add(bookedKey(pick.barber.id, pick.date.key, pick.time));
       ticketNum.textContent = 'TICKET · #' + num;
       tStatus.textContent = 'Confirmado ✓';
       confirmMsg.classList.add('show');
-      submitBtn.textContent = 'Turno confirmado';
       bookingJustConfirmed = true;
       playThankYouCinematic();
-
-      await renderTimeGrid();
-
-      // El horario recién reservado ya está ocupado: se limpia la selección
-      // para que el botón no quede listo para reservar lo mismo otra vez.
       state.time = null;
-      isSubmitting = false;
-      submitBtn.textContent = 'Confirmar turno';
-      checkReady();
-      bookingJustConfirmed = true;
+      timeGrid.querySelectorAll('.chip-time').forEach(c => {
+        if (c.textContent === pick.time){ c.classList.remove('active'); c.disabled = true; }
+      });
       scheduleConfirmHide();
+      renderTimeGrid(true); // se actualiza en segundo plano; si falla, no traba nada
 
       setTimeout(() => {
         confirmMsg.scrollIntoView({behavior:'smooth', block:'nearest'});
       }, 100);
     } catch(err) {
-      // 3) Si algo falla de forma inesperada, avisamos en vez de fallar en silencio.
-      // Si la base de datos rechazó el horario (día bloqueado, fuera de horario o ya
-      // pasado), se avisa eso y se actualiza la grilla.
+      // 3) Si algo falla, se avisa y se puede volver a intentar sin recargar.
+      // Si la base de datos rechazó el horario (día bloqueado, fuera de horario,
+      // ya pasado u ocupado), se avisa eso y se actualiza la grilla.
       if (/ya pasó|no hay atención|no está disponible|duplicate key|bookings_un_turno_por_horario/.test((err && err.message) || '')){
         showFormError('Ese horario ya no está disponible. Elegí otro de la grilla.');
         state.time = null;
-        loadOwnerSettings();
         updateTicket();
+        loadOwnerSettings();
+        renderTimeGrid(true);
+      } else if (err && err.isTimeout){
+        showFormError('La conexión está muy lenta y no pudimos confirmar el turno. Probá de nuevo en un momento; si ya te había quedado reservado, el horario va a aparecer ocupado.');
+        renderTimeGrid(true);
       } else {
         showFormError('No pudimos confirmar el turno por un error de conexión. Probá de nuevo o escribinos por WhatsApp.');
       }
+    } finally {
+      // Pase lo que pase, el formulario nunca queda trabado.
       isSubmitting = false;
       submitBtn.textContent = 'Confirmar turno';
       checkReady();
