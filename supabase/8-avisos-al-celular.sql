@@ -37,6 +37,7 @@ create table if not exists goods_private.push_config (
   vapid_private text not null,
   vapid_subject text not null
 );
+alter table goods_private.push_config enable row level security; -- protección extra (aplicada así el 7/11)
 revoke all on all tables in schema goods_private from public, anon, authenticated;
 
 -- La función de avisos lee la configuración con esto (solo el servidor puede usarla)
