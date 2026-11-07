@@ -308,6 +308,7 @@
   .admin-dashboard.enter-body .today-col:nth-child(2){animation-delay:.27s;}
   .admin-dashboard.enter-body .today-col:nth-child(3){animation-delay:.34s;}
   .admin-dashboard.enter-body .today-col:nth-child(4){animation-delay:.41s;}
+  .admin-dashboard.enter-body > .cash{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) .2s both;}
   .admin-dashboard.enter-body > .admin-filters{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) .3s both;}
   .admin-dashboard.enter-body > .admin-list{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) .38s both;}
 
@@ -358,6 +359,38 @@
 
 
   /* ---------- Horarios y días bloqueados ---------- */
+  /* ---------- Caja ---------- */
+  .cash{margin-bottom:26px; padding:20px; border:1px solid var(--line); border-radius:8px; background:var(--paper);}
+  .cash-head{display:flex; justify-content:space-between; align-items:baseline; gap:6px 14px; flex-wrap:wrap; margin-bottom:14px;}
+  .cash-head h4{font-size:21px;}
+  .cash-head .when{font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:#57627a;}
+  .cash-tabs{display:flex; gap:6px;}
+  .cash-tabs button{border:1px solid var(--line); background:transparent; border-radius:20px; padding:6px 12px; font-size:12.5px; cursor:pointer;}
+  .cash-tabs button.active{background:var(--ink); border-color:var(--ink); color:var(--paper);}
+  .cash-total{display:flex; gap:22px; flex-wrap:wrap; padding:14px 0 16px; border-bottom:1px solid var(--line); margin-bottom:12px;}
+  .cash-total div{display:flex; flex-direction:column; gap:2px;}
+  .cash-total span{font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:#57627a;}
+  .cash-total strong{font-size:26px; font-variant-numeric:tabular-nums; color:var(--ink);}
+  .cash-total .local strong{color:var(--blue-deep);}
+  .cash-table{width:100%; border-collapse:collapse; font-size:14px; font-variant-numeric:tabular-nums;}
+  .cash-table th{font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:#57627a; font-weight:600; text-align:right; padding:6px 4px; border-bottom:1px solid var(--line);}
+  .cash-table th:first-child, .cash-table td:first-child{text-align:left;}
+  .cash-table td{padding:10px 4px; text-align:right; border-bottom:1px solid var(--line);}
+  .cash-table td:first-child{font-weight:600;}
+  .cash-table .muted{color:#8b95a7; font-size:12px; display:block; font-weight:400;}
+  .cash-note{font-size:12.5px; color:#8a5416; margin-top:10px;}
+  .admin-amount{display:inline-flex; align-items:center; gap:8px; margin-top:6px; font-size:13px; font-variant-numeric:tabular-nums;}
+  .admin-amount strong{color:#2e7d32;}
+  .admin-amount button{background:none; border:0; color:var(--blue-accent); font-size:12.5px; text-decoration:underline; cursor:pointer; padding:0;}
+  .amount-edit{display:flex; gap:8px; align-items:center; margin-top:8px; flex-wrap:wrap;}
+  .amount-edit input{width:130px; padding:8px 10px; border:1px solid var(--line); border-radius:4px; font:inherit; font-size:15px;}
+  .amount-edit .admin-btn{padding:8px 12px;}
+  .money-form{display:grid; grid-template-columns:1fr 1fr; gap:10px 24px;}
+  .money-col{display:flex; flex-direction:column; gap:8px;}
+  .money-row{display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:14px;}
+  .money-row input{width:120px; padding:8px 10px; border:1px solid var(--line); border-radius:4px; font:inherit; text-align:right;}
+  .money-row small{color:#8b95a7;}
+  @media (max-width:640px){ .money-form{grid-template-columns:1fr;} .cash-total strong{font-size:22px;} }
   .settings{margin-bottom:26px; padding:22px; border:1px solid var(--line); border-radius:8px; background:var(--paper);}
   .settings h4{font-size:20px;}
   .settings h5{font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--blue-accent); margin:26px 0 10px;}
@@ -513,9 +546,22 @@
       </div>
       <p class="manual-hint" id="blockHint"></p>
       <div class="block-list" id="blockList"></div>
+
+      <h5>Precios y porcentajes</h5>
+      <p class="manual-sub">El precio se completa solo al marcar un turno como atendido (se puede corregir en cada turno). El porcentaje es lo que se lleva cada barbero de lo que corta; el resto va al local.</p>
+      <div class="money-form">
+        <div class="money-col" id="priceFields"></div>
+        <div class="money-col" id="shareFields"></div>
+      </div>
+      <p class="manual-hint" id="moneyHint"></p>
+      <div class="manual-actions">
+        <button type="button" class="btn dark" id="moneySave">Guardar precios y porcentajes</button>
+      </div>
     </section>
 
     <section class="today" id="adminToday" aria-label="Agenda de hoy"></section>
+
+    <section class="cash" id="adminCash" aria-label="Caja"></section>
 
     <div class="admin-filters" id="adminFilters"></div>
     <label class="admin-history"><input type="checkbox" id="adminShowAll"> Mostrar también atendidos y cancelados</label>
@@ -633,12 +679,15 @@
       phone: row.phone,
       note: row.note,
       status: row.status,
-      ticketNum: row.ticket_num
+      ticketNum: row.ticket_num,
+      amount: row.amount == null ? null : Number(row.amount)
     }));
   }
 
-  async function updateBookingStatusRemote(id, newStatus){
-    const { error } = await withTimeout(supabase.from('bookings').update({status:newStatus}).eq('id', id));
+  async function updateBookingStatusRemote(id, newStatus, amount){
+    const patch = { status: newStatus };
+    if (newStatus === 'done' && amount != null) patch.amount = amount;
+    const { error } = await withTimeout(supabase.from('bookings').update(patch).eq('id', id));
     if (error) throw error;
   }
 
@@ -791,7 +840,7 @@
     let rows;
     try {
       // horarios, bloqueos y turnos se piden a la vez: con mala señal el aviso sale en el primer corte, no al final de tres esperas
-      [, rows] = await Promise.all([loadOwnerSettings(), fetchAllBookings()]);
+      [, rows] = await Promise.all([loadOwnerSettings(), fetchAllBookings(), loadMoney()]);
     } catch(err){
       if (seq !== loadSeq) return;
       // sesión vencida o cerrada desde otro lado: se vuelve a pedir el ingreso
@@ -821,6 +870,7 @@
 
   function renderAdminList(){
     renderToday();
+    renderCash();
     const mine = adminBookingsCache.filter(b => adminBarberFilter === 'all' || b.barberId === adminBarberFilter);
     const pending = mine.filter(isBookingOverdue);
     const upcoming = mine.filter(b => !isBookingOverdue(b) && (adminShowAll.checked || b.status === 'confirmed'));
@@ -875,7 +925,13 @@
       actions.appendChild(x);
     };
     if (b.status === 'confirmed'){
-      btn(overdue ? 'Vino · atendido' : 'Marcar atendido', '', 'done');
+      const doneBtn = document.createElement('button');
+      doneBtn.type = 'button'; doneBtn.className = 'admin-btn'; doneBtn.textContent = overdue ? 'Vino · atendido' : 'Marcar atendido';
+      doneBtn.addEventListener('click', () => {
+        if (priceFor(b.note) == null) askAmount(b, item, main); // tintura u otro servicio sin precio fijo
+        else updateBookingStatus(b, 'done', item);
+      });
+      actions.appendChild(doneBtn);
       btn(overdue ? 'No vino' : 'Cancelar', 'danger', 'cancelled');
       if (waPhone && !overdue){
         const remindBtn = document.createElement('a');
@@ -887,6 +943,15 @@
       }
     } else {
       btn('Deshacer', '', 'confirmed');
+    }
+    if (b.status === 'done'){
+      const am = document.createElement('div');
+      am.className = 'admin-amount';
+      am.innerHTML = b.amount != null ? 'Cobrado: <strong>' + money(b.amount) + '</strong>' : '<span style="color:#8a5416">Sin monto cargado</span>';
+      const ch = document.createElement('button'); ch.type = 'button'; ch.textContent = b.amount != null ? 'Cambiar' : 'Cargar monto';
+      ch.addEventListener('click', () => askAmount(b, item, main));
+      am.appendChild(ch);
+      main.appendChild(am);
     }
     item.appendChild(main);
     item.appendChild(actions);
@@ -905,17 +970,19 @@
     flash.t = setTimeout(() => { adminFlash.hidden = true; }, isErr ? 9000 : 5000);
   }
   const savingIds = new Set();
-  async function updateBookingStatus(booking, newStatus, itemEl){
+  async function updateBookingStatus(booking, newStatus, itemEl, amount){
     if (savingIds.has(booking.id)) return; // un toque de más no manda dos cambios
     savingIds.add(booking.id);
     if (itemEl) itemEl.classList.add('busy');
     const before = booking.status;
     try {
-      await updateBookingStatusRemote(booking.id, newStatus);
+      await updateBookingStatusRemote(booking.id, newStatus, amount);
       booking.status = newStatus; // se ve al instante, sin esperar la recarga
+      booking.amount = newStatus === 'done' ? (amount != null ? amount : priceFor(booking.note)) : null;
+      cashAddLocal(booking);
       renderAdminList();
       const quien = (booking.customerName || 'el cliente') + ' · ' + booking.time;
-      flash(newStatus === 'done' ? '✓ Atendido: ' + quien : newStatus === 'cancelled' ? 'Cancelado: ' + quien + '. El horario quedó libre en la página.' : '✓ Turno reactivado: ' + quien);
+      flash(newStatus === 'done' ? '✓ Atendido: ' + quien + (booking.amount != null ? ' · ' + money(booking.amount) : '') : newStatus === 'cancelled' ? 'Cancelado: ' + quien + '. El horario quedó libre en la página.' : '✓ Turno reactivado: ' + quien);
     } catch(err){
       booking.status = before;
       if (itemEl) itemEl.classList.remove('busy');
@@ -1042,7 +1109,7 @@
   });
   adminLock.addEventListener('click', async () => {
     stopAdminPolling();
-    adminBookingsCache = []; adminList.innerHTML = ''; adminToday.innerHTML = '';
+    adminBookingsCache = []; CASH = []; adminList.innerHTML = ''; adminToday.innerHTML = ''; adminCash.innerHTML = '';
     try { if (supabase) await supabase.auth.signOut(); } catch(err){ /* igual mostramos el login */ }
     showLoginScreen();
   });
@@ -1456,9 +1523,128 @@
     bDate.min = localDateKey(new Date());
     if (!bDate.value) bDate.value = localDateKey(new Date());
     hintIn(schedHint, ''); hintIn(blockHint, '');
-    renderSchedTable(); renderBlockList();
+    renderSchedTable(); renderBlockList(); renderMoneyForm(); hintIn(moneyHint, '');
     settingsPanel.hidden = false;
     settingsPanel.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  /* ================= CAJA: plata por barbero ================= */
+  // Precios y porcentajes viven en una tabla privada (goods_money): solo con sesión iniciada.
+  // Cada turno atendido guarda su monto; la base completa el precio del servicio si no se cargó otro.
+  const SERVICES = ['Corte', 'Corte + Barba', 'Barba', 'Tintura'];
+  let PRICES = { 'Corte': 20000, 'Corte + Barba': 22000, 'Barba': 14000, 'Tintura': null };
+  let SHARES = {};          // { nicolas: 60, ... } = % que se lleva cada barbero
+  let CASH = [];            // turnos atendidos: {id, barberId, date, amount}
+  let cashPeriod = 'day';
+  const adminCash = document.getElementById('adminCash');
+  const money = n => '$' + Math.round(Number(n) || 0).toLocaleString('es-AR');
+  function priceFor(service){
+    const v = PRICES[String(service || '').trim()];
+    return v == null || v === '' ? null : Number(v);
+  }
+  async function loadMoney(){
+    const [cfg, done] = await Promise.allSettled([
+      withTimeout(supabase.from('goods_money').select('prices,shares').limit(1)),
+      withTimeout(supabase.from('bookings').select('id,barber_id,date,amount').eq('status', 'done').not('amount', 'is', null))
+    ]);
+    const c = cfg.status === 'fulfilled' ? cfg.value : null;
+    if (c && !c.error && c.data && c.data[0]){
+      PRICES = Object.assign({}, PRICES, c.data[0].prices || {});
+      SHARES = c.data[0].shares || {};
+    }
+    const d = done.status === 'fulfilled' ? done.value : null;
+    if (d && !d.error) CASH = (d.data || []).map(r => ({ id: r.id, barberId: r.barber_id, date: r.date, amount: Number(r.amount) || 0 }));
+  }
+  // al marcar o deshacer, la caja se actualiza al instante (después se confirma con la base)
+  function cashAddLocal(b){
+    CASH = CASH.filter(x => x.id !== b.id);
+    if (b.status === 'done' && b.amount != null) CASH.push({ id: b.id, barberId: b.barberId, date: b.date, amount: b.amount });
+    renderCash();
+  }
+  function renderCash(){
+    const now = new Date(), today = localDateKey(now), month = today.slice(0, 7);
+    const inPeriod = r => cashPeriod === 'day' ? r.date === today : cashPeriod === 'month' ? r.date.slice(0, 7) === month : true;
+    const rows = CASH.filter(inPeriod);
+    const barbers = BARBERS.filter(b => adminBarberFilter === 'all' || b.id === adminBarberFilter);
+    const hasShares = barbers.every(b => SHARES[b.id] != null && SHARES[b.id] !== '');
+    let total = 0, local = 0, body = '';
+    barbers.forEach(b => {
+      const mine = rows.filter(r => r.barberId === b.id);
+      const gen = mine.reduce((a, r) => a + r.amount, 0);
+      total += gen;
+      const pct = Number(SHARES[b.id]);
+      const his = SHARES[b.id] != null && SHARES[b.id] !== '' ? Math.round(gen * pct / 100) : null;
+      if (his != null) local += gen - his;
+      body += '<tr><td>' + escapeHtml(b.name) + '<span class="muted">' + mine.length + (mine.length === 1 ? ' turno' : ' turnos') + (his != null ? ' · ' + pct + '%' : '') + '</span></td>' +
+        '<td>' + money(gen) + '</td><td>' + (his != null ? money(his) : '—') + '</td></tr>';
+    });
+    const label = cashPeriod === 'day' ? 'Hoy · ' + dateLabelFor(now) : cashPeriod === 'month' ? now.toLocaleDateString('es-AR', {month:'long', year:'numeric'}) : 'Desde que se empezó a contar';
+    adminCash.innerHTML =
+      '<div class="cash-head"><h4>Caja</h4><div class="cash-tabs">' +
+        [['day','Hoy'],['month','Mes'],['all','Total']].map(([k, t]) => '<button type="button" data-p="' + k + '"' + (k === cashPeriod ? ' class="active"' : '') + '>' + t + '</button>').join('') +
+      '</div></div>' +
+      '<p class="cash-head" style="margin:-6px 0 0"><span class="when">' + escapeHtml(label) + '</span></p>' +
+      '<div class="cash-total"><div><span>Generado</span><strong>' + money(total) + '</strong></div>' +
+        (hasShares ? '<div class="local"><span>Para el local</span><strong>' + money(local) + '</strong></div>' : '') + '</div>' +
+      '<table class="cash-table"><thead><tr><th>Barbero</th><th>Generó</th><th>Le corresponde</th></tr></thead><tbody>' + body + '</tbody></table>' +
+      (hasShares ? '' : '<p class="cash-note">Para ver cuánto le corresponde a cada uno, cargá los porcentajes en Horarios → Precios y porcentajes.</p>');
+    adminCash.querySelectorAll('.cash-tabs button').forEach(x => x.addEventListener('click', () => { cashPeriod = x.dataset.p; renderCash(); }));
+  }
+  // monto de un turno: para servicios sin precio fijo o para corregir lo cobrado
+  function askAmount(b, item, main){
+    if (main.querySelector('.amount-edit')) return;
+    const box = document.createElement('div');
+    box.className = 'amount-edit';
+    const sugerido = b.amount != null ? b.amount : priceFor(b.note);
+    box.innerHTML = '<input type="number" inputmode="numeric" min="0" step="500" placeholder="Monto cobrado" value="' + (sugerido != null ? sugerido : '') + '">' +
+      '<button type="button" class="admin-btn">Guardar</button><button type="button" class="admin-btn danger">Cancelar</button>';
+    const [inp, ok, no] = [box.querySelector('input'), ...box.querySelectorAll('button')];
+    main.appendChild(box); inp.focus();
+    no.addEventListener('click', () => box.remove());
+    const save = async () => {
+      const v = Math.round(Number(String(inp.value).replace(/[^0-9]/g, '')));
+      if (!v || v < 0 || v > 10000000){ inp.style.borderColor = '#B3261E'; inp.focus(); return; }
+      if (b.status === 'done'){
+        ok.disabled = true;
+        try {
+          const { error } = await withTimeout(supabase.from('bookings').update({ amount: v }).eq('id', b.id));
+          if (error) throw error;
+          b.amount = v; cashAddLocal(b); renderAdminList(); flash('✓ Monto actualizado: ' + money(v));
+        } catch(e){ ok.disabled = false; flash('No se pudo guardar el monto. Probá de nuevo.', true); }
+      } else {
+        box.remove();
+        updateBookingStatus(b, 'done', item, v);
+      }
+    };
+    ok.addEventListener('click', save);
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') save(); });
+  }
+  // precios y porcentajes (en Horarios)
+  const priceFields = document.getElementById('priceFields');
+  const shareFields = document.getElementById('shareFields');
+  const moneyHint = document.getElementById('moneyHint');
+  const moneySave = document.getElementById('moneySave');
+  function renderMoneyForm(){
+    priceFields.innerHTML = '<p class="manual-sub" style="margin:0">Precio de cada servicio</p>' + SERVICES.map(sv =>
+      '<label class="money-row"><span>' + escapeHtml(sv) + '</span><input type="number" inputmode="numeric" min="0" step="500" data-sv="' + escapeHtml(sv) + '" value="' + (PRICES[sv] != null ? PRICES[sv] : '') + '" placeholder="Sin precio fijo"></label>').join('');
+    shareFields.innerHTML = '<p class="manual-sub" style="margin:0">% que se lleva cada barbero</p>' + BARBERS.map(b =>
+      '<label class="money-row"><span>' + escapeHtml(b.name) + '</span><span><input type="number" inputmode="numeric" min="0" max="100" step="1" data-b="' + b.id + '" value="' + (SHARES[b.id] != null ? SHARES[b.id] : '') + '" placeholder="—"> <small>%</small></span></label>').join('');
+  }
+  moneySave.addEventListener('click', async () => {
+    const prices = {}, shares = {};
+    let bad = null;
+    priceFields.querySelectorAll('input').forEach(i => { const v = i.value.trim(); prices[i.dataset.sv] = v === '' ? null : Math.round(Number(v)); if (v !== '' && !(Number(v) >= 0)) bad = 'el precio de ' + i.dataset.sv; });
+    shareFields.querySelectorAll('input').forEach(i => { const v = i.value.trim(); if (v !== ''){ const n = Number(v); if (!(n >= 0 && n <= 100)) bad = 'el porcentaje de ' + (BARBERS.find(b => b.id === i.dataset.b) || {}).name; shares[i.dataset.b] = n; } });
+    if (bad){ hintIn(moneyHint, 'Revisá ' + bad + '.', true); return; }
+    moneySave.disabled = true; moneySave.textContent = 'Guardando…';
+    try {
+      const { error } = await withTimeout(supabase.from('goods_money').upsert({ id: true, prices, shares, updated_at: new Date().toISOString() }));
+      if (error) throw error;
+      PRICES = prices; SHARES = shares;
+      hintIn(moneyHint, '✓ Guardado. Los turnos que se marquen desde ahora usan estos precios.');
+      renderCash();
+    } catch(e){ hintIn(moneyHint, 'No se pudo guardar. Revisá tu conexión e intentá de nuevo.', true); }
+    finally { moneySave.disabled = false; moneySave.textContent = 'Guardar precios y porcentajes'; }
   });
 
   /* ---------- App en el celular ---------- */
