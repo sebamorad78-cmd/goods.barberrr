@@ -2,10 +2,17 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Panel del dueño — Goods Barber Studio</title>
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0A1930">
+<!-- App en el celular: se instala desde el navegador, sin tienda -->
+<link rel="manifest" href="/app/panel.webmanifest">
+<link rel="apple-touch-icon" href="/app/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Goods Panel">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;0,6..96,700;0,6..96,800;1,6..96,500&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
@@ -224,7 +231,15 @@
 
   /* ---------- Panel como página propia ---------- */
   body{background:var(--paper-2); min-height:100vh;}
-  .panel-top{background:var(--ink); border-bottom:1px solid var(--line-dark);}
+  .panel-top{background:var(--ink); border-bottom:1px solid var(--line-dark); padding-top:env(safe-area-inset-top, 0px);}
+  /* aviso para instalar la app */
+  .install-tip{display:flex; gap:14px; align-items:flex-start; margin-bottom:18px; padding:14px 16px; border-radius:8px;
+    background:var(--ink); color:var(--paper); font-size:13.5px; line-height:1.5;}
+  .install-tip img{width:40px; height:40px; border-radius:9px; flex-shrink:0;}
+  .install-tip b{display:block; font-size:14.5px; margin-bottom:2px;}
+  .install-tip .share{display:inline-block; vertical-align:-3px; width:15px; height:15px;}
+  .install-tip button{margin-left:auto; flex-shrink:0; background:none; border:0; color:var(--blue-light); font-size:20px; line-height:1; cursor:pointer; padding:2px 4px;}
+  .install-tip .install-go{font-size:12.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; border:1px solid var(--blue-light); border-radius:4px; padding:7px 10px; margin-top:8px;}
   .panel-top .nav-inner{padding:16px 28px;}
   .panel-back{color:var(--paper); opacity:0.75; font-size:13.5px;}
   .panel-back:hover{opacity:1; color:var(--blue-light);}
@@ -436,6 +451,11 @@
         <button class="btn ghost" id="adminExport" type="button">Descargar Excel</button>
         <button class="btn ghost" id="adminLock" type="button">Bloquear</button>
       </div>
+    </div>
+    <div class="install-tip" id="installTip" hidden>
+      <img src="/app/apple-touch-icon.png" alt="">
+      <div id="installText"></div>
+      <button type="button" id="installClose" aria-label="Cerrar">&times;</button>
     </div>
     <div class="admin-flash" id="adminFlash" hidden></div>
     <div class="admin-offline" id="adminOffline" hidden>Sin conexión con la base de datos. Se reintenta solo; lo que ves puede no estar actualizado.</div>
@@ -1427,6 +1447,42 @@
     settingsPanel.hidden = false;
     settingsPanel.scrollIntoView({behavior:'smooth', block:'start'});
   });
+
+  /* ---------- App en el celular ---------- */
+  // Service worker: solo la cáscara del panel (nunca datos de clientes). Sin él, todo funciona igual.
+  if ('serviceWorker' in navigator && location.protocol === 'https:'){
+    navigator.serviceWorker.register('/sw-panel.js', {scope: '/panel'}).catch(() => {});
+  }
+  const installTip = document.getElementById('installTip');
+  const installText = document.getElementById('installText');
+  const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  let tipOff = false;
+  try { tipOff = localStorage.getItem('goodsPanelTip') === 'no'; } catch(e){}
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  let deferredPrompt = null;
+  function showInstallTip(){
+    if (standalone || tipOff) return;
+    if (isIOS){
+      installText.innerHTML = '<b>Instalá el panel en tu iPhone</b>Tocá <svg class="share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5M5 13v7h14v-7"/></svg> <b style="display:inline">Compartir</b> y después <b style="display:inline">Agregar a inicio</b>. Te queda como una app más, sin descargar nada.';
+      installTip.hidden = false;
+    } else if (deferredPrompt){
+      installText.innerHTML = '<b>Instalá el panel en tu celular</b>Te queda como una app más, sin descargar nada.<br><button type="button" class="install-go" id="installGo">Instalar</button>';
+      installTip.hidden = false;
+      document.getElementById('installGo').onclick = async () => {
+        deferredPrompt.prompt();
+        try { await deferredPrompt.userChoice; } catch(e){}
+        deferredPrompt = null; installTip.hidden = true;
+      };
+    }
+  }
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; if (!adminDashboard.hidden) showInstallTip(); });
+  window.addEventListener('appinstalled', () => { installTip.hidden = true; });
+  document.getElementById('installClose').addEventListener('click', () => {
+    installTip.hidden = true;
+    try { localStorage.setItem('goodsPanelTip', 'no'); } catch(e){}
+  });
+  const _openDashboard = openDashboard;
+  openDashboard = async function(){ await _openDashboard(); showInstallTip(); };
 
   // Al abrir el panel: si ya hay sesión iniciada va directo a los turnos,
   // si no, muestra el login. Espera a que Supabase termine de conectar.

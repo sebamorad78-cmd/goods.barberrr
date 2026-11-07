@@ -1,0 +1,17 @@
+{
+  "name": "Goods · Panel",
+  "short_name": "Goods Panel",
+  "description": "Agenda, turnos y caja de Goods Barber Studio.",
+  "id": "/panel",
+  "start_url": "/panel",
+  "scope": "/panel",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0A1930",
+  "theme_color": "#0A1930",
+  "lang": "es-AR",
+  "icons": [
+    { "src": "/app/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/app/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
