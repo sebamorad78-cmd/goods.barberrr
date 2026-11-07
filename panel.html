@@ -232,6 +232,18 @@
   /* ---------- Panel como página propia ---------- */
   body{background:var(--paper-2); min-height:100vh;}
   .panel-top{background:var(--ink); border-bottom:1px solid var(--line-dark); padding-top:env(safe-area-inset-top, 0px);}
+  /* logo con brillo: una ola de luz lo recorre constantemente (solo CSS, casi sin consumo) */
+  .panel-top .brand{position:relative; overflow:hidden; padding:4px 8px 4px 4px; margin-left:-4px; border-radius:8px;}
+  .panel-top .brand::after{content:""; position:absolute; top:-40%; bottom:-40%; left:0; width:55%; pointer-events:none;
+    background:linear-gradient(100deg, transparent 0%, rgba(169,203,238,.0) 20%, rgba(214,232,252,.55) 48%, rgba(169,203,238,.0) 76%, transparent 100%);
+    transform:translateX(-160%) skewX(-18deg); animation:brandWave 3.6s cubic-bezier(.45,0,.25,1) infinite; mix-blend-mode:screen;}
+  .panel-top .brand-icon{animation:brandGlow 3.6s ease-in-out infinite;}
+  .panel-top .brand-word{background:linear-gradient(100deg, var(--paper) 0 40%, #cfe3f8 47%, #ffffff 50%, #cfe3f8 53%, var(--paper) 60% 100%);
+    background-size:260% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; animation:brandText 3.6s cubic-bezier(.45,0,.25,1) infinite;}
+  @keyframes brandWave{0%{transform:translateX(-160%) skewX(-18deg);} 55%,100%{transform:translateX(260%) skewX(-18deg);}}
+  @keyframes brandText{0%{background-position:100% 0;} 55%,100%{background-position:0 0;}}
+  @keyframes brandGlow{0%,100%{filter:drop-shadow(0 0 0 rgba(169,203,238,0));} 30%{filter:drop-shadow(0 0 6px rgba(169,203,238,.55));}}
+  @media (prefers-reduced-motion: reduce){ .panel-top .brand::after, .panel-top .brand-icon, .panel-top .brand-word{animation:none;} .panel-top .brand::after{display:none;} }
   /* aviso para instalar la app */
   .install-tip{display:flex; gap:14px; align-items:flex-start; margin-bottom:18px; padding:14px 16px; border-radius:8px;
     background:var(--ink); color:var(--paper); font-size:13.5px; line-height:1.5;}
