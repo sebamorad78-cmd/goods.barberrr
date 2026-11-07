@@ -246,6 +246,7 @@
   @keyframes brandGlow{0%,100%{filter:drop-shadow(0 0 0 rgba(169,203,238,0));} 30%{filter:drop-shadow(0 0 6px rgba(169,203,238,.55));}}
   @media (prefers-reduced-motion: reduce){ .panel-top .brand::after, .panel-top .brand-icon, .panel-top .brand-word{animation:none;} .panel-top .brand::after{display:none;} }
   /* aviso para instalar la app */
+  .install-tip[hidden], .cx[hidden], .admin-offline[hidden], .admin-flash[hidden]{display:none !important;}
   .install-tip{display:flex; gap:14px; align-items:flex-start; margin-bottom:18px; padding:14px 16px; border-radius:8px;
     background:var(--ink); color:var(--paper); font-size:13.5px; line-height:1.5;}
   .install-tip img{width:40px; height:40px; border-radius:9px; flex-shrink:0;}
