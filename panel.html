@@ -391,6 +391,11 @@
   .money-row input{width:120px; padding:8px 10px; border:1px solid var(--line); border-radius:4px; font:inherit; text-align:right;}
   .money-row small{color:#8b95a7;}
   @media (max-width:640px){ .money-form{grid-template-columns:1fr;} .cash-total strong{font-size:22px;} }
+  .push-box .field{max-width:320px;}
+  .push-state{display:flex; align-items:center; gap:10px; padding:12px 14px; border-radius:6px; font-size:14px; margin:6px 0 12px;}
+  .push-state.on{background:rgba(76,175,80,0.12); color:#2e7d32;}
+  .push-state.off{background:rgba(230,145,29,0.12); color:#8a5416;}
+  .push-steps{font-size:14px; line-height:1.7; padding-left:20px; margin:6px 0 0;}
   .settings{margin-bottom:26px; padding:22px; border:1px solid var(--line); border-radius:8px; background:var(--paper);}
   .settings h4{font-size:20px;}
   .settings h5{font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--blue-accent); margin:26px 0 10px;}
@@ -493,6 +498,7 @@
       <div class="admin-header-actions">
         <button class="btn dark" id="adminNew" type="button">+ Cargar turno</button>
         <button class="btn ghost" id="adminSettings" type="button">Horarios</button>
+        <button class="btn ghost" id="adminPushBtn" type="button">Avisos</button>
         <button class="btn ghost" id="adminRefresh" type="button">Actualizar</button>
         <button class="btn ghost" id="adminExport" type="button">Descargar Excel</button>
         <button class="btn ghost" id="adminLock" type="button">Bloquear</button>
@@ -524,6 +530,12 @@
         <button type="button" class="btn ghost" id="mCancel">Cancelar</button>
       </div>
     </form>
+
+    <section class="settings push-box" id="pushPanel" hidden>
+      <h4>Avisos en este celular</h4>
+      <p class="manual-sub">Cuando entre o se cancele un turno, te llega una notificación a este celular. Sin Telegram ni otras apps.</p>
+      <div id="pushBody"></div>
+    </section>
 
     <section class="settings" id="settingsPanel" hidden>
       <h4>Horarios y días bloqueados</h4>
@@ -866,6 +878,8 @@
     if (!document.hidden && !adminDashboard.hidden) loadAndRenderBookings(true);
   });
   window.addEventListener('online', () => { if (!adminDashboard.hidden) loadAndRenderBookings(true); });
+  // al tocar una notificación con el panel abierto, se actualiza
+  if ('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', ev => { if (ev.data === 'refrescar' && !adminDashboard.hidden) loadAndRenderBookings(true); });
   adminShowAll.addEventListener('change', () => renderAdminList());
 
   function renderAdminList(){
@@ -1645,6 +1659,90 @@
       renderCash();
     } catch(e){ hintIn(moneyHint, 'No se pudo guardar. Revisá tu conexión e intentá de nuevo.', true); }
     finally { moneySave.disabled = false; moneySave.textContent = 'Guardar precios y porcentajes'; }
+  });
+
+  /* ================= AVISOS AL CELULAR (Web Push) ================= */
+  // El celular se suscribe y queda guardado de qué barbero quiere los avisos.
+  // En iPhone funciona solo con el panel agregado a inicio (iOS 16.4 o más nuevo).
+  const VAPID_PUBLIC = 'BHr2Qvxqf9wWfjKl0MqJEJZ9KOYqLdiTIQtAw3VS2WWGJ6PZs1NqApBoFHmxy8F_mNT3vX7FTNDg101r2uKfeYQ';
+  const pushPanel = document.getElementById('pushPanel');
+  const pushBody = document.getElementById('pushBody');
+  const pushSupported = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+  function b64ToBytes(b64){
+    const pad = '='.repeat((4 - b64.length % 4) % 4);
+    const raw = atob((b64 + pad).replace(/-/g, '+').replace(/_/g, '/'));
+    return Uint8Array.from(raw, c => c.charCodeAt(0));
+  }
+  async function currentSub(){
+    try { const reg = await navigator.serviceWorker.getRegistration('/panel'); return reg ? await reg.pushManager.getSubscription() : null; }
+    catch(e){ return null; }
+  }
+  const PUSH_WHO = [['nicolas','Nicolás'],['tula','Franco'],['chino','Chino'],['lucho','Lucho'],['todos','Todos los turnos (dueño)']];
+  async function renderPush(msg, isErr){
+    const standaloneNow = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+    if (!pushSupported || (isIOS && !standaloneNow)){
+      pushBody.innerHTML = '<div class="push-state off">Para recibir avisos, primero instalá el panel en este celular y abrilo desde el ícono.</div>' +
+        '<ol class="push-steps"><li>Tocá <b>Compartir</b> en Safari.</li><li>Elegí <b>Agregar a inicio</b>.</li><li>Abrí <b>Goods Panel</b> desde el ícono y volvé a tocar <b>Avisos</b>.</li></ol>' +
+        (isIOS ? '<p class="manual-sub" style="margin-top:10px">Hace falta iOS 16.4 o más nuevo.</p>' : '');
+      return;
+    }
+    const sub = await currentSub();
+    let who = null; try { who = localStorage.getItem('goodsPushWho'); } catch(e){}
+    if (Notification.permission === 'denied'){
+      pushBody.innerHTML = '<div class="push-state off">Los avisos están bloqueados en este celular.</div>' +
+        '<p class="manual-sub">Para habilitarlos: Ajustes del iPhone → Notificaciones → Goods Panel → Permitir notificaciones. Después volvé acá.</p>';
+      return;
+    }
+    const opts = PUSH_WHO.map(([id, n]) => '<option value="' + id + '"' + (id === who ? ' selected' : '') + '>' + n + '</option>').join('');
+    pushBody.innerHTML = (sub && who ? '<div class="push-state on">✓ Avisos activados para <b>&nbsp;' + escapeHtml((PUSH_WHO.find(x => x[0] === who) || [,''])[1]) + '</b></div>' : '') +
+      '<div class="field"><label for="pushWho">¿Quién usa este celular?</label><select id="pushWho">' + opts + '</select></div>' +
+      '<div class="manual-actions">' +
+        '<button type="button" class="btn dark" id="pushOn">' + (sub && who ? 'Guardar cambio' : 'Activar avisos') + '</button>' +
+        (sub ? '<button type="button" class="btn ghost" id="pushOff">Desactivar</button>' : '') +
+      '</div><p class="manual-hint' + (isErr ? ' err' : '') + '" id="pushHint">' + (msg ? escapeHtml(msg) : '') + '</p>';
+    document.getElementById('pushOn').onclick = pushEnable;
+    const off = document.getElementById('pushOff'); if (off) off.onclick = pushDisable;
+  }
+  async function pushEnable(){
+    const btn = document.getElementById('pushOn');
+    const who = document.getElementById('pushWho').value;
+    btn.disabled = true; btn.textContent = 'Activando…';
+    try {
+      // el permiso se pide en el mismo toque (iPhone lo exige)
+      const perm = Notification.permission === 'granted' ? 'granted' : await Notification.requestPermission();
+      if (perm !== 'granted'){ renderPush('Sin permiso no se pueden mandar avisos. Si te equivocaste, habilitalo en Ajustes → Notificaciones → Goods Panel.', true); return; }
+      const reg = await navigator.serviceWorker.register('/sw-panel.js', {scope: '/panel'});
+      await navigator.serviceWorker.ready;
+      let sub = await reg.pushManager.getSubscription();
+      if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToBytes(VAPID_PUBLIC) });
+      const j = sub.toJSON();
+      const { error } = await withTimeout(supabase.from('push_subscriptions').upsert({
+        endpoint: j.endpoint, barber_id: who, p256dh: j.keys.p256dh, auth: j.keys.auth,
+        user_agent: navigator.userAgent.slice(0, 200), updated_at: new Date().toISOString()
+      }));
+      if (error) throw error;
+      try { localStorage.setItem('goodsPushWho', who); } catch(e){}
+      renderPush('Listo. Los próximos turnos te van a llegar como notificación.');
+    } catch(e){
+      console.error('Goods: no se pudieron activar los avisos', e);
+      renderPush('No se pudieron activar los avisos. Revisá la conexión y probá de nuevo.', true);
+    }
+  }
+  async function pushDisable(){
+    const sub = await currentSub();
+    try {
+      if (sub){
+        await withTimeout(supabase.from('push_subscriptions').delete().eq('endpoint', sub.endpoint));
+        await sub.unsubscribe();
+      }
+      try { localStorage.removeItem('goodsPushWho'); } catch(e){}
+      renderPush('Avisos desactivados en este celular.');
+    } catch(e){ renderPush('No se pudo desactivar. Probá de nuevo.', true); }
+  }
+  document.getElementById('adminPushBtn').addEventListener('click', () => {
+    if (!pushPanel.hidden){ pushPanel.hidden = true; return; }
+    pushPanel.hidden = false; renderPush();
+    pushPanel.scrollIntoView({behavior:'smooth', block:'start'});
   });
 
   /* ---------- App en el celular ---------- */
