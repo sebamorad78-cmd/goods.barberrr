@@ -877,6 +877,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     font-variant-numeric:lining-nums tabular-nums;}
   .ci-price.ci-ask{font-family:var(--f-text); font-size:15px; letter-spacing:.06em; text-transform:uppercase; opacity:.8;}
   .carta-item p{color:rgba(238,242,247,0.62); font-size:15px; max-width:38ch; margin:0;}
+  .carta-item{gap:10px;}
   .ci-book{align-self:flex-start; margin-top:auto; padding:10px 0 0; background:none; border:0; color:var(--paper);
     font:600 12.5px/1 var(--f-text); letter-spacing:.14em; text-transform:uppercase; cursor:pointer;
     border-bottom:1px solid transparent; transition:color .25s ease;}
@@ -895,7 +896,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .barber-grid{gap:10px;}
   .barber-card{aspect-ratio:3/4.3;}
   .barber-card img{filter:grayscale(35%) contrast(1.05) saturate(.95);}
-  .barber-overlay{background:linear-gradient(180deg, rgba(10,25,48,0) 25%, rgba(6,15,28,0.7) 55%, rgba(6,15,28,0.97) 100%); padding:24px 20px;}
+  .barber-overlay{background:linear-gradient(180deg, rgba(10,25,48,0) 50%, rgba(6,15,28,0.55) 72%, rgba(6,15,28,0.92) 100%); padding:24px 20px;}
   .barber-overlay .spec, .barber-overlay h4, .barber-overlay .yrs{text-shadow:0 1px 12px rgba(6,15,28,0.6);}
   .barber-overlay .spec{order:-1; font:600 10.5px/1.3 var(--f-text); letter-spacing:.16em; text-transform:uppercase; color:var(--blue-light); margin:0 0 10px;}
   .barber-overlay h4{font-size:clamp(24px, 2.2vw, 30px);}
@@ -931,13 +932,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   @media (max-width:760px){
     .carta{grid-template-columns:1fr;}
     .barber-grid{gap:6px;}
-    .barber-overlay{padding:16px 14px;}
+    .barber-overlay{padding:14px 12px; background:linear-gradient(180deg, rgba(10,25,48,0) 62%, rgba(6,15,28,0.85) 100%);}
+    .barber-overlay .yrs{display:none;}
+    .barber-card img{filter:none;}
     .barber-overlay .bio{font-size:12px;}
     .bc-book{font-size:11px; margin-top:12px; text-align:left;}
     .bc-book .bc-who{display:none;}
     .barber-overlay .bio{display:none;}
-    .barber-overlay .spec{font-size:9.5px; letter-spacing:.12em; margin-bottom:6px;}
-    .barber-overlay h4{font-size:24px;}
+    .barber-overlay .spec{font-size:9px; letter-spacing:.1em; margin:0 0 3px;}
+    .barber-overlay h4{font-size:21px; line-height:1.1;}
     .nav .btn{padding:10px 14px; font-size:11.5px; white-space:nowrap; letter-spacing:.06em;}
     .hero-cta .btn{flex:1 1 auto; justify-content:center;}
   }
@@ -1051,7 +1054,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <h1><span class="mask"><span class="ln">El oficio del</span></span><span class="mask"><span class="ln"><em>buen corte.</em></span></span></h1>
     <p class="hero-sub">Cuatro barberos, un solo estándar. Cortes de precisión, afeitado a navaja y un ambiente pensado para que el turno sea lo mejor de tu semana.</p>
     <div class="hero-cta">
-      <a href="#turnos" class="btn btn-lg">Reservar turno <span class="arr" aria-hidden="true">→</span></a>
       <a href="#barberos" class="btn ghost btn-lg">Conocer al equipo</a>
     </div>
     <div class="hero-meta">
@@ -1147,22 +1149,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <article class="carta-item">
         <div class="ci-top"><h3>Corte clásico</h3><span class="ci-price">$20.000</span></div>
         <p>Corte a elección, con terminación prolija y peinado.</p>
-        <button type="button" class="ci-book" data-book-service="Corte">Reservar <span aria-hidden="true">→</span></button>
       </article>
       <article class="carta-item">
         <div class="ci-top"><h3>Barba completa a navaja</h3><span class="ci-price">$14.000</span></div>
         <p>Perfilado y afeitado a navaja, con toalla caliente.</p>
-        <button type="button" class="ci-book" data-book-service="Barba">Reservar <span aria-hidden="true">→</span></button>
       </article>
       <article class="carta-item">
         <div class="ci-top"><h3>Corte + barba</h3><span class="ci-price">$22.000</span></div>
         <p>El servicio completo, en un solo turno.</p>
-        <button type="button" class="ci-book" data-book-service="Corte + Barba">Reservar <span aria-hidden="true">→</span></button>
       </article>
       <article class="carta-item">
         <div class="ci-top"><h3>Tintura</h3><span class="ci-price ci-ask">Consultar</span></div>
         <p>Color a medida. Se cotiza según el tono y el servicio elegido.</p>
-        <button type="button" class="ci-book" data-book-service="Tintura">Reservar <span aria-hidden="true">→</span></button>
       </article>
     </div>
     <p class="menu-note carta-note">Precios de referencia: pueden variar según el largo y el estado del cabello. Ante cualquier duda, consultá por WhatsApp.</p>
@@ -1188,7 +1186,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <h4>Nicolás</h4>
           <p class="yrs">7 años de oficio</p>
           <p class="bio">Referente del fade clásico y el diseño a máquina cero. Formado en Mar del Plata.</p>
-          <button type="button" class="bc-book" data-book-barber="nicolas">Reservar<span class="bc-who"> con Nicolás</span> <span aria-hidden="true">→</span></button>
         </div>
       </div>
 
@@ -1200,7 +1197,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <h4>Franco</h4>
           <p class="yrs">5 años de oficio</p>
           <p class="bio">Especialista en fades y degradés. Transiciones prolijas y parejas, desde la piel hasta el largo que elijas.</p>
-          <button type="button" class="bc-book" data-book-barber="tula">Reservar<span class="bc-who"> con Franco</span> <span aria-hidden="true">→</span></button>
         </div>
       </div>
 
@@ -1212,7 +1208,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <h4>Chino</h4>
           <p class="yrs">7 años de oficio</p>
           <p class="bio">Referente en texturas y diseños con navaja. Se mueve entre lo urbano y lo clásico sin esfuerzo.</p>
-          <button type="button" class="bc-book" data-book-barber="chino">Reservar<span class="bc-who"> con Chino</span> <span aria-hidden="true">→</span></button>
         </div>
       </div>
 
@@ -1224,7 +1219,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <h4>Lucho</h4>
           <p class="yrs">5 años de oficio</p>
           <p class="bio">Especialista en pelo largo. Trabaja a tijera para dar forma, capas y movimiento sin perder el largo.</p>
-          <button type="button" class="bc-book" data-book-barber="lucho">Reservar<span class="bc-who"> con Lucho</span> <span aria-hidden="true">→</span></button>
         </div>
       </div>
 
