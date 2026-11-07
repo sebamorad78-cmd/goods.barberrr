@@ -947,6 +947,57 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   @media (prefers-reduced-motion: reduce){
     .carta.reveal .carta-item{opacity:1 !important; transform:none !important;}
   }
+
+  /* =====================================================================
+     CINEMATOGRAFÍA v2: el logo se dibuja, la marca entra, y la pantalla
+     sube como un telón con un ribete de poste de barbería
+     ===================================================================== */
+  .cine-v2{position:fixed; inset:0; z-index:600; cursor:pointer; overflow:visible;
+    background:radial-gradient(120% 90% at 50% 42%, #14304f 0%, var(--ink) 62%, #050d1a 100%);
+    display:flex; align-items:center; justify-content:center; will-change:transform;}
+  .cine-v2::after{content:""; position:absolute; inset:0; pointer-events:none; opacity:.07; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+  .cv-stage{display:flex; flex-direction:column; align-items:center; transition:opacity .35s ease, transform .6s cubic-bezier(.7,0,.3,1);}
+  .cv-logo{width:58px; height:78px; overflow:visible;}
+  .cv-draw *{stroke-dasharray:1; stroke-dashoffset:1; animation:cvDraw .75s cubic-bezier(.65,0,.35,1) forwards;}
+  .cv-draw circle{animation-delay:.12s;} .cv-draw rect:last-child{animation-delay:.24s;}
+  .cv-fill{opacity:0; animation:cvFade .45s ease .62s forwards;}
+  .cv-word{margin-top:20px; overflow:hidden; padding:0 .2em .1em; line-height:1.08;}
+  .cv-word span{display:inline-block; font-family:'Baloo 2', sans-serif; font-weight:800; font-size:clamp(42px, 9vw, 64px); color:var(--paper);
+    letter-spacing:.005em; transform:translateY(105%); animation:cvRise .7s cubic-bezier(.2,.8,.2,1) .55s forwards;}
+  .cv-sub{margin-top:12px; display:flex; font-family:var(--f-text); font-weight:600; font-size:12px; letter-spacing:.42em; text-transform:uppercase; color:var(--blue-light);}
+  .cv-sub span{opacity:0; transform:translateY(6px); animation:cvLetter .4s ease forwards; animation-delay:calc(.85s + var(--i) * 32ms);}
+  .cv-rule{margin-top:24px; height:1px; width:140px; background:linear-gradient(90deg, transparent, var(--blue-light), transparent);
+    transform:scaleX(0); animation:cvRule .7s cubic-bezier(.65,0,.35,1) 1.05s forwards;}
+  /* ribete del telón: franja de poste de barbería en movimiento */
+  .cv-hem{position:absolute; left:0; right:0; bottom:0; height:10px; transform:scaleY(0); transform-origin:50% 0;
+    box-shadow:0 18px 40px rgba(5,13,26,.55);
+    background:repeating-linear-gradient(-45deg, #C8323C 0 12px, #EEF2F7 12px 24px, #2F5FA8 24px 36px, #EEF2F7 36px 48px);
+    background-size:68px 10px; animation:cvPole .6s linear infinite;}
+  /* salida: el contenido se aleja y la pantalla sube como un telón */
+  .cine-v2.cine-out{pointer-events:none; animation:cvCurtain .85s cubic-bezier(.76,0,.24,1) forwards;}
+  .cine-v2.cine-out .cv-stage{opacity:0; transform:translateY(-28px) scale(.97);}
+  .cine-v2.cine-out .cv-hem{transform:translateY(100%) scaleY(1); transition:transform .2s ease;}
+  .cine-v2.cine-gone{display:none;}
+  /* el inicio se acomoda como una cámara que llega a su lugar */
+  .hero.cv-settle{animation:cvSettle 1.5s cubic-bezier(.2,.7,.2,1) both;}
+  @keyframes cvDraw{to{stroke-dashoffset:0;}}
+  @keyframes cvFade{to{opacity:1;}}
+  @keyframes cvRise{to{transform:none;}}
+  @keyframes cvLetter{to{opacity:1; transform:none;}}
+  @keyframes cvRule{to{transform:scaleX(1);}}
+  @keyframes cvPole{to{background-position:68px 0;}}
+  @keyframes cvCurtain{0%{transform:translateY(0);} 100%{transform:translateY(calc(-100% - 12px));}}
+  @keyframes cvSettle{from{transform:scale(1.06); filter:brightness(.75);} to{transform:none; filter:none;}}
+  /* agradecimiento: oculto hasta que se confirma un turno */
+  .cv-thanks{display:none;}
+  .cv-thanks.cine-play{display:flex;}
+  .cv-thanks .cv-word span{font-family:var(--f-display); font-weight:500; font-style:italic; animation-delay:.1s;}
+  .cv-thanks .cv-sub{letter-spacing:.28em; font-size:11.5px;}
+  .cv-thanks .cv-sub span{animation-delay:calc(.45s + var(--i) * 22ms);}
+  .cv-thanks .cv-rule{animation-delay:.75s;}
+  @media (max-width:640px){ .cv-logo{width:48px; height:64px;} .cv-sub{font-size:10.5px; letter-spacing:.34em;} .cv-thanks .cv-sub{font-size:10px; letter-spacing:.2em;} }
+  @media (prefers-reduced-motion: reduce){ .cine-v2{display:none !important;} .hero.cv-settle{animation:none;} }
 </style>
 </head>
 <body>
@@ -956,43 +1007,44 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
 <!-- ================= INTRO CINEMATOGRÁFICA ================= -->
-<div class="cine-intro" id="cineIntro" role="presentation" aria-hidden="true">
-  <svg class="cine-icon" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="9" y="3" width="42" height="23" rx="7" fill="#EEF2F7"/>
-    <rect x="15" y="21" width="4" height="6" fill="#0A1930"/>
-    <rect x="23" y="21" width="4" height="6" fill="#0A1930"/>
-    <rect x="31" y="21" width="4" height="6" fill="#0A1930"/>
-    <rect x="39" y="21" width="4" height="6" fill="#0A1930"/>
-    <circle cx="30" cy="40" r="13" fill="#EEF2F7"/>
-    <text x="30" y="45" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="14" fill="#0A1930">8</text>
-    <rect x="13" y="52" width="34" height="26" rx="9" fill="#EEF2F7"/>
-    <rect x="18" y="62" width="24" height="2.5" rx="1.25" fill="#0A1930" opacity="0.5"/>
-    <rect x="18" y="68" width="16" height="2.5" rx="1.25" fill="#0A1930" opacity="0.5"/>
+<div class="cine-v2" id="cineIntro" role="presentation" aria-hidden="true">
+  <div class="cv-stage">
+  <svg class="cv-logo" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <g class="cv-draw" stroke="#EEF2F7" stroke-width="1.4" fill="none">
+      <rect x="9" y="3" width="42" height="23" rx="7" pathLength="1"/>
+      <circle cx="30" cy="40" r="13" pathLength="1"/>
+      <rect x="13" y="52" width="34" height="26" rx="9" pathLength="1"/>
+    </g>
+    <g class="cv-fill">
+      <rect x="9" y="3" width="42" height="23" rx="7" fill="#EEF2F7"/>
+      <rect x="15" y="21" width="4" height="6" fill="#0A1930"/>
+      <rect x="23" y="21" width="4" height="6" fill="#0A1930"/>
+      <rect x="31" y="21" width="4" height="6" fill="#0A1930"/>
+      <rect x="39" y="21" width="4" height="6" fill="#0A1930"/>
+      <circle cx="30" cy="40" r="13" fill="#EEF2F7"/>
+      <text x="30" y="45" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="14" fill="#0A1930">8</text>
+      <rect x="13" y="52" width="34" height="26" rx="9" fill="#EEF2F7"/>
+      <rect x="18" y="62" width="24" height="2.5" rx="1.25" fill="#0A1930" opacity="0.5"/>
+      <rect x="18" y="68" width="16" height="2.5" rx="1.25" fill="#0A1930" opacity="0.5"/>
+    </g>
   </svg>
-  <div class="cine-word">goods</div>
-  <div class="cine-sub">Barber Studio</div>
-  <div class="cine-line"></div>
-  <div class="cine-skip">Toque para continuar</div>
+    <div class="cv-word"><span>goods</span></div>
+    <div class="cv-sub" aria-hidden="true"><span style="--i:0">B</span><span style="--i:1">a</span><span style="--i:2">r</span><span style="--i:3">b</span><span style="--i:4">e</span><span style="--i:5">r</span><span style="--i:6">&nbsp;</span><span style="--i:7">S</span><span style="--i:8">t</span><span style="--i:9">u</span><span style="--i:10">d</span><span style="--i:11">i</span><span style="--i:12">o</span></div>
+    <div class="cv-rule"></div>
+  </div>
+  <div class="cv-hem"></div>
+</div>
 </div>
 
 <!-- Cinematografía de agradecimiento al confirmar un turno — oculta hasta que se dispara desde JS -->
-<div class="cine-intro" id="cineThanks" role="presentation" aria-hidden="true">
-  <svg class="cine-icon" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="9" y="3" width="42" height="23" rx="7" fill="#EEF2F7"/>
-    <rect x="15" y="21" width="4" height="6" fill="#0A1930"/>
-    <rect x="23" y="21" width="4" height="6" fill="#0A1930"/>
-    <rect x="31" y="21" width="4" height="6" fill="#0A1930"/>
-    <rect x="39" y="21" width="4" height="6" fill="#0A1930"/>
-    <circle cx="30" cy="40" r="13" fill="#EEF2F7"/>
-    <text x="30" y="45" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="14" fill="#0A1930">8</text>
-    <rect x="13" y="52" width="34" height="26" rx="9" fill="#EEF2F7"/>
-    <rect x="18" y="62" width="24" height="2.5" rx="1.25" fill="#0A1930" opacity="0.5"/>
-    <rect x="18" y="68" width="16" height="2.5" rx="1.25" fill="#0A1930" opacity="0.5"/>
-  </svg>
-  <div class="cine-word">¡Gracias!</div>
-  <div class="cine-sub">Por elegirnos siempre</div>
-  <div class="cine-line"></div>
-  <div class="cine-skip">Toque para continuar</div>
+<div class="cine-v2 cv-thanks" id="cineThanks" role="presentation" aria-hidden="true">
+  <div class="cv-stage">
+    <div class="cv-word"><span>¡Gracias!</span></div>
+    <div class="cv-sub" aria-hidden="true"><span style="--i:0">T</span><span style="--i:1">u</span><span style="--i:2">&nbsp;</span><span style="--i:3">t</span><span style="--i:4">u</span><span style="--i:5">r</span><span style="--i:6">n</span><span style="--i:7">o</span><span style="--i:8">&nbsp;</span><span style="--i:9">q</span><span style="--i:10">u</span><span style="--i:11">e</span><span style="--i:12">d</span><span style="--i:13">ó</span><span style="--i:14">&nbsp;</span><span style="--i:15">c</span><span style="--i:16">o</span><span style="--i:17">n</span><span style="--i:18">f</span><span style="--i:19">i</span><span style="--i:20">r</span><span style="--i:21">m</span><span style="--i:22">a</span><span style="--i:23">d</span><span style="--i:24">o</span></div>
+    <div class="cv-rule"></div>
+  </div>
+  <div class="cv-hem"></div>
+</div>
 </div>
 
 <div class="scrim" id="scrim"></div>
@@ -1459,21 +1511,29 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     const intro = document.getElementById('cineIntro');
     if (!intro) return;
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced){
-      intro.style.display = 'none';
+    // Se muestra la primera vez que alguien entra (y de nuevo pasadas 12 horas);
+    // con "?intro" en la dirección se fuerza, para mostrarla.
+    let seen = 0;
+    try { seen = +localStorage.getItem('goodsIntroVista') || 0; } catch(e){}
+    const force = /[?&]intro\b/.test(location.search);
+    if (prefersReduced || (!force && Date.now() - seen < 12 * 3600 * 1000)){
+      intro.classList.add('cine-gone');
       return;
     }
+    try { localStorage.setItem('goodsIntroVista', String(Date.now())); } catch(e){}
     document.documentElement.style.overflow = 'hidden';
     let dismissed = false;
     function dismiss(){
       if (dismissed) return;
       dismissed = true;
+      const heroEl = document.querySelector('.hero');
+      if (heroEl) heroEl.classList.add('cv-settle');
       intro.classList.add('cine-out');
       document.documentElement.style.overflow = '';
-      setTimeout(() => { intro.style.display = 'none'; }, 750);
+      setTimeout(() => { intro.classList.add('cine-gone'); }, 900);
     }
     intro.addEventListener('click', dismiss);
-    setTimeout(dismiss, 2400); // se disuelve sola apenas termina la animación
+    setTimeout(dismiss, 1850);
   })();
 
   /* ---------- Cinematografía de agradecimiento al confirmar un turno ---------- */
@@ -1481,18 +1541,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     const el = document.getElementById('cineThanks');
     if (!el) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return; // no molesta a quien desactivó animaciones
-    el.classList.remove('cine-out');
+    el.classList.remove('cine-out', 'cine-gone');
+    // se reinician las animaciones para que se vean cada vez
+    el.querySelectorAll('.cv-word span, .cv-sub span, .cv-rule').forEach(n => { n.style.animation = 'none'; void n.offsetWidth; n.style.animation = ''; });
     el.classList.add('cine-play');
     let dismissed = false;
     function dismiss(){
       if (dismissed) return;
       dismissed = true;
       el.classList.add('cine-out');
-      setTimeout(() => { el.classList.remove('cine-play', 'cine-out'); }, 750);
+      setTimeout(() => { el.classList.remove('cine-play', 'cine-out'); }, 900);
     }
     el.onclick = dismiss;
-    setTimeout(dismiss, 3200);
+    setTimeout(dismiss, 2300);
   }
+
 
   // ============================================================
   // ⚠️ CONFIGURACIÓN OBLIGATORIA — completar antes de publicar
