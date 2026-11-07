@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel del dueño — Goods Barber Studio</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0A1930">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@700&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A1930;
+    --f-display:'Newsreader', Georgia, 'Times New Roman', serif;
+    --f-text:'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif;
+    --ink-2:#122642;
+    --paper:#EEF2F7;
+    --paper-2:#E1E8F0;
+    --blue-deep:#14345C;
+    --blue-accent:#4E8FD6;
+    --blue-light:#A9CBEE;
+    --charcoal:#10192A;
+    --line:#D2DCE7;
+    --line-dark:rgba(238,242,247,0.16);
+    --ok:#4E8FD6;
+    --shadow: 0 20px 50px -20px rgba(10,25,48,0.4);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--charcoal);
+    font-family:var(--f-text);
+    font-weight:400;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;display:block;}
+  a{color:inherit;text-decoration:none;}
+  h1,h2,h3,h4{font-family:var(--f-display);margin:0;font-weight:500;letter-spacing:-0.015em;}
+  .today-slot .t, .admin-item-when, .sched-table, .today-head .when{font-variant-numeric:tabular-nums lining-nums;}
+  .eyebrow{
+    font-family:var(--f-text);
+    font-size:12px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--blue-accent);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--blue-accent);display:inline-block;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px;}
+  section{position:relative;}
+  button{font-family:inherit;cursor:pointer;}
+  :focus-visible{outline:2px solid var(--blue-accent);outline-offset:3px;}
+  ::selection{background:var(--blue-accent);color:#fff;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
+  }
+
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* ---------- LOGO ---------- */
+  .brand{display:inline-flex; align-items:center; gap:10px;}
+  .brand-icon{width:30px;height:40px;flex-shrink:0;}
+  .brand-text{display:flex; flex-direction:column; line-height:1;}
+  .brand-word{
+    font-family:'Baloo 2', sans-serif; font-weight:800; font-size:24px; color:var(--paper);
+    letter-spacing:0.01em;
+  }
+  .brand-sub{
+    font-family:var(--f-text); font-size:8.5px; letter-spacing:0.28em;
+    color:var(--blue-light); text-transform:uppercase; margin-top:2px;
+  }
+  footer .brand-word{color:var(--paper);}
+
+  /* ---------- NAV ---------- */
+  header.nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:rgba(10,25,48,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line-dark);
+  }
+  .nav-inner{
+    max-width:1180px;margin:0 auto;padding:16px 28px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .nav-links{display:flex;gap:34px;align-items:center;}
+  .nav-links a{
+    color:var(--paper); opacity:0.8; font-size:14px; letter-spacing:0.02em;
+    position:relative; padding:4px 0;
+  }
+  .nav-links a:hover{opacity:1;}
+  .nav-links a::after{
+    content:"";position:absolute;bottom:0;left:0;width:0;height:1px;background:var(--blue-accent);
+    transition:width .25s ease;
+  }
+  .nav-links a:hover::after{width:100%;}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:12px 22px;
+    background:var(--blue-accent);
+    color:#fff;
+    border:1px solid var(--blue-accent);
+    font-size:13px; font-weight:600; letter-spacing:0.04em;
+    text-transform:uppercase;
+    border-radius:2px;
+    transition:background .25s ease, color .25s ease, transform .2s ease;
+  }
+  .btn:hover{background:transparent;color:var(--blue-accent);transform:translateY(-1px);}
+  .btn.ghost{background:transparent;color:var(--paper);border-color:var(--line-dark);}
+  .btn.ghost:hover{border-color:var(--blue-accent);color:var(--blue-accent);}
+  .btn.dark{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  .btn.dark:hover{background:transparent;color:var(--ink);}
+  .btn:disabled{opacity:0.35;cursor:not-allowed;transform:none;}
+  .btn:disabled:hover{background:var(--blue-accent);color:#fff;}
+
+  .burger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:6px;}
+  .burger span{width:22px;height:1.5px;background:var(--paper);display:block;}
+  .mobile-menu{
+    display:none; position:fixed; top:0; right:0; bottom:0; width:78%; max-width:320px;
+    background:var(--ink); z-index:200; padding:100px 30px 30px;
+    transform:translateX(100%); transition:transform .35s ease;
+    flex-direction:column; gap:26px;
+    border-left:1px solid var(--line-dark);
+  }
+  .mobile-menu.open{transform:translateX(0);}
+  .mobile-menu a{color:var(--paper); font-size:18px; font-family:'Fraunces',serif;}
+  .menu-close{position:absolute;top:26px;right:26px;background:none;border:none;color:var(--paper);font-size:26px;}
+  .scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:150;}
+  .scrim.open{display:block;}
+
+  .form-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .form-grid .full{grid-column:1/-1;}
+  .field label{font-size:12px; text-transform:uppercase; letter-spacing:0.06em; color:#57627a; display:block; margin-bottom:6px;}
+  .field input, .field textarea{
+    width:100%; padding:12px 14px; border:1px solid var(--line); background:var(--paper);
+    font-family:var(--f-text); font-size:16px; border-radius:4px;
+  }
+  .field input:focus, .field textarea:focus{border-color:var(--blue-accent);}
+  .field input.invalid, .field textarea.invalid{border-color:#B3261E;}
+  .field-error{display:none; font-size:12px; color:#B3261E; margin-top:6px;}
+  .field-error.show{display:block;}
+  .form-error{
+    display:none; margin-top:16px; padding:14px 16px; font-size:13.5px;
+    background:rgba(179,38,30,0.08); border:1px solid #B3261E; color:#8f1f18; border-radius:6px;
+  }
+  .form-error.show{display:block;}
+
+  /* ---------- ADMIN / PANEL DEL DUEÑO ---------- */
+  .admin-scrim{
+    display:none; position:fixed; inset:0; z-index:400;
+    background:rgba(10,25,48,0.55); backdrop-filter:blur(3px);
+  }
+  .admin-scrim.open{display:block;}
+  .admin-panel{
+    display:none; position:fixed; z-index:401;
+    top:50%; left:50%; transform:translate(-50%,-50%);
+    width:min(92vw, 720px); max-height:86vh; overflow-y:auto;
+    background:var(--paper); border-radius:10px; box-shadow:var(--shadow);
+  }
+  .admin-panel.open{display:block;}
+  .admin-pin-screen{
+    display:flex; flex-direction:column; align-items:center; text-align:center;
+    padding:56px 40px; position:relative;
+  }
+  .admin-close{
+    position:absolute; top:18px; right:18px; background:none; border:none;
+    font-size:24px; color:#8a93a5; line-height:1;
+  }
+  .admin-pin-input{
+    width:180px; margin-top:22px; padding:14px; text-align:center;
+    font-size:26px; letter-spacing:0.5em; border:1px solid var(--line); border-radius:6px;
+    font-family:var(--f-text); background:var(--paper);
+  }
+  .admin-pin-input:focus{border-color:var(--blue-accent);}
+  #adminPinError{margin-top:10px;}
+  .admin-dashboard{padding:32px 32px 40px;}
+  .admin-header{display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; margin-bottom:22px;}
+  .admin-header-actions{display:flex; gap:10px; align-items:center; position:relative; padding-right:34px; flex-wrap:wrap;}
+  .admin-header-actions .admin-close{position:absolute; top:-8px; right:-6px;}
+  .btn.ghost.danger-outline{border-color:#B3261E; color:#B3261E;}
+  .btn.ghost.danger-outline:hover{background:#B3261E; color:#fff;}
+  .admin-filters{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px;}
+  .admin-chip{
+    padding:7px 14px; font-size:12.5px; border:1px solid var(--line); border-radius:30px;
+    background:var(--paper);
+  }
+  .admin-chip.active{background:var(--ink); color:var(--paper); border-color:var(--ink);}
+  .admin-list{display:flex; flex-direction:column; gap:10px;}
+  .admin-empty{font-size:14px; color:#7a8496; font-style:italic; padding:30px 0; text-align:center;}
+  .admin-item{
+    border:1px solid var(--line); border-radius:8px; padding:16px 18px;
+    display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; align-items:center;
+  }
+  .admin-item-main{display:flex; flex-direction:column; gap:3px;}
+  .admin-item-when{font-family:var(--f-text); font-size:12.5px; color:var(--blue-accent); font-weight:600;}
+  .admin-item-name{font-size:15.5px; font-weight:600;}
+  .admin-item-meta{font-size:12.5px; color:#57627a;}
+  .admin-item-meta a{color:var(--blue-accent); text-decoration:underline;}
+  .admin-badge{
+    font-size:11px; text-transform:uppercase; letter-spacing:0.06em; padding:4px 10px;
+    border-radius:20px; font-weight:600;
+  }
+  .admin-badge.confirmed{background:rgba(78,143,214,0.14); color:var(--blue-deep);}
+  .admin-badge.done{background:rgba(76,175,80,0.14); color:#2e7d32;}
+  .admin-badge.cancelled{background:rgba(179,38,30,0.1); color:#8f1f18;}
+  .admin-badge.overdue{background:rgba(230,145,29,0.16); color:#8a5416;}
+  .admin-item-actions{display:flex; gap:8px; flex-wrap:wrap;}
+  .admin-btn{
+    font-size:12px; padding:7px 12px; border-radius:5px; border:1px solid var(--line);
+    background:var(--paper);
+  }
+  .admin-btn:hover{border-color:var(--blue-accent);}
+  .admin-btn.danger:hover{border-color:#B3261E; color:#B3261E;}
+  .admin-note-banner{
+    font-size:12px; color:#57627a; background:var(--paper-2); border:1px solid var(--line);
+    border-radius:6px; padding:12px 14px; margin-bottom:20px;
+  }
+  .admin-tab.active{color:var(--ink); border-bottom-color:var(--blue-accent); font-weight:600;}
+
+
+  /* ---------- Panel como página propia ---------- */
+  body{background:var(--paper-2); min-height:100vh;}
+  .panel-top{background:var(--ink); border-bottom:1px solid var(--line-dark);}
+  .panel-top .nav-inner{padding:16px 28px;}
+  .panel-back{color:var(--paper); opacity:0.75; font-size:13.5px;}
+  .panel-back:hover{opacity:1; color:var(--blue-light);}
+  .admin-panel.open{position:static; transform:none; margin:40px auto 60px; max-height:none; overflow:visible; width:min(94vw, 760px);}
+  .admin-pin-screen{display:none;}
+  /* los botones del panel van sobre fondo claro: texto oscuro para que se lean */
+  .admin-header-actions .btn.ghost:not(.danger-outline){color:var(--ink); border-color:var(--line);}
+  .admin-header-actions .btn.ghost:not(.danger-outline):hover{color:var(--blue-accent); border-color:var(--blue-accent);}
+  @media (max-width:640px){
+    .admin-panel.open{margin:20px auto 40px;}
+    .admin-dashboard{padding:24px 18px 30px;}
+    .admin-pin-screen{padding:44px 24px;}
+    .admin-item{flex-direction:column; align-items:flex-start;}
+  }
+
+  /* ---------- Agenda de hoy ---------- */
+  .today{margin-bottom:26px; padding:20px; background:var(--ink); color:var(--paper); border-radius:8px;}
+  .today-head{display:flex; justify-content:space-between; align-items:baseline; gap:6px 14px; flex-wrap:wrap; margin-bottom:14px;}
+  .today-head h4{font-size:21px; color:var(--paper);}
+  .today-head .when{font-family:var(--f-text); font-size:11.5px; color:var(--blue-light); letter-spacing:0.08em; text-transform:uppercase;}
+  .today-head.next-day{margin-top:22px; padding-top:18px; border-top:1px solid var(--line-dark);}
+  .today-head.next-day h4{font-size:18px;}
+
+  /* ---------- Entrada al panel después de iniciar sesión ---------- */
+  .panel-intro{
+    position:fixed; inset:0; z-index:700; cursor:pointer;
+    background:radial-gradient(120% 100% at 50% 40%, var(--ink-2) 0%, var(--ink) 70%);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    transition:opacity .5s ease;
+  }
+  .panel-intro[hidden]{display:none;}
+  .panel-intro.out{opacity:0; pointer-events:none;}
+  .pi-icon{width:52px; height:70px; opacity:0; transform:scale(.82) translateY(6px); animation:piIcon .6s cubic-bezier(.2,.8,.2,1) .05s forwards;}
+  .pi-word{margin-top:18px; font-family:'Baloo 2', sans-serif; font-weight:800; font-size:40px; color:var(--paper);
+    opacity:0; transform:translateY(10px); animation:piText .5s ease .35s forwards;}
+  .pi-hello{margin-top:18px; font-family:var(--f-display); font-size:26px; color:var(--paper);
+    opacity:0; transform:translateY(10px); animation:piText .5s ease .6s forwards;}
+  .pi-date{margin-top:8px; font-family:var(--f-text); font-size:12px; letter-spacing:.24em; text-transform:uppercase;
+    color:var(--blue-light); opacity:0; transform:translateY(8px); animation:piText .5s ease .8s forwards;}
+  .pi-line{margin-top:22px; height:2px; width:0; background:linear-gradient(90deg, var(--blue-deep), var(--blue-accent), var(--blue-light));
+    animation:piLine .5s ease .95s forwards;}
+  @keyframes piIcon{to{opacity:1; transform:none;}}
+  @keyframes piText{to{opacity:1; transform:none;}}
+  @keyframes piLine{to{width:120px;}}
+  @media (max-width:640px){ .pi-word{font-size:34px;} .pi-hello{font-size:22px;} }
+
+  /* después de la entrada, el panel aparece de a bloques */
+  @keyframes dashIn{from{opacity:0; transform:translateY(18px);} to{opacity:1; transform:none;}}
+  .admin-dashboard.enter-head > .admin-header{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) both;}
+  .admin-dashboard.enter-body > .today{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) .08s both;}
+  .admin-dashboard.enter-body .today-col{animation:dashIn .45s cubic-bezier(.2,.7,.2,1) both;}
+  .admin-dashboard.enter-body .today-col:nth-child(1){animation-delay:.2s;}
+  .admin-dashboard.enter-body .today-col:nth-child(2){animation-delay:.27s;}
+  .admin-dashboard.enter-body .today-col:nth-child(3){animation-delay:.34s;}
+  .admin-dashboard.enter-body .today-col:nth-child(4){animation-delay:.41s;}
+  .admin-dashboard.enter-body > .admin-filters{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) .3s both;}
+  .admin-dashboard.enter-body > .admin-list{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) .38s both;}
+
+  /* con "reducir animaciones" activado en el dispositivo: sin movimiento, solo fundidos */
+  @media (prefers-reduced-motion: reduce){
+    @keyframes piIcon{from{opacity:0;} to{opacity:1;}}
+    @keyframes piText{from{opacity:0;} to{opacity:1;}}
+    @keyframes dashIn{from{opacity:0;} to{opacity:1;}}
+    .pi-icon, .pi-word, .pi-hello, .pi-date{transform:none;}
+    .pi-line{animation:none; width:120px;}
+  }
+  .today-next{font-size:13.5px; margin:-4px 0 14px; color:rgba(238,242,247,0.8);}
+  .today-next strong{color:var(--paper);}
+  .today-cols{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px;}
+  @media (max-width:560px){ .today-cols{grid-template-columns:1fr;} }
+  .today-none{font-size:13px; opacity:0.6; font-style:italic;}
+  .today-col{background:rgba(238,242,247,0.05); border:1px solid var(--line-dark); border-radius:6px; padding:12px 12px 6px;}
+  .today-col h5{font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--blue-light); margin:0 0 6px; display:flex; justify-content:space-between;}
+  .today-slot{display:flex; gap:10px; align-items:baseline; font-size:13.5px; padding:7px 6px; border-top:1px solid var(--line-dark);}
+  .today-slot .t{font-family:var(--f-text); font-size:12.5px; color:var(--blue-light); min-width:42px;}
+  .today-slot .n{flex:1;}
+  .today-slot .s{font-size:11px; opacity:0.6;}
+  .today-slot.past{opacity:0.45;}
+  .today-slot.done .n{text-decoration:line-through;}
+  .today-slot.next{background:rgba(78,143,214,0.28); border-radius:4px; border-top-color:transparent;}
+  .today-empty{font-size:13px; opacity:0.55; font-style:italic; padding:6px 0 8px;}
+
+  /* ---------- Cargar turno a mano ---------- */
+  .manual-form{margin-bottom:26px; padding:22px; border:1px solid var(--blue-accent); border-radius:8px; background:var(--paper);}
+  .manual-form h4{font-size:20px;}
+  .manual-sub{font-size:13px; color:#57627a; margin:4px 0 16px;}
+  .field select{
+    width:100%; padding:12px 14px; border:1px solid var(--line); background:var(--paper);
+    font-family:var(--f-text); font-size:16px; border-radius:4px; color:var(--charcoal);
+  }
+  .field select:focus{border-color:var(--blue-accent);}
+  .manual-hint{font-size:13px; color:#57627a; margin:12px 0 0; min-height:1em;}
+  .manual-hint.err{color:#8f1f18;}
+  .manual-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:16px;}
+  .manual-actions .btn.ghost{color:var(--ink); border-color:var(--line);}
+  .admin-flash{margin-bottom:18px; padding:12px 14px; border-radius:6px; font-size:13.5px; background:rgba(76,175,80,0.14); color:#2e7d32; border:1px solid rgba(46,125,50,0.35);}
+
+
+  /* ---------- Horarios y días bloqueados ---------- */
+  .settings{margin-bottom:26px; padding:22px; border:1px solid var(--line); border-radius:8px; background:var(--paper);}
+  .settings h4{font-size:20px;}
+  .settings h5{font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--blue-accent); margin:26px 0 10px;}
+  .settings .manual-sub{margin-bottom:6px;}
+  .sched-wrap{overflow-x:auto;}
+  .sched-table{width:100%; border-collapse:collapse; min-width:520px;}
+  .sched-table th{font-size:11.5px; text-transform:uppercase; letter-spacing:0.06em; color:#57627a; text-align:left; padding:6px 6px;}
+  .sched-table td{padding:6px; border-top:1px solid var(--line); vertical-align:middle;}
+  .sched-table td.day{font-family:var(--f-text); font-size:13px; color:var(--ink); font-weight:600; width:52px;}
+  .sched-cell{display:flex; gap:4px; align-items:center; flex-wrap:wrap;}
+  .sched-cell select{padding:7px 6px; border:1px solid var(--line); border-radius:4px; background:var(--paper); font-family:var(--f-text); font-size:13px;}
+  .sched-cell label{display:flex; align-items:center; gap:4px; font-size:12px; color:#57627a; width:100%;}
+  .sched-cell.off select{opacity:0.35;}
+  .block-form{display:grid; grid-template-columns:1fr 1fr 1.4fr auto; gap:10px; align-items:end;}
+  .block-list{display:flex; flex-direction:column; gap:8px; margin-top:14px;}
+  .block-item{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--line); border-radius:6px; font-size:13.5px;}
+  .block-item .when{font-family:var(--f-text); font-size:12.5px; color:var(--blue-accent); font-weight:600; margin-right:8px;}
+  .block-item .why{color:#57627a;}
+  .today-col .today-blocked{font-size:12px; color:#f0b8b4; padding:4px 0 8px;}
+  @media (max-width:640px){ .block-form{grid-template-columns:1fr;} }
+
+  /* ---------- Recordatorio por WhatsApp ---------- */
+  .admin-btn.wa{border-color:#25D366; color:#128C4B; display:inline-flex; align-items:center; gap:6px;}
+  .admin-btn.wa:hover{background:#25D366; color:#fff; border-color:#25D366;}
+</style>
+</head>
+<body>
+
+<header class="panel-top">
+  <div class="nav-inner">
+    <a href="index.html" class="brand" aria-label="Goods Barber Studio">
+      <svg class="brand-icon" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="9" y="3" width="42" height="23" rx="7" fill="#EEF2F7"/>
+        <rect x="15" y="21" width="4" height="6" fill="#0A1930"/>
+        <rect x="23" y="21" width="4" height="6" fill="#0A1930"/>
+        <rect x="31" y="21" width="4" height="6" fill="#0A1930"/>
+        <rect x="39" y="21" width="4" height="6" fill="#0A1930"/>
+        <circle cx="30" cy="40" r="13" fill="#EEF2F7"/>
+        <text x="30" y="45" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="14" fill="#0A1930">8</text>
+        <rect x="13" y="52" width="34" height="26" rx="9" fill="#EEF2F7"/>
+        <rect x="18" y="62" width="24" height="2.5" rx="1.25" fill="#0A1930" opacity="0.5"/>
+        <rect x="18" y="68" width="16" height="2.5" rx="1.25" fill="#0A1930" opacity="0.5"/>
+      </svg>
+      <span class="brand-text">
+        <span class="brand-word">goods</span>
+        <span class="brand-sub">Barber Studio</span>
+      </span>
+    </a>
+    <a class="panel-back" href="index.html">← Ver la página</a>
+  </div>
+</header>
+
+<!-- Entrada al panel después de iniciar sesión (se saltea con un toque) -->
+<div class="panel-intro" id="panelIntro" hidden aria-hidden="true">
+  <svg class="pi-icon" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="9" y="3" width="42" height="23" rx="7" fill="#EEF2F7"/>
+        <rect x="15" y="21" width="4" height="6" fill="#0A1930"/>
+        <rect x="23" y="21" width="4" height="6" fill="#0A1930"/>
+        <rect x="31" y="21" width="4" height="6" fill="#0A1930"/>
+        <rect x="39" y="21" width="4" height="6" fill="#0A1930"/>
+        <circle cx="30" cy="40" r="13" fill="#EEF2F7"/>
+        <text x="30" y="45" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="14" fill="#0A1930">8</text>
+        <rect x="13" y="52" width="34" height="26" rx="9" fill="#EEF2F7"/>
+        <rect x="18" y="62" width="24" height="2.5" rx="1.25" fill="#0A1930" opacity="0.5"/>
+        <rect x="18" y="68" width="16" height="2.5" rx="1.25" fill="#0A1930" opacity="0.5"/>
+      </svg>
+  <div class="pi-word">goods</div>
+  <div class="pi-hello" id="piHello"></div>
+  <div class="pi-date" id="piDate"></div>
+  <div class="pi-line"></div>
+</div>
+
+<!-- ================= PANEL DEL DUEÑO ================= -->
+<main class="admin-panel open" id="adminPanel">
+
+  <div class="admin-pin-screen" id="adminPinScreen">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="width:34px;height:34px;stroke:var(--blue-accent);margin-bottom:18px;"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+    <h3 id="adminPinTitle" style="font-size:24px;">Panel del dueño</h3>
+    <p id="adminPinSub" style="font-size:13.5px; color:#57627a; margin-top:8px; max-width:280px;">Ingresá con tu cuenta para ver los turnos reservados.</p>
+    <div style="width:100%; max-width:280px; margin-top:22px; display:flex; flex-direction:column; gap:12px; text-align:left;">
+      <div class="field">
+        <label for="adminEmail">Email</label>
+        <input type="email" id="adminEmail" placeholder="Tu email" autocomplete="username">
+      </div>
+      <div class="field">
+        <label for="adminPassword">Contraseña</label>
+        <input type="password" id="adminPassword" placeholder="••••••••" autocomplete="current-password">
+      </div>
+    </div>
+    <p class="field-error" id="adminPinError">Email o contraseña incorrectos.</p>
+    <button class="btn dark" id="adminPinSubmit" style="width:100%; max-width:280px; justify-content:center; margin-top:14px;">Entrar</button>
+  </div>
+
+  <div class="admin-dashboard" id="adminDashboard" hidden>
+    <div class="admin-header">
+      <div>
+        <h3 style="font-size:24px;">Turnos reservados</h3>
+        <p class="eyebrow" id="adminStats" style="margin-top:6px;"></p>
+      </div>
+      <div class="admin-header-actions">
+        <button class="btn dark" id="adminNew" type="button">+ Cargar turno</button>
+        <button class="btn ghost" id="adminSettings" type="button">Horarios</button>
+        <button class="btn ghost" id="adminRefresh" type="button">Actualizar</button>
+        <button class="btn ghost" id="adminExport" type="button">Descargar Excel</button>
+        <button class="btn ghost danger-outline" id="adminDeleteDone" type="button">Borrar atendidos</button>
+        <button class="btn ghost" id="adminLock" type="button">Bloquear</button>
+      </div>
+    </div>
+    <div class="admin-flash" id="adminFlash" hidden></div>
+
+    <form class="manual-form" id="manualForm" hidden novalidate>
+      <h4>Cargar turno a mano</h4>
+      <p class="manual-sub">Para clientes que llaman o pasan por el local. El horario queda ocupado en la página y le llega el aviso al barbero.</p>
+      <div class="form-grid">
+        <div class="field"><label for="mBarber">Barbero</label><select id="mBarber"></select></div>
+        <div class="field"><label for="mDate">Día</label><input type="date" id="mDate"></div>
+        <div class="field"><label for="mTime">Horario</label><select id="mTime"></select></div>
+        <div class="field"><label for="mService">Servicio</label>
+          <select id="mService"><option>Corte</option><option>Corte + Barba</option><option>Barba</option><option>Tintura</option></select></div>
+        <div class="field"><label for="mName">Nombre del cliente</label><input id="mName" maxlength="60" placeholder="Ej: Juan Pérez" autocomplete="off"></div>
+        <div class="field"><label for="mPhone">Teléfono (opcional)</label><input id="mPhone" inputmode="tel" maxlength="20" placeholder="Ej: 223 555-1234" autocomplete="off"></div>
+      </div>
+      <p class="manual-hint" id="mHint"></p>
+      <div class="manual-actions">
+        <button type="submit" class="btn dark" id="mSave">Guardar turno</button>
+        <button type="button" class="btn ghost" id="mCancel">Cancelar</button>
+      </div>
+    </form>
+
+    <section class="settings" id="settingsPanel" hidden>
+      <h4>Horarios y días bloqueados</h4>
+      <p class="manual-sub">Lo que guardes acá se aplica en la página al instante: los clientes solo ven los horarios en que cada barbero atiende.</p>
+
+      <h5>Horario de cada barbero</h5>
+      <div class="sched-wrap"><table class="sched-table" id="schedTable"></table></div>
+      <p class="manual-hint" id="schedHint"></p>
+      <div class="manual-actions">
+        <button type="button" class="btn dark" id="schedSave">Guardar horarios</button>
+      </div>
+
+      <h5>Bloquear un día</h5>
+      <p class="manual-sub">Feriados, vacaciones o un barbero que falta. Ese día no se va a poder reservar.</p>
+      <div class="block-form">
+        <div class="field"><label for="bDate">Día</label><input type="date" id="bDate"></div>
+        <div class="field"><label for="bBarber">Quién</label><select id="bBarber"></select></div>
+        <div class="field"><label for="bReason">Motivo (solo lo ves vos)</label><input id="bReason" maxlength="60" placeholder="Ej: feriado, vacaciones"></div>
+        <button type="button" class="btn dark" id="bSave" style="justify-content:center;">Bloquear</button>
+      </div>
+      <p class="manual-hint" id="blockHint"></p>
+      <div class="block-list" id="blockList"></div>
+    </section>
+
+    <section class="today" id="adminToday" aria-label="Agenda de hoy"></section>
+
+    <div class="admin-filters" id="adminFilters"></div>
+    <div class="admin-list" id="adminList"></div>
+  </div>
+</main>
+
+<!-- Cliente de Supabase: conecta esta página a tu base de datos real -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+  onerror="var s=document.createElement('script'); s.src='https://unpkg.com/@supabase/supabase-js@2'; document.head.appendChild(s);"></script>
+<!-- Generador de archivos Excel (.xlsx) reales, con hojas, anchos de columna y encabezado con estilo -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  // ============================================================
+  // ⚠️ CONFIGURACIÓN OBLIGATORIA — completar antes de publicar
+  // Reemplazá estos dos valores con los de TU proyecto de Supabase.
+  // Los encontrás en: Project Settings → API (en supabase.com)
+  // ============================================================
+  const SUPABASE_URL = 'https://vsnnetxorvzindxrgzjn.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_BbjQNyqvm6P6jjTSAKyurw_kgPpijZH';
+
+  // Si la librería de Supabase no llega a cargar a tiempo (bloqueador de
+  // anuncios, corte de red momentáneo, CDN lento), esto evita que se rompa
+  // TODA la página, y además REINTENTA solo durante unos segundos en vez
+  // de quedar roto hasta que la persona recargue manualmente.
+  let supabase = null;
+  function trySupabaseInit(){
+    try {
+      if (window.supabase && typeof window.supabase.createClient === 'function'){
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+          auth: { persistSession: false } // el dueño inicia sesión cada vez que abre el panel — más simple y más seguro
+        });
+        return true;
+      }
+    } catch(e){
+      console.error('Goods: error inicializando Supabase:', e);
+    }
+    return false;
+  }
+  if (!trySupabaseInit()){
+    console.error('Goods: Supabase no cargó a la primera. Reintentando durante unos segundos…');
+    let supabaseRetryAttempts = 0;
+    const supabaseRetryTimer = setInterval(() => {
+      supabaseRetryAttempts++;
+      const ok = trySupabaseInit();
+      if (ok){
+        console.info('Goods: Supabase conectó tras reintentar. Ya está todo funcionando.');
+        clearInterval(supabaseRetryTimer);
+      } else if (supabaseRetryAttempts >= 30){ // ~15 segundos de reintentos, para conexiones lentas
+        console.error('Goods: no se pudo conectar con Supabase tras varios intentos.');
+        clearInterval(supabaseRetryTimer);
+      }
+    }, 500);
+  }
+
+  const BARBERS = [
+    {id:'nicolas', name:'Nicolás'},
+    {id:'tula', name:'Franco'},
+    {id:'chino', name:'Chino'},
+    {id:'lucho', name:'Lucho'},
+  ];
+
+  // Fecha AAAA-MM-DD según la hora de Argentina (la del dispositivo).
+  // No usar toISOString(): esa da la fecha en hora UTC y después de las
+  // 21 h ya marca el día siguiente.
+  function localDateKey(d){
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
+  // Trae TODOS los datos de los turnos (incluye nombre y teléfono) —
+  // solo funciona si el dueño inició sesión, por las reglas de seguridad
+  // configuradas en Supabase (Row Level Security).
+  // Toda consulta a la base tiene tiempo límite: si la respuesta no llega
+  // (señal floja, red móvil que se corta), se cancela y el panel sigue
+  // funcionando en vez de quedar esperando para siempre.
+  const DB_TIMEOUT_MS = 12000;
+  function withTimeout(query, ms){
+    const ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+    if (ctrl && typeof query.abortSignal === 'function') query = query.abortSignal(ctrl.signal);
+    let timer;
+    const limit = new Promise((_, reject) => {
+      timer = setTimeout(() => {
+        if (ctrl) ctrl.abort();
+        const err = new Error('La conexión tardó demasiado');
+        err.isTimeout = true;
+        reject(err);
+      }, ms || DB_TIMEOUT_MS);
+    });
+    return Promise.race([Promise.resolve(query), limit]).finally(() => clearTimeout(timer));
+  }
+
+  async function fetchAllBookings(){
+    const todayKey = localDateKey(new Date());
+    const { data, error } = await withTimeout(supabase
+      .from('bookings')
+      .select('*')
+      .gte('date', todayKey)
+      .order('date', {ascending:true})
+      .order('time', {ascending:true}));
+    if (error) throw error;
+    return (data || []).map(row => ({
+      id: row.id,
+      barberId: row.barber_id,
+      barberName: row.barber_name,
+      date: row.date,
+      dateLabel: row.date_label,
+      time: row.time,
+      customerName: row.customer_name,
+      phone: row.phone,
+      note: row.note,
+      status: row.status,
+      ticketNum: row.ticket_num
+    }));
+  }
+
+  async function updateBookingStatusRemote(id, newStatus){
+    const { error } = await withTimeout(supabase.from('bookings').update({status:newStatus}).eq('id', id));
+    if (error) throw error;
+  }
+
+  /* ================= PANEL DEL DUEÑO (login real con Supabase Auth) ================= */
+  // El acceso queda protegido por un usuario y contraseña reales, creados
+  // por vos en el panel de Supabase (no acá). Row Level Security en la base
+  // de datos garantiza que solo una cuenta autenticada puede leer los
+  // nombres y teléfonos de los clientes — ver la guía de configuración.
+
+  const adminPinScreen = document.getElementById('adminPinScreen');
+  const adminDashboard = document.getElementById('adminDashboard');
+  const adminEmail = document.getElementById('adminEmail');
+  const adminPassword = document.getElementById('adminPassword');
+  const adminPinSubmit = document.getElementById('adminPinSubmit');
+  const adminPinError = document.getElementById('adminPinError');
+  const adminStats = document.getElementById('adminStats');
+  const adminFilters = document.getElementById('adminFilters');
+  const adminList = document.getElementById('adminList');
+  const adminExport = document.getElementById('adminExport');
+  const adminRefresh = document.getElementById('adminRefresh');
+  const adminDeleteDone = document.getElementById('adminDeleteDone');
+  const adminLock = document.getElementById('adminLock');
+
+  let adminBarberFilter = 'all';
+  let adminBookingsCache = [];
+
+  function showLoginScreen(){
+    adminDashboard.hidden = true;
+    adminPinScreen.style.display = 'flex';
+    adminPassword.value = '';
+    adminPinError.classList.remove('show');
+    setTimeout(() => adminEmail.focus(), 100);
+  }
+
+  async function handleLogin(){
+    const email = adminEmail.value.trim();
+    const password = adminPassword.value;
+    if (!email || !password){
+      adminPinError.textContent = 'Completá email y contraseña.';
+      adminPinError.classList.add('show');
+      return;
+    }
+    adminPinSubmit.disabled = true;
+    adminPinSubmit.textContent = 'Entrando…';
+
+    let error;
+    try {
+      if (!supabase) throw new Error('Supabase no disponible');
+      ({ error } = await supabase.auth.signInWithPassword({ email, password }));
+    } catch(err){
+      adminPinSubmit.disabled = false;
+      adminPinSubmit.textContent = 'Entrar';
+      adminPinError.textContent = 'No pudimos conectar. Revisá tu conexión e intentá de nuevo.';
+      adminPinError.classList.add('show');
+      return;
+    }
+    adminPinSubmit.disabled = false;
+    adminPinSubmit.textContent = 'Entrar';
+
+    if (error){
+      adminPinError.textContent = 'Email o contraseña incorrectos.';
+      adminPinError.classList.add('show');
+      return;
+    }
+    adminPinError.classList.remove('show');
+    await openDashboard();
+  }
+
+  let adminPollTimer = null;
+  function startAdminPolling(){
+    stopAdminPolling();
+    adminPollTimer = setInterval(() => {
+      // no molesta si la pestaña del navegador no está a la vista
+      if (!document.hidden) loadAndRenderBookings(true);
+    }, 20000);
+  }
+  function stopAdminPolling(){
+    if (adminPollTimer){ clearInterval(adminPollTimer); adminPollTimer = null; }
+  }
+
+  // Entrada: logo, saludo y fecha durante poco más de un segundo (un toque la saltea).
+  // Mientras tanto se cargan los turnos, así al terminar la agenda ya está lista.
+  const panelIntro = document.getElementById('panelIntro');
+  function saludoSegunHora(){
+    const h = new Date().getHours();
+    return h >= 5 && h < 12 ? 'Buen día' : h >= 12 && h < 20 ? 'Buenas tardes' : 'Buenas noches';
+  }
+  function playPanelIntro(){
+    return new Promise(resolve => {
+      const now = new Date();
+      document.getElementById('piHello').textContent = saludoSegunHora();
+      document.getElementById('piDate').textContent = now.toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long'});
+      panelIntro.classList.remove('out');
+      panelIntro.hidden = false;
+      let done = false;
+      function finish(){
+        if (done) return; done = true;
+        panelIntro.classList.add('out');
+        setTimeout(() => { panelIntro.hidden = true; panelIntro.classList.remove('out'); }, 520);
+        resolve();
+      }
+      panelIntro.onclick = finish;
+      setTimeout(finish, 1650);
+    });
+  }
+
+  async function openDashboard(){
+    adminPinScreen.style.display = 'none';
+    adminDashboard.classList.remove('enter-head', 'enter-body');
+    const loading = loadAndRenderBookings();
+    await playPanelIntro();
+    adminDashboard.hidden = false;
+    adminDashboard.classList.add('enter-head');
+    // la agenda y la lista entran cuando ya tienen los turnos cargados
+    await loading;
+    adminDashboard.classList.add('enter-body');
+    setTimeout(() => adminDashboard.classList.remove('enter-head', 'enter-body'), 1200);
+    startAdminPolling();
+  }
+
+  function isBookingOverdue(b){
+    if (b.status !== 'confirmed') return false;
+    const dt = new Date(b.date + 'T' + (b.time || '00:00'));
+    return dt.getTime() < Date.now();
+  }
+
+  function renderAdminFilters(){
+    adminFilters.innerHTML = '';
+    const allChip = document.createElement('button');
+    allChip.type = 'button';
+    allChip.className = 'admin-chip' + (adminBarberFilter === 'all' ? ' active' : '');
+    allChip.textContent = 'Todos';
+    allChip.addEventListener('click', () => { adminBarberFilter = 'all'; renderAdminFilters(); renderAdminList(); });
+    adminFilters.appendChild(allChip);
+    BARBERS.forEach(b => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'admin-chip' + (adminBarberFilter === b.id ? ' active' : '');
+      chip.textContent = b.name;
+      chip.addEventListener('click', () => { adminBarberFilter = b.id; renderAdminFilters(); renderAdminList(); });
+      adminFilters.appendChild(chip);
+    });
+  }
+
+  async function loadAndRenderBookings(silent){
+    if (!silent) adminList.innerHTML = '<p class="admin-empty">Cargando turnos…</p>';
+    try {
+      await loadOwnerSettings();
+      adminBookingsCache = await fetchAllBookings();
+    } catch(err){
+      if (!silent){
+        adminList.innerHTML = '';
+        const errBox = document.createElement('p');
+        errBox.className = 'admin-empty';
+        errBox.textContent = 'No pudimos cargar los turnos. Revisá tu conexión o los datos de configuración de Supabase.';
+        adminList.appendChild(errBox);
+      }
+      return;
+    }
+    renderAdminFilters();
+    renderAdminList();
+  }
+
+  function renderAdminList(){
+    renderToday();
+    const filtered = adminBookingsCache.filter(b => adminBarberFilter === 'all' || b.barberId === adminBarberFilter);
+    const confirmedCount = filtered.filter(b => b.status === 'confirmed' && !isBookingOverdue(b)).length;
+    const overdueCount = adminBookingsCache.filter(isBookingOverdue).length;
+    adminStats.textContent = filtered.length + ' turno(s) — ' + confirmedCount + ' confirmado(s) próximos' + (overdueCount ? ' · ' + overdueCount + ' sin marcar' : '');
+
+    adminList.innerHTML = '';
+
+    if (filtered.length === 0){
+      const empty = document.createElement('p');
+      empty.className = 'admin-empty';
+      empty.textContent = 'Todavía no hay turnos reservados para este filtro.';
+      adminList.appendChild(empty);
+      return;
+    }
+
+    filtered.forEach(b => {
+      const item = document.createElement('div');
+      item.className = 'admin-item';
+
+      const waPhone = waNumber(b.phone);
+      const overdue = isBookingOverdue(b);
+      const statusLabel = overdue ? 'Sin marcar' : (b.status === 'done' ? 'Atendido' : (b.status === 'cancelled' ? 'Cancelado' : 'Confirmado'));
+
+      const main = document.createElement('div');
+      main.className = 'admin-item-main';
+      main.innerHTML =
+        '<span class="admin-item-when">' + escapeHtml(b.dateLabel || b.date) + ' · ' + escapeHtml(b.time) + ' · ' + escapeHtml(b.barberName || '') + '</span>' +
+        '<span class="admin-item-name">' + escapeHtml(b.customerName || 'Sin nombre') + '</span>' +
+        '<span class="admin-item-meta">' +
+          (b.phone ? '<a href="tel:'+escapeHtml(b.phone)+'">'+escapeHtml(b.phone)+'</a> · <a href="https://wa.me/'+encodeURIComponent(waPhone)+'" target="_blank" rel="noopener">WhatsApp</a>' : 'Sin teléfono') +
+          (b.note ? ' · Nota: ' + escapeHtml(b.note) : '') +
+        '</span>';
+
+      const badge = document.createElement('span');
+      badge.className = 'admin-badge ' + (overdue ? 'overdue' : b.status);
+      badge.textContent = statusLabel;
+      main.querySelector('.admin-item-when').appendChild(badge);
+
+      const actions = document.createElement('div');
+      actions.className = 'admin-item-actions';
+
+      if (b.status === 'confirmed'){
+        const doneBtn = document.createElement('button');
+        doneBtn.type = 'button'; doneBtn.className = 'admin-btn'; doneBtn.textContent = 'Marcar atendido';
+        doneBtn.addEventListener('click', () => updateBookingStatus(b, 'done'));
+        const cancelBtn = document.createElement('button');
+        cancelBtn.type = 'button'; cancelBtn.className = 'admin-btn danger'; cancelBtn.textContent = 'Cancelar';
+        cancelBtn.addEventListener('click', () => updateBookingStatus(b, 'cancelled'));
+        actions.appendChild(doneBtn);
+        actions.appendChild(cancelBtn);
+        if (waPhone){
+          const remindBtn = document.createElement('a');
+          remindBtn.className = 'admin-btn wa';
+          remindBtn.target = '_blank'; remindBtn.rel = 'noopener';
+          remindBtn.href = 'https://wa.me/' + waPhone + '?text=' + encodeURIComponent(reminderText(b));
+          remindBtn.textContent = 'Recordar por WhatsApp';
+          actions.appendChild(remindBtn);
+        }
+      } else {
+        const reactivateBtn = document.createElement('button');
+        reactivateBtn.type = 'button'; reactivateBtn.className = 'admin-btn'; reactivateBtn.textContent = 'Reactivar';
+        reactivateBtn.addEventListener('click', () => updateBookingStatus(b, 'confirmed'));
+        actions.appendChild(reactivateBtn);
+      }
+
+      item.appendChild(main);
+      item.appendChild(actions);
+      adminList.appendChild(item);
+    });
+  }
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
+
+  async function updateBookingStatus(booking, newStatus){
+    try {
+      await updateBookingStatusRemote(booking.id, newStatus);
+    } catch(err){
+      alert('No se pudo actualizar el turno. Probá de nuevo.');
+      return;
+    }
+    await loadAndRenderBookings();
+  }
+
+  const STATUS_LABEL = { confirmed: 'Confirmado', done: 'Atendido', cancelled: 'Cancelado' };
+
+  function bookingRow(b){
+    return [b.dateLabel || b.date, b.date, b.time, b.barberName || '', b.customerName || '', b.phone || '', b.note || '', STATUS_LABEL[b.status] || b.status, b.ticketNum || ''];
+  }
+  const EXCEL_HEADERS = ['Fecha', 'Fecha (AAAA-MM-DD)', 'Hora', 'Barbero', 'Cliente', 'Teléfono', 'Nota', 'Estado', 'N° Ticket'];
+  const EXCEL_COL_WIDTHS = [{wch:13},{wch:15},{wch:8},{wch:14},{wch:24},{wch:16},{wch:28},{wch:13},{wch:11}];
+
+  function styleHeaderRow(ws, numCols){
+    for (let c = 0; c < numCols; c++){
+      const ref = XLSX.utils.encode_cell({r:0, c});
+      if (!ws[ref]) continue;
+      ws[ref].s = {
+        font: { bold: true, color: { rgb: 'FFFFFF' } },
+        fill: { fgColor: { rgb: '0A1930' } },
+        alignment: { vertical: 'center' }
+      };
+    }
+  }
+
+  function buildSheet(rows){
+    const data = [EXCEL_HEADERS, ...rows.map(bookingRow)];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = EXCEL_COL_WIDTHS;
+    ws['!autofilter'] = { ref: XLSX.utils.encode_range({s:{r:0,c:0}, e:{r:data.length-1, c:EXCEL_HEADERS.length-1}}) };
+    styleHeaderRow(ws, EXCEL_HEADERS.length);
+    return ws;
+  }
+
+  function buildSummarySheet(rows){
+    const total = rows.length;
+    const confirmed = rows.filter(b => b.status === 'confirmed').length;
+    const done = rows.filter(b => b.status === 'done').length;
+    const cancelled = rows.filter(b => b.status === 'cancelled').length;
+
+    const data = [
+      ['Resumen de turnos — Goods Barber Studio'],
+      ['Generado el', new Date().toLocaleString('es-AR')],
+      [],
+      ['Total de turnos', total],
+      ['Confirmados', confirmed],
+      ['Atendidos', done],
+      ['Cancelados', cancelled],
+      [],
+      ['Por barbero', 'Confirmados', 'Atendidos', 'Cancelados', 'Total'],
+    ];
+    BARBERS.forEach(b => {
+      const mine = rows.filter(r => r.barberId === b.id);
+      data.push([
+        b.name,
+        mine.filter(r => r.status === 'confirmed').length,
+        mine.filter(r => r.status === 'done').length,
+        mine.filter(r => r.status === 'cancelled').length,
+        mine.length
+      ]);
+    });
+
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{wch:18},{wch:14},{wch:12},{wch:12},{wch:10}];
+    // título en negrita
+    if (ws['A1']) ws['A1'].s = { font:{ bold:true, sz:14, color:{rgb:'0A1930'} } };
+    // encabezado de la tabla por barbero, fila 9 (índice 8)
+    ['A9','B9','C9','D9','E9'].forEach(ref => {
+      if (ws[ref]) ws[ref].s = { font:{bold:true, color:{rgb:'FFFFFF'}}, fill:{fgColor:{rgb:'4E8FD6'}} };
+    });
+    return ws;
+  }
+
+  async function downloadExcel(){
+    if (typeof XLSX === 'undefined'){
+      alert('No se pudo cargar el generador de Excel. Revisá tu conexión e intentá de nuevo.');
+      return;
+    }
+
+    const filtered = adminBookingsCache.filter(b => adminBarberFilter === 'all' || b.barberId === adminBarberFilter);
+    const wb = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(wb, buildSummarySheet(filtered), 'Resumen');
+    XLSX.utils.book_append_sheet(wb, buildSheet(filtered), 'Todos los turnos');
+    BARBERS.forEach(b => {
+      const mine = filtered.filter(r => r.barberId === b.id);
+      if (mine.length === 0) return;
+      // el nombre de hoja no puede tener más de 31 caracteres ni ciertos símbolos
+      XLSX.utils.book_append_sheet(wb, buildSheet(mine), b.name.slice(0,31));
+    });
+
+    const todayStr = localDateKey(new Date());
+    XLSX.writeFile(wb, `turnos-goods-barber-studio-${todayStr}.xlsx`);
+  }
+
+  async function deleteAllDoneBookings(){
+    const doneCount = adminBookingsCache.filter(b => b.status === 'done').length;
+    if (doneCount === 0){
+      alert('No hay turnos marcados como "Atendido" para borrar.');
+      return;
+    }
+    const sure = confirm(
+      `Esto borra PERMANENTEMENTE los ${doneCount} turno(s) marcados como "Atendido". ` +
+      `No se puede deshacer. ¿Confirmás?`
+    );
+    if (!sure) return;
+
+    adminDeleteDone.disabled = true;
+    adminDeleteDone.textContent = 'Borrando…';
+    try {
+      const { error } = await withTimeout(supabase.from('bookings').delete().eq('status', 'done'));
+      if (error) throw error;
+      await loadAndRenderBookings();
+    } catch(err){
+      alert('No se pudieron borrar los turnos. Es posible que falte habilitar el permiso de borrado en Supabase (revisá la guía).');
+    } finally {
+      adminDeleteDone.disabled = false;
+      adminDeleteDone.textContent = 'Borrar atendidos';
+    }
+  }
+
+  adminPinSubmit.addEventListener('click', handleLogin);
+  adminPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
+  adminExport.addEventListener('click', async () => {
+    adminExport.disabled = true;
+    const original = adminExport.textContent;
+    adminExport.textContent = 'Generando…';
+    try {
+      await downloadExcel();
+    } finally {
+      adminExport.disabled = false;
+      adminExport.textContent = original;
+    }
+  });
+  adminRefresh.addEventListener('click', async () => {
+    adminRefresh.disabled = true;
+    const original = adminRefresh.textContent;
+    adminRefresh.textContent = 'Actualizando…';
+    await loadAndRenderBookings();
+    adminRefresh.disabled = false;
+    adminRefresh.textContent = original;
+  });
+  adminDeleteDone.addEventListener('click', deleteAllDoneBookings);
+  adminLock.addEventListener('click', async () => {
+    stopAdminPolling();
+    try { if (supabase) await supabase.auth.signOut(); } catch(err){ /* igual mostramos el login */ }
+    showLoginScreen();
+  });
+
+
+  /* ================= MEJORAS DEL PANEL: agenda de hoy, recordatorios y turnos a mano ================= */
+
+  const STEP_MIN = 30;
+
+  // Horarios reales de Goods: cada barbero tiene su propia franja según
+  // el día de la semana. Las claves de día coinciden con state.date.dow
+  // (Lun, Mar, Mié, Jue, Vie, Sáb — domingo ya está cerrado en buildDays).
+  const SCHEDULE = {
+    Lun: { nicolas: ['09:30','17:30'], tula: ['12:00','20:00'], chino: ['14:00','20:00'], lucho: ['11:00','18:00'] },
+    Mar: { chino: ['09:30','17:30'], nicolas: ['12:00','20:00'], tula: ['14:00','20:00'], lucho: ['10:00','18:00'] },
+    Mié: { tula: ['09:30','17:30'], chino: ['12:00','20:00'], nicolas: ['14:00','20:00'], lucho: ['11:00','18:00'] },
+    Jue: { chino: ['09:30','17:30'], nicolas: ['12:00','20:00'], tula: ['14:00','20:00'], lucho: ['10:00','18:00'] },
+    Vie: { nicolas: ['09:30','17:30'], tula: ['12:00','20:30'], chino: ['14:00','20:30'], lucho: ['11:00','18:00'] },
+    Sáb: { tula: ['09:30','17:30'], chino: ['12:00','20:30'], nicolas: ['14:00','20:30'], lucho: ['11:00','20:30'] },
+  };
+
+  function buildTimesRange(startStr, endStr){
+    const times = [];
+    let [h, m] = startStr.split(':').map(Number);
+    const [endH, endM] = endStr.split(':').map(Number);
+    while (h < endH || (h === endH && m < endM)) {
+      times.push(String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0'));
+      m += STEP_MIN;
+      if (m >= 60) { m = 0; h += 1; }
+    }
+    return times;
+  }
+
+  // Devuelve los horarios de ese barbero para ese día puntual, o un
+  // arreglo vacío si ese barbero no atiende ese día de la semana.
+  function getTimesForBarberDay(barberId, dow){
+    const daySchedule = SCHEDULE[dow];
+    if (!daySchedule) return [];
+    const range = daySchedule[barberId];
+    if (!range) return [];
+    return buildTimesRange(range[0], range[1]);
+  }
+
+  // Trae los horarios ya ocupados para un barbero y un día, consultando
+  // la vista pública (sin nombres ni teléfonos) para no exponer datos de clientes.
+  async function getStoredBooked(barberId, dateKey){
+    if (!supabase){
+      console.error('Goods: Supabase no está disponible.');
+      throw new Error('Supabase no disponible');
+    }
+    const { data, error } = await withTimeout(supabase
+      .from('bookings_public')
+      .select('time')
+      .eq('barber_id', barberId)
+      .eq('date', dateKey));
+    if (error){
+      console.error('Error consultando disponibilidad:', error.message);
+      throw error;
+    }
+    return new Set((data || []).map(row => row.time));
+  }
+
+  const DOW_SHORT = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  function keyToDate(k){ const p = k.split('-').map(Number); return new Date(p[0], p[1]-1, p[2]); }
+  // Mismo formato de fecha que usa la página al reservar (ej: "Mar 13 oct")
+  function dateLabelFor(d){ return DOW_SHORT[d.getDay()] + ' ' + d.getDate() + ' ' + d.toLocaleDateString('es-AR', {month:'short'}); }
+  const toMin = t => { const p = String(t).split(':').map(Number); return p[0]*60 + (p[1]||0); };
+
+  // ---- Número para WhatsApp en formato internacional argentino (549 + área + número)
+  function waNumber(phone){
+    let d = String(phone || '').replace(/[^0-9]/g, '');
+    if (!d) return '';
+    if (d.startsWith('00')) d = d.slice(2);
+    if (d.startsWith('549')) return d;
+    if (d.startsWith('54')) return '549' + d.slice(2);
+    if (d.startsWith('0')) d = d.slice(1);
+    // celular escrito con "15" después de la característica (ej: 223 15 555-1234): se saca el 15
+    if (d.length === 12){
+      for (const area of [2, 3, 4]){
+        if (d.substr(area, 2) === '15'){ d = d.slice(0, area) + d.slice(area + 2); break; }
+      }
+    }
+    if (d.length === 10) return '549' + d;
+    return d;
+  }
+  function reminderText(b){
+    const first = String(b.customerName || '').trim().split(/\s+/)[0];
+    const now = new Date();
+    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    const when = b.date === localDateKey(now) ? 'hoy' : (b.date === localDateKey(tomorrow) ? 'mañana' : 'el ' + (b.dateLabel || b.date));
+    return 'Hola' + (first ? ' ' + first : '') + ' 👋 Te recordamos tu turno en Goods Barber Studio ' + when +
+      ' a las ' + b.time + ' con ' + (b.barberName || 'tu barbero') + '. Te esperamos en Olavarría 2583. ' +
+      'Si no podés venir, avisanos por acá así liberamos el horario. 💈';
+  }
+
+  // ---- Agenda de hoy, separada por barbero
+  const adminToday = document.getElementById('adminToday');
+  // Agenda de arriba: hoy y el próximo día de atención (mañana, o el lunes si
+  // mañana es domingo), con el mismo formato, así los turnos para el día
+  // siguiente se ven de un vistazo apenas entran.
+  function agendaCols(dayDate, isToday, nowMin){
+    const key = localDateKey(dayDate);
+    const barbers = BARBERS.filter(b => adminBarberFilter === 'all' || b.id === adminBarberFilter);
+    const list = adminBookingsCache
+      .filter(b => b.date === key && b.status !== 'cancelled')
+      .sort((a, b) => toMin(a.time) - toMin(b.time));
+    // en el día siguiente se muestran solo los barberos que ya tienen turnos
+    const shown = isToday ? barbers : barbers.filter(br => list.some(b => b.barberId === br.id));
+    const count = list.filter(b => adminBarberFilter === 'all' || b.barberId === adminBarberFilter).length;
+    if (!shown.length) return { html: '<p class="today-none">Todavía no hay turnos reservados para este día.</p>', count };
+    let html = '<div class="today-cols">';
+    shown.forEach(br => {
+      const mine = list.filter(b => b.barberId === br.id);
+      const nextMine = isToday ? mine.find(b => b.status === 'confirmed' && toMin(b.time) + STEP_MIN > nowMin) : null;
+      html += '<div class="today-col"><h5><span>' + escapeHtml(br.name) + '</span><span>' + mine.length + '</span></h5>';
+      if (isBlockedDay(key, br.id)){
+        html += '<p class="today-blocked">Día bloqueado</p>';
+      } else if (!mine.length){
+        html += '<p class="today-empty">' + (getTimesForBarberDay(br.id, DOW_SHORT[dayDate.getDay()]).length ? 'Sin turnos' : (isToday ? 'Hoy no atiende' : 'No atiende')) + '</p>';
+      }
+      mine.forEach(b => {
+        const cls = ['today-slot'];
+        if (b.status === 'done') cls.push('done');
+        else if (isToday && toMin(b.time) + STEP_MIN <= nowMin) cls.push('past');
+        if (b === nextMine) cls.push('next');
+        html += '<div class="' + cls.join(' ') + '"><span class="t">' + escapeHtml(b.time) + '</span><span class="n">' +
+          escapeHtml(b.customerName || 'Sin nombre') + '</span><span class="s">' + escapeHtml(b.note || '') + '</span></div>';
+      });
+      html += '</div>';
+    });
+    return { html: html + '</div>', count };
+  }
+  const plural = n => n + (n === 1 ? ' turno' : ' turnos');
+  function renderToday(){
+    const now = new Date();
+    const todayKey = localDateKey(now);
+    const nowMin = now.getHours()*60 + now.getMinutes();
+    const upcoming = adminBookingsCache
+      .filter(b => b.date === todayKey && b.status === 'confirmed' && toMin(b.time) + STEP_MIN > nowMin &&
+        (adminBarberFilter === 'all' || b.barberId === adminBarberFilter))
+      .sort((a, b) => toMin(a.time) - toMin(b.time));
+    const next = upcoming[0];
+    const saludo = saludoSegunHora();
+
+    const today = agendaCols(now, true, nowMin);
+    let html = '<div class="today-head"><h4>' + saludo + '</h4><span class="when">Hoy · ' + escapeHtml(dateLabelFor(now)) + ' · ' + plural(today.count) + '</span></div>';
+    html += next
+      ? '<p class="today-next">Próximo: <strong>' + escapeHtml(next.time) + ' · ' + escapeHtml(next.customerName || 'Sin nombre') + '</strong> con ' + escapeHtml(next.barberName || '') + '</p>'
+      : '<p class="today-next">No quedan turnos pendientes por hoy.</p>';
+    html += today.html;
+
+    // próximo día de atención (el domingo el local está cerrado)
+    const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    if (nextDay.getDay() === 0) nextDay.setDate(nextDay.getDate() + 1);
+    const isTomorrow = nextDay.getDate() === new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getDate();
+    const nd = agendaCols(nextDay, false, 0);
+    html += '<div class="today-head next-day"><h4>' + (isTomorrow ? 'Mañana' : 'Lunes') + '</h4><span class="when">' + escapeHtml(dateLabelFor(nextDay)) + ' · ' + plural(nd.count) + '</span></div>';
+    html += nd.html;
+    adminToday.innerHTML = html;
+  }
+  // la agenda se actualiza sola cada minuto (para marcar el próximo turno)
+  setInterval(() => { if (!adminDashboard.hidden) renderToday(); }, 60000);
+
+  // ---- Cargar un turno a mano
+  const manualForm = document.getElementById('manualForm');
+  const mBarber = document.getElementById('mBarber');
+  const mDate = document.getElementById('mDate');
+  const mTime = document.getElementById('mTime');
+  const mService = document.getElementById('mService');
+  const mName = document.getElementById('mName');
+  const mPhone = document.getElementById('mPhone');
+  const mHint = document.getElementById('mHint');
+  const mSave = document.getElementById('mSave');
+  const adminFlash = document.getElementById('adminFlash');
+  BARBERS.forEach(b => { const o = document.createElement('option'); o.value = b.id; o.textContent = b.name; mBarber.appendChild(o); });
+
+  function setHint(msg, isErr){ mHint.textContent = msg || ''; mHint.classList.toggle('err', !!isErr); }
+  // Horarios ocupados: misma consulta que usa la página; si fallara, se usan los turnos ya cargados en el panel
+  async function takenTimes(barberId, key){
+    try { return await getStoredBooked(barberId, key); }
+    catch(e){
+      return new Set(adminBookingsCache.filter(b => b.barberId === barberId && b.date === key && b.status !== 'cancelled').map(b => b.time));
+    }
+  }
+  let timesReq = 0;
+  async function refreshManualTimes(){
+    const req = ++timesReq;
+    mTime.innerHTML = '';
+    mSave.disabled = true;
+    if (!mDate.value){ setHint('Elegí el día.'); return; }
+    const d = keyToDate(mDate.value);
+    const barber = BARBERS.find(b => b.id === mBarber.value);
+    if (isBlockedDay(mDate.value, barber.id)){ setHint('Ese día está bloqueado para ' + barber.name + ' (' + dateLabelFor(d) + '). Si querés cargarlo igual, primero quitá el bloqueo en "Horarios".', true); return; }
+    const times = getTimesForBarberDay(barber.id, DOW_SHORT[d.getDay()]);
+    if (!times.length){ setHint(barber.name + ' no atiende ese día (' + dateLabelFor(d) + ').', true); return; }
+    setHint('Buscando horarios libres…');
+    const taken = await takenTimes(barber.id, mDate.value);
+    if (req !== timesReq) return; // el dueño cambió de barbero o de día mientras se consultaba
+    // si es hoy, no se ofrecen los horarios que ya pasaron (sí el que está en curso)
+    const now = new Date();
+    const nowMin = mDate.value === localDateKey(now) ? now.getHours()*60 + now.getMinutes() : -1;
+    const free = times.filter(t => !taken.has(t) && toMin(t) + STEP_MIN > nowMin);
+    if (!free.length){ setHint('No quedan horarios libres ese día con ' + barber.name + '.', true); return; }
+    free.forEach(t => { const o = document.createElement('option'); o.value = t; o.textContent = t; mTime.appendChild(o); });
+    setHint(free.length + ' horario(s) libre(s) el ' + dateLabelFor(d) + '.');
+    mSave.disabled = false;
+  }
+  function openManualForm(){
+    manualForm.reset();
+    mDate.min = localDateKey(new Date());
+    mDate.value = localDateKey(new Date());
+    if (adminBarberFilter !== 'all') mBarber.value = adminBarberFilter;
+    manualForm.hidden = false;
+    adminFlash.hidden = true;
+    refreshManualTimes();
+    mName.focus();
+  }
+  function closeManualForm(){ manualForm.hidden = true; setHint(''); }
+  document.getElementById('adminNew').addEventListener('click', () => manualForm.hidden ? openManualForm() : closeManualForm());
+  document.getElementById('mCancel').addEventListener('click', closeManualForm);
+  mBarber.addEventListener('change', refreshManualTimes);
+  mDate.addEventListener('change', refreshManualTimes);
+
+  manualForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = mName.value.trim();
+    if (name.length < 3 || !/[a-zA-ZÀ-ÿ]/.test(name)){ setHint('Escribí el nombre del cliente.', true); mName.focus(); return; }
+    const phoneDigits = mPhone.value.replace(/[^0-9]/g, '');
+    if (phoneDigits && (phoneDigits.length < 7 || phoneDigits.length > 15)){ setHint('El teléfono no parece válido (7 a 15 números) — o dejalo vacío.', true); return; }
+    if (!mTime.value){ setHint('Elegí un horario.', true); return; }
+    const barber = BARBERS.find(b => b.id === mBarber.value);
+    const key = mDate.value, time = mTime.value;
+    mSave.disabled = true; mSave.textContent = 'Guardando…';
+    try {
+      const taken = await takenTimes(barber.id, key);
+      if (taken.has(time)){
+        setHint('Justo se ocupó ese horario. Elegí otro.', true);
+        await refreshManualTimes();
+        return;
+      }
+      const ticket = String(Math.floor(1000 + Math.random()*8999));
+      const { error } = await withTimeout(supabase.from('bookings').insert({
+        barber_id: barber.id,
+        barber_name: barber.name,
+        date: key,
+        date_label: dateLabelFor(keyToDate(key)),
+        time: time,
+        customer_name: name,
+        phone: mPhone.value.trim(),
+        note: mService.value,
+        status: 'confirmed',
+        ticket_num: ticket
+      }));
+      if (error) throw error;
+      closeManualForm();
+      adminFlash.textContent = '✓ Turno cargado: ' + dateLabelFor(keyToDate(key)) + ' · ' + time + ' · ' + name + ' con ' + barber.name + ' (ticket #' + ticket + ').';
+      adminFlash.hidden = false;
+      await loadAndRenderBookings();
+    } catch(err){
+      console.error('Goods: no se pudo cargar el turno:', err);
+      setHint('No se pudo guardar el turno. Si el error sigue, puede faltar el permiso para que el dueño cargue turnos en Supabase (ver supabase/4-permiso-cargar-turnos.sql).', true);
+    } finally {
+      mSave.textContent = 'Guardar turno';
+      if (!manualForm.hidden && mTime.value) mSave.disabled = false;
+    }
+  });
+
+  /* ================= HORARIOS Y DÍAS BLOQUEADOS ================= */
+  const SCHED_DAYS = ['Lun','Mar','Mié','Jue','Vie','Sáb'];
+  let BLOCKS = []; // días bloqueados de hoy en adelante: {id, date, barber_id, reason}
+  function isBlockedDay(key, barberId){
+    return BLOCKS.some(b => b.date === key && (!b.barber_id || b.barber_id === barberId));
+  }
+  // Lee los horarios guardados y los días bloqueados. Si fallara, quedan los horarios escritos arriba.
+  async function loadOwnerSettings(){
+    try {
+      const { data, error } = await withTimeout(supabase.from('goods_settings').select('schedule').limit(1));
+      if (!error && data && data[0] && data[0].schedule && typeof data[0].schedule === 'object'){
+        Object.keys(SCHEDULE).forEach(k => delete SCHEDULE[k]);
+        Object.assign(SCHEDULE, data[0].schedule);
+      }
+    } catch(e){ console.error('Goods: no se pudieron leer los horarios:', e); }
+    try {
+      const { data, error } = await withTimeout(supabase.from('blocked_days').select('id,date,barber_id,reason')
+        .gte('date', localDateKey(new Date())).order('date', {ascending:true}));
+      if (!error) BLOCKS = data || [];
+    } catch(e){ console.error('Goods: no se pudieron leer los días bloqueados:', e); }
+  }
+
+  const settingsPanel = document.getElementById('settingsPanel');
+  const schedTable = document.getElementById('schedTable');
+  const schedHint = document.getElementById('schedHint');
+  const schedSave = document.getElementById('schedSave');
+  const bDate = document.getElementById('bDate');
+  const bBarber = document.getElementById('bBarber');
+  const bReason = document.getElementById('bReason');
+  const bSave = document.getElementById('bSave');
+  const blockHint = document.getElementById('blockHint');
+  const blockList = document.getElementById('blockList');
+  const HOUR_OPTIONS = buildTimesRange('08:00', '23:30').concat(['23:30']);
+  function hintIn(el, msg, isErr){ el.textContent = msg || ''; el.classList.toggle('err', !!isErr); }
+
+  function timeSelect(value){
+    return '<select>' + HOUR_OPTIONS.map(t => '<option' + (t === value ? ' selected' : '') + '>' + t + '</option>').join('') + '</select>';
+  }
+  function renderSchedTable(){
+    let html = '<tr><th></th>' + BARBERS.map(b => '<th>' + escapeHtml(b.name) + '</th>').join('') + '</tr>';
+    SCHED_DAYS.forEach(day => {
+      html += '<tr><td class="day">' + day + '</td>';
+      BARBERS.forEach(b => {
+        const r = (SCHEDULE[day] || {})[b.id];
+        html += '<td><div class="sched-cell' + (r ? '' : ' off') + '" data-day="' + day + '" data-barber="' + b.id + '">' +
+          '<label><input type="checkbox"' + (r ? ' checked' : '') + '> Atiende</label>' +
+          timeSelect(r ? r[0] : '09:30') + '<span>a</span>' + timeSelect(r ? r[1] : '17:30') + '</div></td>';
+      });
+      html += '</tr>';
+    });
+    schedTable.innerHTML = html;
+    schedTable.querySelectorAll('.sched-cell input[type=checkbox]').forEach(cb => {
+      cb.addEventListener('change', () => cb.closest('.sched-cell').classList.toggle('off', !cb.checked));
+    });
+  }
+  schedSave.addEventListener('click', async () => {
+    const next = {};
+    let bad = null;
+    schedTable.querySelectorAll('.sched-cell').forEach(cell => {
+      const day = cell.dataset.day, id = cell.dataset.barber;
+      next[day] = next[day] || {};
+      if (!cell.querySelector('input').checked) return;
+      const [from, to] = Array.from(cell.querySelectorAll('select')).map(s => s.value);
+      if (from >= to && !bad) bad = day + ' · ' + BARBERS.find(b => b.id === id).name;
+      next[day][id] = [from, to];
+    });
+    if (bad){ hintIn(schedHint, 'Revisá ' + bad + ': la hora de salida tiene que ser después de la de entrada.', true); return; }
+    schedSave.disabled = true; schedSave.textContent = 'Guardando…';
+    try {
+      const { error } = await withTimeout(supabase.from('goods_settings').upsert({ id: true, schedule: next, updated_at: new Date().toISOString() }));
+      if (error) throw error;
+      Object.keys(SCHEDULE).forEach(k => delete SCHEDULE[k]);
+      Object.assign(SCHEDULE, next);
+      hintIn(schedHint, '✓ Horarios guardados. Ya se ven en la página.');
+      renderToday();
+    } catch(err){
+      console.error('Goods: no se pudieron guardar los horarios:', err);
+      hintIn(schedHint, 'No se pudieron guardar los horarios. Revisá tu conexión e intentá de nuevo.', true);
+    } finally {
+      schedSave.disabled = false; schedSave.textContent = 'Guardar horarios';
+    }
+  });
+
+  bBarber.innerHTML = '<option value="">Todo el local</option>' + BARBERS.map(b => '<option value="' + b.id + '">Solo ' + escapeHtml(b.name) + '</option>').join('');
+  function renderBlockList(){
+    if (!BLOCKS.length){ blockList.innerHTML = '<p class="admin-empty" style="padding:10px 0;">No hay días bloqueados.</p>'; return; }
+    blockList.innerHTML = '';
+    BLOCKS.forEach(b => {
+      const who = b.barber_id ? 'Solo ' + ((BARBERS.find(x => x.id === b.barber_id) || {}).name || b.barber_id) : 'Todo el local';
+      const row = document.createElement('div');
+      row.className = 'block-item';
+      row.innerHTML = '<span><span class="when">' + escapeHtml(dateLabelFor(keyToDate(b.date))) + '</span>' + escapeHtml(who) +
+        (b.reason ? ' <span class="why">· ' + escapeHtml(b.reason) + '</span>' : '') + '</span>';
+      const del = document.createElement('button');
+      del.type = 'button'; del.className = 'admin-btn danger'; del.textContent = 'Quitar';
+      del.addEventListener('click', async () => {
+        del.disabled = true;
+        try {
+          const { error } = await withTimeout(supabase.from('blocked_days').delete().eq('id', b.id));
+          if (error) throw error;
+          BLOCKS = BLOCKS.filter(x => x.id !== b.id);
+          renderBlockList(); renderToday();
+        } catch(err){ del.disabled = false; alert('No se pudo quitar el bloqueo. Probá de nuevo.'); }
+      });
+      row.appendChild(del);
+      blockList.appendChild(row);
+    });
+  }
+  bSave.addEventListener('click', async () => {
+    const key = bDate.value, barberId = bBarber.value || null;
+    if (!key){ hintIn(blockHint, 'Elegí el día que querés bloquear.', true); return; }
+    if (key < localDateKey(new Date())){ hintIn(blockHint, 'Ese día ya pasó.', true); return; }
+    if (BLOCKS.some(b => b.date === key && (!b.barber_id || b.barber_id === barberId))){
+      hintIn(blockHint, 'Ese día ya está bloqueado.', true); return;
+    }
+    // Avisar si ya hay turnos reservados ese día (no se cancelan solos)
+    const affected = adminBookingsCache.filter(b => b.date === key && b.status === 'confirmed' && (!barberId || b.barberId === barberId));
+    if (affected.length){
+      const list = affected.map(b => b.time + ' ' + (b.customerName || '') + ' (' + (b.barberName || '') + ')').join('\n');
+      if (!confirm('Ese día ya hay ' + affected.length + ' turno(s) reservado(s):\n\n' + list +
+        '\n\nEl bloqueo no los cancela: avisales a esos clientes y cancelalos desde la lista. ¿Bloquear igual?')) return;
+    }
+    bSave.disabled = true;
+    try {
+      const { data, error } = await withTimeout(supabase.from('blocked_days').insert({ date: key, barber_id: barberId, reason: bReason.value.trim() || null }).select('id,date,barber_id,reason'));
+      if (error) throw error;
+      BLOCKS = BLOCKS.concat(data || []).sort((a, b) => a.date < b.date ? -1 : 1);
+      bReason.value = '';
+      hintIn(blockHint, '✓ Día bloqueado. Ya no se puede reservar en la página.');
+      renderBlockList(); renderToday();
+    } catch(err){
+      console.error('Goods: no se pudo bloquear el día:', err);
+      hintIn(blockHint, 'No se pudo bloquear el día. Revisá tu conexión e intentá de nuevo.', true);
+    } finally { bSave.disabled = false; }
+  });
+
+  document.getElementById('adminSettings').addEventListener('click', () => {
+    if (!settingsPanel.hidden){ settingsPanel.hidden = true; return; }
+    bDate.min = localDateKey(new Date());
+    if (!bDate.value) bDate.value = localDateKey(new Date());
+    hintIn(schedHint, ''); hintIn(blockHint, '');
+    renderSchedTable(); renderBlockList();
+    settingsPanel.hidden = false;
+    settingsPanel.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  // Al abrir el panel: si ya hay sesión iniciada va directo a los turnos,
+  // si no, muestra el login. Espera a que Supabase termine de conectar.
+  (async () => {
+    for (let i = 0; i < 32 && !supabase; i++) await new Promise(r => setTimeout(r, 500));
+    try {
+      if (!supabase) throw new Error('Supabase no disponible');
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session){ await openDashboard(); } else { showLoginScreen(); }
+    } catch(err){
+      showLoginScreen();
+      adminPinError.textContent = 'No pudimos conectar con la base de datos. Revisá tu conexión.';
+      adminPinError.classList.add('show');
+    }
+  })();
+
+})();
+</script>
+</body>
+</html>
