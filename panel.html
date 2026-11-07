@@ -320,6 +320,12 @@
   .manual-hint.err{color:#8f1f18;}
   .manual-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:16px;}
   .manual-actions .btn.ghost{color:var(--ink); border-color:var(--line);}
+  .admin-offline{margin-bottom:18px; padding:10px 14px; border-radius:6px; font-size:13px; background:rgba(230,145,29,0.14); color:#8a5416; border:1px solid rgba(230,145,29,0.4);}
+  .admin-flash.err{background:rgba(179,38,30,0.08); color:#8f1f18; border-color:rgba(179,38,30,0.35);}
+  .admin-history{display:flex; align-items:center; gap:8px; font-size:13px; color:#57627a; margin:-8px 0 16px; cursor:pointer;}
+  .admin-section-title{font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#8a5416; margin:6px 0 10px;}
+  .admin-section-title.next{color:var(--blue-deep); margin-top:22px;}
+  .admin-item.busy{opacity:.55; pointer-events:none;}
   .admin-flash{margin-bottom:18px; padding:12px 14px; border-radius:6px; font-size:13.5px; background:rgba(76,175,80,0.14); color:#2e7d32; border:1px solid rgba(46,125,50,0.35);}
 
 
@@ -428,11 +434,11 @@
         <button class="btn ghost" id="adminSettings" type="button">Horarios</button>
         <button class="btn ghost" id="adminRefresh" type="button">Actualizar</button>
         <button class="btn ghost" id="adminExport" type="button">Descargar Excel</button>
-        <button class="btn ghost danger-outline" id="adminDeleteDone" type="button">Borrar atendidos</button>
         <button class="btn ghost" id="adminLock" type="button">Bloquear</button>
       </div>
     </div>
     <div class="admin-flash" id="adminFlash" hidden></div>
+    <div class="admin-offline" id="adminOffline" hidden>Sin conexión con la base de datos. Se reintenta solo; lo que ves puede no estar actualizado.</div>
 
     <form class="manual-form" id="manualForm" hidden novalidate>
       <h4>Cargar turno a mano</h4>
@@ -479,6 +485,7 @@
     <section class="today" id="adminToday" aria-label="Agenda de hoy"></section>
 
     <div class="admin-filters" id="adminFilters"></div>
+    <label class="admin-history"><input type="checkbox" id="adminShowAll"> Mostrar también atendidos y cancelados</label>
     <div class="admin-list" id="adminList"></div>
   </div>
 </main>
@@ -509,7 +516,7 @@
     try {
       if (window.supabase && typeof window.supabase.createClient === 'function'){
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-          auth: { persistSession: false } // el dueño inicia sesión cada vez que abre el panel — más simple y más seguro
+          auth: { persistSession: true, autoRefreshToken: true, storageKey: 'goods-panel' } // la sesión queda iniciada en este dispositivo; "Bloquear" la cierra
         });
         return true;
       }
@@ -554,7 +561,7 @@
   // Toda consulta a la base tiene tiempo límite: si la respuesta no llega
   // (señal floja, red móvil que se corta), se cancela y el panel sigue
   // funcionando en vez de quedar esperando para siempre.
-  const DB_TIMEOUT_MS = 12000;
+  const DB_TIMEOUT_MS = 10000;
   function withTimeout(query, ms){
     const ctrl = typeof AbortController === 'function' ? new AbortController() : null;
     if (ctrl && typeof query.abortSignal === 'function') query = query.abortSignal(ctrl.signal);
@@ -570,12 +577,15 @@
     return Promise.race([Promise.resolve(query), limit]).finally(() => clearTimeout(timer));
   }
 
+  const PENDING_DAYS = 21; // días hacia atrás en los que se muestran turnos sin marcar
   async function fetchAllBookings(){
-    const todayKey = localDateKey(new Date());
+    const now = new Date();
+    const todayKey = localDateKey(now);
+    const fromKey = localDateKey(new Date(now.getFullYear(), now.getMonth(), now.getDate() - PENDING_DAYS));
     const { data, error } = await withTimeout(supabase
       .from('bookings')
       .select('*')
-      .gte('date', todayKey)
+      .or('date.gte.' + todayKey + ',and(date.gte.' + fromKey + ',status.eq.confirmed)')
       .order('date', {ascending:true})
       .order('time', {ascending:true}));
     if (error) throw error;
@@ -616,7 +626,8 @@
   const adminList = document.getElementById('adminList');
   const adminExport = document.getElementById('adminExport');
   const adminRefresh = document.getElementById('adminRefresh');
-  const adminDeleteDone = document.getElementById('adminDeleteDone');
+  const adminOffline = document.getElementById('adminOffline');
+  const adminShowAll = document.getElementById('adminShowAll');
   const adminLock = document.getElementById('adminLock');
 
   let adminBarberFilter = 'all';
@@ -740,110 +751,149 @@
     });
   }
 
+  let loadSeq = 0;
   async function loadAndRenderBookings(silent){
-    if (!silent) adminList.innerHTML = '<p class="admin-empty">Cargando turnos…</p>';
+    const seq = ++loadSeq;
+    if (!silent && !adminBookingsCache.length) adminList.innerHTML = '<p class="admin-empty">Cargando turnos…</p>';
+    let rows;
     try {
-      await loadOwnerSettings();
-      adminBookingsCache = await fetchAllBookings();
+      // horarios, bloqueos y turnos se piden a la vez: con mala señal el aviso sale en el primer corte, no al final de tres esperas
+      [, rows] = await Promise.all([loadOwnerSettings(), fetchAllBookings()]);
     } catch(err){
-      if (!silent){
-        adminList.innerHTML = '';
-        const errBox = document.createElement('p');
-        errBox.className = 'admin-empty';
-        errBox.textContent = 'No pudimos cargar los turnos. Revisá tu conexión o los datos de configuración de Supabase.';
-        adminList.appendChild(errBox);
+      if (seq !== loadSeq) return;
+      // sesión vencida o cerrada desde otro lado: se vuelve a pedir el ingreso
+      if (err && (err.status === 401 || /jwt|token|auth/i.test(err.message || ''))){
+        stopAdminPolling(); showLoginScreen();
+        adminPinError.textContent = 'La sesión se cerró. Volvé a ingresar.'; adminPinError.classList.add('show');
+        return;
+      }
+      adminOffline.hidden = false;
+      if (!adminBookingsCache.length){
+        adminList.innerHTML = '<p class="admin-empty">No pudimos cargar los turnos. Revisá tu conexión: se reintenta solo.</p>';
       }
       return;
     }
+    if (seq !== loadSeq) return; // llegó una respuesta más nueva
+    adminOffline.hidden = true;
+    adminBookingsCache = rows;
     renderAdminFilters();
     renderAdminList();
   }
+  // al volver a la app o a la pestaña, se actualiza en el momento
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && !adminDashboard.hidden) loadAndRenderBookings(true);
+  });
+  window.addEventListener('online', () => { if (!adminDashboard.hidden) loadAndRenderBookings(true); });
+  adminShowAll.addEventListener('change', () => renderAdminList());
 
   function renderAdminList(){
     renderToday();
-    const filtered = adminBookingsCache.filter(b => adminBarberFilter === 'all' || b.barberId === adminBarberFilter);
-    const confirmedCount = filtered.filter(b => b.status === 'confirmed' && !isBookingOverdue(b)).length;
-    const overdueCount = adminBookingsCache.filter(isBookingOverdue).length;
-    adminStats.textContent = filtered.length + ' turno(s) — ' + confirmedCount + ' confirmado(s) próximos' + (overdueCount ? ' · ' + overdueCount + ' sin marcar' : '');
+    const mine = adminBookingsCache.filter(b => adminBarberFilter === 'all' || b.barberId === adminBarberFilter);
+    const pending = mine.filter(isBookingOverdue);
+    const upcoming = mine.filter(b => !isBookingOverdue(b) && (adminShowAll.checked || b.status === 'confirmed'));
+    const confirmedCount = mine.filter(b => b.status === 'confirmed' && !isBookingOverdue(b)).length;
+    adminStats.textContent = confirmedCount + (confirmedCount === 1 ? ' turno próximo' : ' turnos próximos') +
+      (pending.length ? ' · ' + pending.length + ' sin marcar' : '');
 
     adminList.innerHTML = '';
-
-    if (filtered.length === 0){
-      const empty = document.createElement('p');
-      empty.className = 'admin-empty';
-      empty.textContent = 'Todavía no hay turnos reservados para este filtro.';
-      adminList.appendChild(empty);
+    if (!pending.length && !upcoming.length){
+      adminList.innerHTML = '<p class="admin-empty">No hay turnos próximos' + (adminBarberFilter === 'all' ? '' : ' para este barbero') + '.</p>';
       return;
     }
+    if (pending.length){
+      const t = document.createElement('p'); t.className = 'admin-section-title';
+      t.textContent = 'Sin marcar · ¿vinieron? Marcalos como atendidos o cancelados';
+      adminList.appendChild(t);
+      pending.slice().sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time)).forEach(b => adminList.appendChild(bookingItem(b)));
+    }
+    if (upcoming.length){
+      if (pending.length){ const t = document.createElement('p'); t.className = 'admin-section-title next'; t.textContent = adminShowAll.checked ? 'Turnos' : 'Próximos'; adminList.appendChild(t); }
+      upcoming.slice().sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time)).forEach(b => adminList.appendChild(bookingItem(b)));
+    }
+  }
 
-    filtered.forEach(b => {
-      const item = document.createElement('div');
-      item.className = 'admin-item';
+  function bookingItem(b){
+    const item = document.createElement('div');
+    item.className = 'admin-item';
+    const waPhone = waNumber(b.phone);
+    const overdue = isBookingOverdue(b);
+    const statusLabel = overdue ? 'Sin marcar' : (b.status === 'done' ? 'Atendido' : (b.status === 'cancelled' ? 'Cancelado' : 'Confirmado'));
 
-      const waPhone = waNumber(b.phone);
-      const overdue = isBookingOverdue(b);
-      const statusLabel = overdue ? 'Sin marcar' : (b.status === 'done' ? 'Atendido' : (b.status === 'cancelled' ? 'Cancelado' : 'Confirmado'));
+    const main = document.createElement('div');
+    main.className = 'admin-item-main';
+    main.innerHTML =
+      '<span class="admin-item-when">' + escapeHtml(b.dateLabel || b.date) + ' · ' + escapeHtml(b.time) + ' · ' + escapeHtml(b.barberName || '') + '</span>' +
+      '<span class="admin-item-name">' + escapeHtml(b.customerName || 'Sin nombre') + '</span>' +
+      '<span class="admin-item-meta">' +
+        (b.phone ? '<a href="tel:'+escapeHtml(b.phone)+'">'+escapeHtml(b.phone)+'</a> · <a href="https://wa.me/'+encodeURIComponent(waPhone)+'" target="_blank" rel="noopener">WhatsApp</a>' : 'Sin teléfono') +
+        (b.note ? ' · ' + escapeHtml(b.note) : '') +
+      '</span>';
+    const badge = document.createElement('span');
+    badge.className = 'admin-badge ' + (overdue ? 'overdue' : b.status);
+    badge.textContent = statusLabel;
+    main.querySelector('.admin-item-when').appendChild(badge);
 
-      const main = document.createElement('div');
-      main.className = 'admin-item-main';
-      main.innerHTML =
-        '<span class="admin-item-when">' + escapeHtml(b.dateLabel || b.date) + ' · ' + escapeHtml(b.time) + ' · ' + escapeHtml(b.barberName || '') + '</span>' +
-        '<span class="admin-item-name">' + escapeHtml(b.customerName || 'Sin nombre') + '</span>' +
-        '<span class="admin-item-meta">' +
-          (b.phone ? '<a href="tel:'+escapeHtml(b.phone)+'">'+escapeHtml(b.phone)+'</a> · <a href="https://wa.me/'+encodeURIComponent(waPhone)+'" target="_blank" rel="noopener">WhatsApp</a>' : 'Sin teléfono') +
-          (b.note ? ' · Nota: ' + escapeHtml(b.note) : '') +
-        '</span>';
-
-      const badge = document.createElement('span');
-      badge.className = 'admin-badge ' + (overdue ? 'overdue' : b.status);
-      badge.textContent = statusLabel;
-      main.querySelector('.admin-item-when').appendChild(badge);
-
-      const actions = document.createElement('div');
-      actions.className = 'admin-item-actions';
-
-      if (b.status === 'confirmed'){
-        const doneBtn = document.createElement('button');
-        doneBtn.type = 'button'; doneBtn.className = 'admin-btn'; doneBtn.textContent = 'Marcar atendido';
-        doneBtn.addEventListener('click', () => updateBookingStatus(b, 'done'));
-        const cancelBtn = document.createElement('button');
-        cancelBtn.type = 'button'; cancelBtn.className = 'admin-btn danger'; cancelBtn.textContent = 'Cancelar';
-        cancelBtn.addEventListener('click', () => updateBookingStatus(b, 'cancelled'));
-        actions.appendChild(doneBtn);
-        actions.appendChild(cancelBtn);
-        if (waPhone){
-          const remindBtn = document.createElement('a');
-          remindBtn.className = 'admin-btn wa';
-          remindBtn.target = '_blank'; remindBtn.rel = 'noopener';
-          remindBtn.href = 'https://wa.me/' + waPhone + '?text=' + encodeURIComponent(reminderText(b));
-          remindBtn.textContent = 'Recordar por WhatsApp';
-          actions.appendChild(remindBtn);
-        }
-      } else {
-        const reactivateBtn = document.createElement('button');
-        reactivateBtn.type = 'button'; reactivateBtn.className = 'admin-btn'; reactivateBtn.textContent = 'Reactivar';
-        reactivateBtn.addEventListener('click', () => updateBookingStatus(b, 'confirmed'));
-        actions.appendChild(reactivateBtn);
+    const actions = document.createElement('div');
+    actions.className = 'admin-item-actions';
+    const btn = (label, cls, status) => {
+      const x = document.createElement('button');
+      x.type = 'button'; x.className = 'admin-btn' + (cls ? ' ' + cls : ''); x.textContent = label;
+      x.addEventListener('click', () => updateBookingStatus(b, status, item));
+      actions.appendChild(x);
+    };
+    if (b.status === 'confirmed'){
+      btn(overdue ? 'Vino · atendido' : 'Marcar atendido', '', 'done');
+      btn(overdue ? 'No vino' : 'Cancelar', 'danger', 'cancelled');
+      if (waPhone && !overdue){
+        const remindBtn = document.createElement('a');
+        remindBtn.className = 'admin-btn wa';
+        remindBtn.target = '_blank'; remindBtn.rel = 'noopener';
+        remindBtn.href = 'https://wa.me/' + waPhone + '?text=' + encodeURIComponent(reminderText(b));
+        remindBtn.textContent = 'Recordar por WhatsApp';
+        actions.appendChild(remindBtn);
       }
-
-      item.appendChild(main);
-      item.appendChild(actions);
-      adminList.appendChild(item);
-    });
+    } else {
+      btn('Deshacer', '', 'confirmed');
+    }
+    item.appendChild(main);
+    item.appendChild(actions);
+    return item;
   }
 
   function escapeHtml(str){
     return String(str).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   }
 
-  async function updateBookingStatus(booking, newStatus){
+  function flash(msg, isErr){
+    adminFlash.textContent = msg;
+    adminFlash.classList.toggle('err', !!isErr);
+    adminFlash.hidden = false;
+    clearTimeout(flash.t);
+    flash.t = setTimeout(() => { adminFlash.hidden = true; }, isErr ? 9000 : 5000);
+  }
+  const savingIds = new Set();
+  async function updateBookingStatus(booking, newStatus, itemEl){
+    if (savingIds.has(booking.id)) return; // un toque de más no manda dos cambios
+    savingIds.add(booking.id);
+    if (itemEl) itemEl.classList.add('busy');
+    const before = booking.status;
     try {
       await updateBookingStatusRemote(booking.id, newStatus);
+      booking.status = newStatus; // se ve al instante, sin esperar la recarga
+      renderAdminList();
+      const quien = (booking.customerName || 'el cliente') + ' · ' + booking.time;
+      flash(newStatus === 'done' ? '✓ Atendido: ' + quien : newStatus === 'cancelled' ? 'Cancelado: ' + quien + '. El horario quedó libre en la página.' : '✓ Turno reactivado: ' + quien);
     } catch(err){
-      alert('No se pudo actualizar el turno. Probá de nuevo.');
-      return;
+      booking.status = before;
+      if (itemEl) itemEl.classList.remove('busy');
+      const dup = /duplicate key|bookings_un_turno_por_horario/.test((err && err.message) || '');
+      flash(dup ? 'No se puede reactivar: ese horario ya lo tomó otro cliente.' :
+        err && err.isTimeout ? 'La conexión está lenta y no se guardó el cambio. Probá de nuevo.' :
+        'No se pudo actualizar el turno. Probá de nuevo.', true);
+    } finally {
+      savingIds.delete(booking.id);
     }
-    await loadAndRenderBookings();
+    loadAndRenderBookings(true);
   }
 
   const STATUS_LABEL = { confirmed: 'Confirmado', done: 'Atendido', cancelled: 'Cancelado' };
@@ -916,7 +966,7 @@
 
   async function downloadExcel(){
     if (typeof XLSX === 'undefined'){
-      alert('No se pudo cargar el generador de Excel. Revisá tu conexión e intentá de nuevo.');
+      flash('No se pudo cargar el generador de Excel. Revisá tu conexión e intentá de nuevo.', true);
       return;
     }
 
@@ -934,32 +984,6 @@
 
     const todayStr = localDateKey(new Date());
     XLSX.writeFile(wb, `turnos-goods-barber-studio-${todayStr}.xlsx`);
-  }
-
-  async function deleteAllDoneBookings(){
-    const doneCount = adminBookingsCache.filter(b => b.status === 'done').length;
-    if (doneCount === 0){
-      alert('No hay turnos marcados como "Atendido" para borrar.');
-      return;
-    }
-    const sure = confirm(
-      `Esto borra PERMANENTEMENTE los ${doneCount} turno(s) marcados como "Atendido". ` +
-      `No se puede deshacer. ¿Confirmás?`
-    );
-    if (!sure) return;
-
-    adminDeleteDone.disabled = true;
-    adminDeleteDone.textContent = 'Borrando…';
-    try {
-      const { error } = await withTimeout(supabase.from('bookings').delete().eq('status', 'done'));
-      if (error) throw error;
-      await loadAndRenderBookings();
-    } catch(err){
-      alert('No se pudieron borrar los turnos. Es posible que falte habilitar el permiso de borrado en Supabase (revisá la guía).');
-    } finally {
-      adminDeleteDone.disabled = false;
-      adminDeleteDone.textContent = 'Borrar atendidos';
-    }
   }
 
   adminPinSubmit.addEventListener('click', handleLogin);
@@ -983,9 +1007,9 @@
     adminRefresh.disabled = false;
     adminRefresh.textContent = original;
   });
-  adminDeleteDone.addEventListener('click', deleteAllDoneBookings);
   adminLock.addEventListener('click', async () => {
     stopAdminPolling();
+    adminBookingsCache = []; adminList.innerHTML = ''; adminToday.innerHTML = '';
     try { if (supabase) await supabase.auth.signOut(); } catch(err){ /* igual mostramos el login */ }
     showLoginScreen();
   });
@@ -1241,12 +1265,16 @@
       }));
       if (error) throw error;
       closeManualForm();
-      adminFlash.textContent = '✓ Turno cargado: ' + dateLabelFor(keyToDate(key)) + ' · ' + time + ' · ' + name + ' con ' + barber.name + ' (ticket #' + ticket + ').';
-      adminFlash.hidden = false;
+      flash('✓ Turno cargado: ' + dateLabelFor(keyToDate(key)) + ' · ' + time + ' · ' + name + ' con ' + barber.name + ' (ticket #' + ticket + ').');
       await loadAndRenderBookings();
     } catch(err){
       console.error('Goods: no se pudo cargar el turno:', err);
-      setHint('No se pudo guardar el turno. Si el error sigue, puede faltar el permiso para que el dueño cargue turnos en Supabase (ver supabase/4-permiso-cargar-turnos.sql).', true);
+      const m = (err && err.message) || '';
+      if (/duplicate key|bookings_un_turno_por_horario/.test(m)){ setHint('Justo se ocupó ese horario. Elegí otro.', true); refreshManualTimes(); }
+      else if (/ya pasó/.test(m)) setHint('Ese horario ya pasó. Elegí otro.', true);
+      else if (/no hay atención/.test(m)) setHint('Ese día está bloqueado.', true);
+      else if (err && err.isTimeout) setHint('La conexión está lenta y no se guardó. Probá de nuevo.', true);
+      else setHint('No se pudo guardar el turno. Probá de nuevo.', true);
     } finally {
       mSave.textContent = 'Guardar turno';
       if (!manualForm.hidden && mTime.value) mSave.disabled = false;
@@ -1261,18 +1289,19 @@
   }
   // Lee los horarios guardados y los días bloqueados. Si fallara, quedan los horarios escritos arriba.
   async function loadOwnerSettings(){
-    try {
-      const { data, error } = await withTimeout(supabase.from('goods_settings').select('schedule').limit(1));
-      if (!error && data && data[0] && data[0].schedule && typeof data[0].schedule === 'object'){
-        Object.keys(SCHEDULE).forEach(k => delete SCHEDULE[k]);
-        Object.assign(SCHEDULE, data[0].schedule);
-      }
-    } catch(e){ console.error('Goods: no se pudieron leer los horarios:', e); }
-    try {
-      const { data, error } = await withTimeout(supabase.from('blocked_days').select('id,date,barber_id,reason')
-        .gte('date', localDateKey(new Date())).order('date', {ascending:true}));
-      if (!error) BLOCKS = data || [];
-    } catch(e){ console.error('Goods: no se pudieron leer los días bloqueados:', e); }
+    const [sched, blocks] = await Promise.allSettled([
+      withTimeout(supabase.from('goods_settings').select('schedule').limit(1)),
+      withTimeout(supabase.from('blocked_days').select('id,date,barber_id,reason')
+        .gte('date', localDateKey(new Date())).order('date', {ascending:true}))
+    ]);
+    const sv = sched.status === 'fulfilled' ? sched.value : null;
+    if (sv && !sv.error && sv.data && sv.data[0] && sv.data[0].schedule && typeof sv.data[0].schedule === 'object'){
+      Object.keys(SCHEDULE).forEach(k => delete SCHEDULE[k]);
+      Object.assign(SCHEDULE, sv.data[0].schedule);
+    } else console.error('Goods: no se pudieron leer los horarios');
+    const bv = blocks.status === 'fulfilled' ? blocks.value : null;
+    if (bv && !bv.error) BLOCKS = bv.data || [];
+    else console.error('Goods: no se pudieron leer los días bloqueados');
   }
 
   const settingsPanel = document.getElementById('settingsPanel');
@@ -1355,7 +1384,7 @@
           if (error) throw error;
           BLOCKS = BLOCKS.filter(x => x.id !== b.id);
           renderBlockList(); renderToday();
-        } catch(err){ del.disabled = false; alert('No se pudo quitar el bloqueo. Probá de nuevo.'); }
+        } catch(err){ del.disabled = false; hintIn(blockHint, 'No se pudo quitar el bloqueo. Probá de nuevo.', true); }
       });
       row.appendChild(del);
       blockList.appendChild(row);
