@@ -308,7 +308,6 @@
   .admin-dashboard.enter-body .today-col:nth-child(2){animation-delay:.27s;}
   .admin-dashboard.enter-body .today-col:nth-child(3){animation-delay:.34s;}
   .admin-dashboard.enter-body .today-col:nth-child(4){animation-delay:.41s;}
-  .admin-dashboard.enter-body > .cash{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) .2s both;}
   .admin-dashboard.enter-body > .admin-filters{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) .3s both;}
   .admin-dashboard.enter-body > .admin-list{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) .38s both;}
 
@@ -359,26 +358,60 @@
 
 
   /* ---------- Horarios y días bloqueados ---------- */
-  /* ---------- Caja ---------- */
-  .cash{margin-bottom:26px; padding:20px; border:1px solid var(--line); border-radius:8px; background:var(--paper);}
-  .cash-head{display:flex; justify-content:space-between; align-items:baseline; gap:6px 14px; flex-wrap:wrap; margin-bottom:14px;}
-  .cash-head h4{font-size:21px;}
-  .cash-head .when{font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:#57627a;}
-  .cash-tabs{display:flex; gap:6px;}
-  .cash-tabs button{border:1px solid var(--line); background:transparent; border-radius:20px; padding:6px 12px; font-size:12.5px; cursor:pointer;}
-  .cash-tabs button.active{background:var(--ink); border-color:var(--ink); color:var(--paper);}
-  .cash-total{display:flex; gap:22px; flex-wrap:wrap; padding:14px 0 16px; border-bottom:1px solid var(--line); margin-bottom:12px;}
-  .cash-total div{display:flex; flex-direction:column; gap:2px;}
-  .cash-total span{font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:#57627a;}
-  .cash-total strong{font-size:26px; font-variant-numeric:tabular-nums; color:var(--ink);}
-  .cash-total .local strong{color:var(--blue-deep);}
-  .cash-table{width:100%; border-collapse:collapse; font-size:14px; font-variant-numeric:tabular-nums;}
-  .cash-table th{font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:#57627a; font-weight:600; text-align:right; padding:6px 4px; border-bottom:1px solid var(--line);}
-  .cash-table th:first-child, .cash-table td:first-child{text-align:left;}
-  .cash-table td{padding:10px 4px; text-align:right; border-bottom:1px solid var(--line);}
-  .cash-table td:first-child{font-weight:600;}
-  .cash-table .muted{color:#8b95a7; font-size:12px; display:block; font-weight:400;}
-  .cash-note{font-size:12.5px; color:#8a5416; margin-top:10px;}
+  /* ---------- Caja: pantalla propia, oscura y limpia ---------- */
+  .cx{position:fixed; inset:0; z-index:800; background:#060f1d; color:#E6EDF6; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+    background-image:radial-gradient(90% 60% at 80% -10%, rgba(78,143,214,.18), transparent 60%),
+      linear-gradient(rgba(169,203,238,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(169,203,238,.035) 1px, transparent 1px);
+    background-size:auto, 32px 32px, 32px 32px; animation:cxIn .35s cubic-bezier(.2,.7,.2,1);}
+  @keyframes cxIn{from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;}}
+  .cx-inner{max-width:760px; margin:0 auto; padding:22px 20px 40px; display:flex; flex-direction:column; gap:18px;}
+  .cx-top{display:flex; justify-content:space-between; align-items:flex-start;}
+  .cx-top h2{font-family:'Manrope', sans-serif; font-weight:700; font-size:28px; letter-spacing:-.02em; color:#fff;}
+  .cx-kicker{display:flex; align-items:center; gap:8px; font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#7f93ad; margin-bottom:4px;}
+  .cx-live{width:7px; height:7px; border-radius:50%; background:#3ddc97; box-shadow:0 0 0 0 rgba(61,220,151,.6); animation:cxPulse 2s infinite;}
+  .cx-live.off{background:#e6911d; animation:none;}
+  @keyframes cxPulse{0%{box-shadow:0 0 0 0 rgba(61,220,151,.55);} 70%{box-shadow:0 0 0 8px rgba(61,220,151,0);} 100%{box-shadow:0 0 0 0 rgba(61,220,151,0);}}
+  .cx-close{width:40px; height:40px; border-radius:50%; border:1px solid rgba(169,203,238,.2); background:rgba(255,255,255,.04); color:#cfe0f3; font-size:22px; line-height:1; cursor:pointer;}
+  .cx-close:hover{background:rgba(255,255,255,.08);}
+  .cx-seg{display:grid; grid-template-columns:repeat(4,1fr); padding:4px; gap:4px; border-radius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(169,203,238,.12);}
+  .cx-seg button{border:0; background:transparent; color:#9fb2c9; font:600 13px 'Manrope', sans-serif; padding:9px 0; border-radius:9px; cursor:pointer; transition:background .2s, color .2s;}
+  .cx-seg button.active{background:#E6EDF6; color:#0A1930;}
+  .cx-seg button:focus-visible, .cx-close:focus-visible{outline:2px solid #A9CBEE; outline-offset:2px;}
+  .cx-hero{padding:6px 2px 4px;}
+  .cx-label{font-family:'JetBrains Mono', monospace; font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:#7f93ad;}
+  .cx-big{font-family:'Manrope', sans-serif; font-weight:800; font-size:clamp(44px, 12vw, 64px); letter-spacing:-.035em; line-height:1.05; margin:6px 0 16px; color:#fff; font-variant-numeric:tabular-nums;}
+  .cx-kpis{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+  .cx-kpi{padding:12px 14px; border-radius:12px; background:rgba(255,255,255,.035); border:1px solid rgba(169,203,238,.1);}
+  .cx-kpi span{display:block; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:#7f93ad;}
+  .cx-kpi strong{display:block; margin-top:4px; font:700 19px 'Manrope', sans-serif; color:#E6EDF6; font-variant-numeric:tabular-nums;}
+  .cx-card{padding:16px; border-radius:16px; background:rgba(255,255,255,.03); border:1px solid rgba(169,203,238,.1);}
+  .cx-card-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px;}
+  .cx-card-head h3{font:700 14px 'Manrope', sans-serif; color:#E6EDF6;}
+  .cx-hint{font-family:'JetBrains Mono', monospace; font-size:11px; color:#7f93ad; font-variant-numeric:tabular-nums;}
+  .cx-chart{display:grid; grid-template-columns:repeat(14,1fr); gap:5px; height:160px; border-bottom:1px solid rgba(169,203,238,.14); position:relative;}
+  .cx-bar{position:relative; height:100%; min-width:0; cursor:pointer; background:none; border:0; padding:0; margin:0;}
+  .cx-bar i{position:absolute; left:0; right:0; bottom:0; display:block; border-radius:4px 4px 0 0; background:#4E8FD6; min-height:2px; transform-origin:bottom; transform:scaleY(0); animation:cxGrow .6s cubic-bezier(.2,.7,.2,1) forwards; animation-delay:calc(var(--n) * 25ms);}
+  .cx-bar.zero i{background:rgba(169,203,238,.18);}
+  .cx-bar.today i{background:#A9CBEE;}
+  .cx-bar.sel i{box-shadow:inset 0 0 0 2px #fff;}
+  .cx-bar:focus-visible{outline:2px solid #A9CBEE; outline-offset:2px; border-radius:4px;}
+  @keyframes cxGrow{to{transform:scaleY(1);}}
+  .cx-axis{display:grid; grid-template-columns:repeat(14,1fr); gap:5px; margin-top:6px; font-family:'JetBrains Mono', monospace; font-size:10px; color:#6b7f99; text-align:center;}
+  .cx-row{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px 12px; padding:12px 0; border-top:1px solid rgba(169,203,238,.08);}
+  .cx-row:first-child{border-top:0; padding-top:0;}
+  .cx-row .who{font:600 15px 'Manrope', sans-serif; color:#E6EDF6;}
+  .cx-row .who small{display:block; font:500 11.5px 'JetBrains Mono', monospace; color:#7f93ad; margin-top:2px;}
+  .cx-row .val{text-align:right; font:700 16px 'Manrope', sans-serif; color:#fff; font-variant-numeric:tabular-nums;}
+  .cx-row .val small{display:block; font:500 11.5px 'JetBrains Mono', monospace; color:#A9CBEE; margin-top:2px;}
+  .cx-track{grid-column:1 / -1; height:6px; border-radius:6px; background:rgba(169,203,238,.08); overflow:hidden;}
+  .cx-track i{display:block; height:100%; border-radius:6px; background:#4E8FD6; transform-origin:left; transform:scaleX(0); animation:cxBar .7s cubic-bezier(.2,.7,.2,1) .1s forwards;}
+  @keyframes cxBar{to{transform:scaleX(1);}}
+  .cx-foot{font-size:12px; color:#6b7f99; line-height:1.6;}
+  .cx-foot a{color:#A9CBEE;}
+  html.cx-open, html.cx-open body{overflow:hidden;}
+  @media (max-width:520px){ .cx-kpis{grid-template-columns:1fr 1fr;} .cx-kpis .cx-kpi:last-child{grid-column:1 / -1;} .cx-chart{gap:3px;} .cx-axis{gap:3px;} }
+  @media (prefers-reduced-motion: reduce){ .cx, .cx-bar i, .cx-track i{animation:none; transform:none;} .cx-live{animation:none;} }
   .admin-amount{display:inline-flex; align-items:center; gap:8px; margin-top:6px; font-size:13px; font-variant-numeric:tabular-nums;}
   .admin-amount strong{color:#2e7d32;}
   .admin-amount button{background:none; border:0; color:var(--blue-accent); font-size:12.5px; text-decoration:underline; cursor:pointer; padding:0;}
@@ -468,6 +501,39 @@
   <div class="pi-line"></div>
 </div>
 
+<!-- ================= CAJA (pantalla propia) ================= -->
+<div class="cx" id="adminCash" hidden role="dialog" aria-modal="true" aria-labelledby="cxTitle">
+  <div class="cx-inner">
+    <header class="cx-top">
+      <div>
+        <p class="cx-kicker"><span class="cx-live"></span><span id="cxSync">En vivo</span></p>
+        <h2 id="cxTitle">Caja</h2>
+      </div>
+      <button type="button" class="cx-close" id="cxClose" aria-label="Cerrar caja">&times;</button>
+    </header>
+    <div class="cx-seg" role="tablist" id="cxSeg">
+      <button type="button" data-p="day" role="tab">Hoy</button>
+      <button type="button" data-p="week" role="tab">7 días</button>
+      <button type="button" data-p="month" role="tab">Mes</button>
+      <button type="button" data-p="all" role="tab">Total</button>
+    </div>
+    <section class="cx-hero">
+      <p class="cx-label" id="cxPeriod"></p>
+      <p class="cx-big"><span id="cxTotal">$0</span></p>
+      <div class="cx-kpis" id="cxKpis"></div>
+    </section>
+    <section class="cx-card">
+      <div class="cx-card-head"><h3>Últimos 14 días</h3><span class="cx-hint" id="cxTip">Tocá una barra</span></div>
+      <div class="cx-chart" id="cxChart"></div>
+    </section>
+    <section class="cx-card">
+      <div class="cx-card-head"><h3>Por barbero</h3><span class="cx-hint" id="cxShareHint"></span></div>
+      <div id="cxRows"></div>
+    </section>
+    <p class="cx-foot" id="cxFoot"></p>
+  </div>
+</div>
+
 <!-- ================= PANEL DEL DUEÑO ================= -->
 <main class="admin-panel open" id="adminPanel">
 
@@ -497,6 +563,7 @@
       </div>
       <div class="admin-header-actions">
         <button class="btn dark" id="adminNew" type="button">+ Cargar turno</button>
+        <button class="btn ghost cash-open" id="adminCashBtn" type="button">Caja</button>
         <button class="btn ghost" id="adminSettings" type="button">Horarios</button>
         <button class="btn ghost" id="adminPushBtn" type="button">Avisos</button>
         <button class="btn ghost" id="adminRefresh" type="button">Actualizar</button>
@@ -572,8 +639,6 @@
     </section>
 
     <section class="today" id="adminToday" aria-label="Agenda de hoy"></section>
-
-    <section class="cash" id="adminCash" aria-label="Caja"></section>
 
     <div class="admin-filters" id="adminFilters"></div>
     <label class="admin-history"><input type="checkbox" id="adminShowAll"> Mostrar también atendidos y cancelados</label>
@@ -1123,7 +1188,7 @@
   });
   adminLock.addEventListener('click', async () => {
     stopAdminPolling();
-    adminBookingsCache = []; CASH = []; adminList.innerHTML = ''; adminToday.innerHTML = ''; adminCash.innerHTML = '';
+    adminBookingsCache = []; CASH = []; adminList.innerHTML = ''; adminToday.innerHTML = ''; closeCash();
     try { if (supabase) await supabase.auth.signOut(); } catch(err){ /* igual mostramos el login */ }
     showLoginScreen();
   });
@@ -1567,7 +1632,7 @@
       SHARES = c.data[0].shares || {};
     }
     const d = done.status === 'fulfilled' ? done.value : null;
-    if (d && !d.error) CASH = (d.data || []).map(r => ({ id: r.id, barberId: r.barber_id, date: r.date, amount: Number(r.amount) || 0 }));
+    if (d && !d.error){ CASH = (d.data || []).map(r => ({ id: r.id, barberId: r.barber_id, date: r.date, amount: Number(r.amount) || 0 })); lastSync = Date.now(); }
   }
   // al marcar o deshacer, la caja se actualiza al instante (después se confirma con la base)
   function cashAddLocal(b){
@@ -1575,35 +1640,98 @@
     if (b.status === 'done' && b.amount != null) CASH.push({ id: b.id, barberId: b.barberId, date: b.date, amount: b.amount });
     renderCash();
   }
-  function renderCash(){
-    const now = new Date(), today = localDateKey(now), month = today.slice(0, 7);
-    const inPeriod = r => cashPeriod === 'day' ? r.date === today : cashPeriod === 'month' ? r.date.slice(0, 7) === month : true;
-    const rows = CASH.filter(inPeriod);
-    const barbers = BARBERS.filter(b => adminBarberFilter === 'all' || b.id === adminBarberFilter);
-    const hasShares = barbers.every(b => SHARES[b.id] != null && SHARES[b.id] !== '');
-    let total = 0, local = 0, body = '';
-    barbers.forEach(b => {
-      const mine = rows.filter(r => r.barberId === b.id);
-      const gen = mine.reduce((a, r) => a + r.amount, 0);
-      total += gen;
-      const pct = Number(SHARES[b.id]);
-      const his = SHARES[b.id] != null && SHARES[b.id] !== '' ? Math.round(gen * pct / 100) : null;
-      if (his != null) local += gen - his;
-      body += '<tr><td>' + escapeHtml(b.name) + '<span class="muted">' + mine.length + (mine.length === 1 ? ' turno' : ' turnos') + (his != null ? ' · ' + pct + '%' : '') + '</span></td>' +
-        '<td>' + money(gen) + '</td><td>' + (his != null ? money(his) : '—') + '</td></tr>';
-    });
-    const label = cashPeriod === 'day' ? 'Hoy · ' + dateLabelFor(now) : cashPeriod === 'month' ? now.toLocaleDateString('es-AR', {month:'long', year:'numeric'}) : 'Desde que se empezó a contar';
-    adminCash.innerHTML =
-      '<div class="cash-head"><h4>Caja</h4><div class="cash-tabs">' +
-        [['day','Hoy'],['month','Mes'],['all','Total']].map(([k, t]) => '<button type="button" data-p="' + k + '"' + (k === cashPeriod ? ' class="active"' : '') + '>' + t + '</button>').join('') +
-      '</div></div>' +
-      '<p class="cash-head" style="margin:-6px 0 0"><span class="when">' + escapeHtml(label) + '</span></p>' +
-      '<div class="cash-total"><div><span>Generado</span><strong>' + money(total) + '</strong></div>' +
-        (hasShares ? '<div class="local"><span>Para el local</span><strong>' + money(local) + '</strong></div>' : '') + '</div>' +
-      '<table class="cash-table"><thead><tr><th>Barbero</th><th>Generó</th><th>Le corresponde</th></tr></thead><tbody>' + body + '</tbody></table>' +
-      (hasShares ? '' : '<p class="cash-note">Para ver cuánto le corresponde a cada uno, cargá los porcentajes en Horarios → Precios y porcentajes.</p>');
-    adminCash.querySelectorAll('.cash-tabs button').forEach(x => x.addEventListener('click', () => { cashPeriod = x.dataset.p; renderCash(); }));
+  let cashOpen = false, cxSel = null, lastSync = 0;
+  function countTo(el, to){
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const from = Number(el.dataset.v || 0); el.dataset.v = to;
+    if (reduce || from === to){ el.textContent = money(to); return; }
+    const t0 = performance.now(), d = 650;
+    const step = t => { const k = Math.min(1, (t - t0) / d), e = 1 - Math.pow(1 - k, 3);
+      el.textContent = money(from + (to - from) * e); if (k < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
   }
+  function renderCash(){
+    if (!cashOpen) return;
+    const now = new Date(), today = localDateKey(now), month = today.slice(0, 7);
+    const weekFrom = localDateKey(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6));
+    const inPeriod = r => cashPeriod === 'day' ? r.date === today : cashPeriod === 'week' ? r.date >= weekFrom && r.date <= today :
+      cashPeriod === 'month' ? r.date.slice(0, 7) === month : true;
+    const barbers = BARBERS.filter(b => adminBarberFilter === 'all' || b.id === adminBarberFilter);
+    const ids = new Set(barbers.map(b => b.id));
+    const mineAll = CASH.filter(r => ids.has(r.barberId));
+    const rows = mineAll.filter(inPeriod);
+    const total = rows.reduce((a, r) => a + r.amount, 0);
+    const hasShares = barbers.every(b => SHARES[b.id] != null && SHARES[b.id] !== '');
+    let local = 0;
+    const per = barbers.map(b => {
+      const m = rows.filter(r => r.barberId === b.id), gen = m.reduce((a, r) => a + r.amount, 0);
+      const pct = SHARES[b.id] != null && SHARES[b.id] !== '' ? Number(SHARES[b.id]) : null;
+      const his = pct != null ? Math.round(gen * pct / 100) : null;
+      if (his != null) local += gen - his;
+      return { b, n: m.length, gen, pct, his };
+    }).sort((x, y) => y.gen - x.gen);
+
+    document.querySelectorAll('#cxSeg button').forEach(x => { x.classList.toggle('active', x.dataset.p === cashPeriod); x.setAttribute('aria-selected', x.dataset.p === cashPeriod); });
+    document.getElementById('cxPeriod').textContent = (cashPeriod === 'day' ? 'Hoy · ' + dateLabelFor(now) : cashPeriod === 'week' ? 'Últimos 7 días' :
+      cashPeriod === 'month' ? now.toLocaleDateString('es-AR', {month:'long', year:'numeric'}) : 'Desde que se empezó a contar') +
+      (adminBarberFilter === 'all' ? '' : ' · ' + barbers[0].name);
+    countTo(document.getElementById('cxTotal'), total);
+    document.getElementById('cxKpis').innerHTML =
+      '<div class="cx-kpi"><span>Atendidos</span><strong>' + rows.length + '</strong></div>' +
+      '<div class="cx-kpi"><span>Ticket promedio</span><strong>' + (rows.length ? money(total / rows.length) : '—') + '</strong></div>' +
+      '<div class="cx-kpi"><span>Para el local</span><strong>' + (hasShares ? money(local) : '—') + '</strong></div>';
+
+    // barras de los últimos 14 días (una serie, un color; hoy resaltado)
+    const days = [];
+    for (let k = 13; k >= 0; k--) days.push(new Date(now.getFullYear(), now.getMonth(), now.getDate() - k));
+    const sums = days.map(d => { const key = localDateKey(d); return mineAll.filter(r => r.date === key).reduce((a, r) => a + r.amount, 0); });
+    const max = Math.max(1, ...sums);
+    const chart = document.getElementById('cxChart');
+    chart.innerHTML = days.map((d, k) => {
+      const key = localDateKey(d), v = sums[k];
+      return '<button type="button" class="cx-bar' + (v ? '' : ' zero') + (key === today ? ' today' : '') + (cxSel === key ? ' sel' : '') +
+        '" data-k="' + key + '" data-v="' + v + '" style="--n:' + k + '" aria-label="' + dateLabelFor(d) + ': ' + money(v) + '"><i style="height:' + Math.max(2, v / max * 86) + '%"></i></button>';
+    }).join('');
+    const axis = document.createElement('div'); axis.className = 'cx-axis';
+    axis.innerHTML = days.map(d => '<span>' + (d.getDay() === 0 ? '·' : d.getDate()) + '</span>').join('');
+    chart.after(axis); if (axis.nextElementSibling && axis.nextElementSibling.classList.contains('cx-axis')) axis.nextElementSibling.remove();
+    const tip = document.getElementById('cxTip');
+    const showTip = el => { cxSel = el.dataset.k; chart.querySelectorAll('.cx-bar').forEach(x => x.classList.toggle('sel', x === el));
+      tip.textContent = dateLabelFor(keyToDate(el.dataset.k)) + ' · ' + money(Number(el.dataset.v)); };
+    chart.querySelectorAll('.cx-bar').forEach(el => { el.addEventListener('click', () => showTip(el)); el.addEventListener('mouseenter', () => showTip(el)); });
+    const selEl = cxSel && chart.querySelector('.cx-bar[data-k="' + cxSel + '"]');
+    if (selEl) showTip(selEl); else tip.textContent = 'Tocá una barra';
+
+    // ranking por barbero
+    const top = Math.max(1, ...per.map(x => x.gen));
+    document.getElementById('cxShareHint').textContent = hasShares ? 'Generó · le corresponde' : 'Generó';
+    document.getElementById('cxRows').innerHTML = per.map(x =>
+      '<div class="cx-row"><div class="who">' + escapeHtml(x.b.name) + '<small>' + x.n + (x.n === 1 ? ' turno' : ' turnos') + (x.pct != null ? ' · ' + x.pct + '%' : '') + '</small></div>' +
+      '<div class="val">' + money(x.gen) + (x.his != null ? '<small>' + money(x.his) + '</small>' : '') + '</div>' +
+      '<div class="cx-track"><i style="width:' + (x.gen / top * 100) + '%"></i></div></div>').join('');
+    document.getElementById('cxFoot').innerHTML = hasShares
+      ? 'Lo que le corresponde a cada uno sale de su porcentaje; el resto es para el local.'
+      : 'Para ver cuánto le corresponde a cada uno, cargá los porcentajes en <b>Horarios → Precios y porcentajes</b>.';
+  }
+  const cxEl = document.getElementById('adminCash');
+  function openCash(){
+    cashOpen = true; cxEl.hidden = false; document.documentElement.classList.add('cx-open');
+    document.getElementById('cxTotal').dataset.v = 0;
+    renderCash(); document.getElementById('cxClose').focus();
+  }
+  function closeCash(){ cashOpen = false; cxEl.hidden = true; document.documentElement.classList.remove('cx-open'); }
+  document.getElementById('adminCashBtn').addEventListener('click', openCash);
+  document.getElementById('cxClose').addEventListener('click', closeCash);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && cashOpen) closeCash(); });
+  document.getElementById('cxSeg').addEventListener('click', e => { const x = e.target.closest('button'); if (x){ cashPeriod = x.dataset.p; renderCash(); } });
+  // indicador "en vivo": cuándo se actualizó por última vez
+  setInterval(() => {
+    if (!cashOpen) return;
+    const off = !adminOffline.hidden, sec = Math.round((Date.now() - lastSync) / 1000);
+    document.querySelector('.cx-live').classList.toggle('off', off);
+    document.getElementById('cxSync').textContent = off ? 'Sin conexión' : sec < 5 ? 'En vivo' : 'Actualizado hace ' + (sec < 60 ? sec + ' s' : Math.round(sec / 60) + ' min');
+  }, 1000);
+
   // monto de un turno: para servicios sin precio fijo o para corregir lo cobrado
   function askAmount(b, item, main){
     if (main.querySelector('.amount-edit')) return;
