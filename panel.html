@@ -1043,7 +1043,10 @@
       actions.appendChild(x);
     };
     if (b.status === 'confirmed'){
+      // un turno de otro día todavía no se puede marcar como atendido (evita sumar plata por error)
+      const isFuture = b.date > localDateKey(new Date());
       const doneBtn = document.createElement('button');
+      doneBtn.hidden = isFuture;
       doneBtn.type = 'button'; doneBtn.className = 'admin-btn'; doneBtn.textContent = overdue ? 'Vino · atendido' : 'Marcar atendido';
       doneBtn.addEventListener('click', () => {
         if (priceFor(b.note) == null) askAmount(b, item, main); // tintura u otro servicio sin precio fijo
