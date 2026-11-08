@@ -362,9 +362,8 @@
   /* ---------- Caja: pantalla propia, oscura y limpia ---------- */
   .cx{position:fixed; inset:0; z-index:800; background:#0A1930; color:#EEF2F7; overflow-y:auto; -webkit-overflow-scrolling:touch;
     padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
-    background-image:radial-gradient(90% 60% at 80% -10%, rgba(20,52,92,.95), transparent 65%),
-      linear-gradient(rgba(169,203,238,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(169,203,238,.035) 1px, transparent 1px);
-    background-size:auto, 32px 32px, 32px 32px; animation:cxIn .35s cubic-bezier(.2,.7,.2,1);}
+    background-image:radial-gradient(90% 60% at 80% -10%, rgba(20,52,92,.95), transparent 65%);
+    animation:cxIn .35s cubic-bezier(.2,.7,.2,1);}
   @keyframes cxIn{from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;}}
   .cx-inner{max-width:760px; margin:0 auto; padding:22px 20px 40px; display:flex; flex-direction:column; gap:18px;}
   .cx-top{display:flex; justify-content:space-between; align-items:flex-start;}
@@ -472,9 +471,8 @@
     --tab-h:64px;
   }
   body{background:var(--bg); color:var(--tx);
-    background-image:radial-gradient(90% 50% at 85% -10%, rgba(20,52,92,.9), transparent 65%),
-      linear-gradient(rgba(169,203,238,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(169,203,238,.03) 1px, transparent 1px);
-    background-size:auto, 32px 32px, 32px 32px; background-attachment:fixed;}
+    background-image:radial-gradient(90% 50% at 85% -10%, rgba(20,52,92,.9), transparent 65%);
+    background-attachment:fixed;}
   .panel-top{background:rgba(10,25,48,.82); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid var(--bd); position:sticky; top:0; z-index:300;}
   .panel-top .nav-inner{max-width:760px; padding:10px 20px;}
   .panel-top .brand-icon{width:24px; height:32px;}
@@ -661,9 +659,7 @@
   .bg-photo::after{content:""; position:absolute; inset:0; z-index:2;
     background:
       linear-gradient(180deg, rgba(10,25,48,.5) 0%, rgba(10,25,48,.06) 16%, rgba(10,25,48,.12) 30%, rgba(10,25,48,.78) 46%, #0A1930 60%),
-      radial-gradient(120% 70% at 50% 0%, transparent 40%, rgba(10,25,48,.55) 100%),
-      linear-gradient(rgba(169,203,238,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(169,203,238,.03) 1px, transparent 1px);
-    background-size:auto, auto, 32px 32px, 32px 32px;}
+      radial-gradient(120% 70% at 50% 0%, transparent 40%, rgba(10,25,48,.55) 100%);}
   /* en la computadora la foto no se estira: va como retrato a la derecha y se funde con el azul */
   @media (min-width:900px){
     .bg-photo i{left:auto; right:max(0px, calc(50vw - 640px)); width:min(560px, 46vw); height:100vh; background-position:center 20%;
@@ -678,6 +674,26 @@
   body.has-photo .today{background:rgba(18,38,66,.55); backdrop-filter:blur(14px) saturate(130%); -webkit-backdrop-filter:blur(14px) saturate(130%); border-color:rgba(169,203,238,.18);}
   body.has-photo .admin-chip:not(.active){background:rgba(10,25,48,.45); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);}
   body.has-photo .panel-top{background:rgba(10,25,48,.55);}
+  /* ---------- Más sobrio: textos normales en vez de mayúsculas separadas, sin adornos ---------- */
+  .ph-kicker{font:500 14px 'Manrope', sans-serif; letter-spacing:0; text-transform:none; color:var(--tx2);}
+  .cx-live{display:none;}
+  .cx-live.off{display:inline-block; background:var(--warn); box-shadow:none; animation:none;}
+  .day-sep{font:600 13px 'Manrope', sans-serif; letter-spacing:0; text-transform:none; color:var(--tx2); margin-top:14px;}
+  .admin-section-title b{font:700 14px 'Manrope', sans-serif; letter-spacing:0; text-transform:none;}
+  .admin-badge{font:600 11.5px 'Manrope', sans-serif; letter-spacing:0; text-transform:none; padding:3px 9px; border-radius:20px;}
+  .today-head .when{font:500 12.5px 'Manrope', sans-serif; letter-spacing:0; text-transform:none; color:var(--tx3);}
+  .today-col h5{font:700 13px 'Manrope', sans-serif; letter-spacing:0; text-transform:none; color:var(--tx);}
+  .today-col h5 span:last-child{color:var(--tx3); font-weight:600;}
+  .settings h5{font:700 15px 'Manrope', sans-serif; letter-spacing:0; text-transform:none; color:var(--tx);}
+  .field label{font-size:13px; letter-spacing:0; text-transform:none; color:var(--tx2);}
+  .sched-table th{letter-spacing:0; text-transform:none; font-size:12.5px;}
+  .cx-kicker{font:500 13px 'Manrope', sans-serif; letter-spacing:0; text-transform:none;}
+  .cx-label{font:500 13.5px 'Manrope', sans-serif; letter-spacing:0; text-transform:none;}
+  .cx-kpi span{font-size:12.5px; letter-spacing:0; text-transform:none;}
+  .cx-hint{font-family:'Manrope', sans-serif; font-size:12px;}
+  /* en la app instalada no hace falta el link a la página */
+  html.app .panel-back{display:none;}
+  @media (display-mode: standalone){ .panel-back{display:none;} }
 </style>
 </head>
 <body>
@@ -733,7 +749,7 @@
   <div class="cx-inner">
     <header class="cx-top">
       <div>
-        <p class="cx-kicker"><span class="cx-live"></span><span id="cxSync">En vivo</span></p>
+        <p class="cx-kicker"><span class="cx-live"></span><span id="cxSync">Actualizado recién</span></p>
         <h2 id="cxTitle">Caja</h2>
       </div>
       <button type="button" class="cx-close" id="cxClose" aria-label="Cerrar caja">&times;</button>
@@ -2073,7 +2089,7 @@
     if (!cashOpen) return;
     const off = !adminOffline.hidden, sec = Math.round((Date.now() - lastSync) / 1000);
     document.querySelector('.cx-live').classList.toggle('off', off);
-    document.getElementById('cxSync').textContent = off ? 'Sin conexión' : sec < 5 ? 'En vivo' : 'Actualizado hace ' + (sec < 60 ? sec + ' s' : Math.round(sec / 60) + ' min');
+    document.getElementById('cxSync').textContent = off ? 'Sin conexión' : sec < 60 ? 'Actualizado recién' : 'Actualizado hace ' + Math.round(sec / 60) + ' min';
   }, 1000);
 
   // monto de un turno: para servicios sin precio fijo o para corregir lo cobrado
@@ -2258,7 +2274,7 @@
     const now = new Date();
     const off = !adminOffline.hidden;
     document.getElementById('phLive').classList.toggle('off', off);
-    document.getElementById('phDate').textContent = off ? 'Sin conexión' : now.toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long'});
+    document.getElementById('phDate').textContent = off ? 'Sin conexión' : (d => d.charAt(0).toUpperCase() + d.slice(1))(now.toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long'}).replace(',', ''));
   }
   setInterval(() => { if (!adminDashboard.hidden) renderHead(); }, 30000);
 
@@ -2286,6 +2302,7 @@
   const installTip = document.getElementById('installTip');
   const installText = document.getElementById('installText');
   const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  if (standalone) document.documentElement.classList.add('app');
   let tipOff = false;
   try { tipOff = localStorage.getItem('goodsPanelTip') === 'no'; } catch(e){}
   const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
