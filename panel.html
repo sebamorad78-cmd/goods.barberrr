@@ -649,6 +649,35 @@
   .admin-pin-screen h3{font-family:'Manrope', sans-serif; font-weight:800; letter-spacing:-.02em; color:#fff;}
   #adminPinSub{color:var(--tx2) !important;}
   .admin-pin-screen .btn.dark{margin-top:18px !important;}
+  /* ---------- Foto de fondo de cada barbero (la misma de la página) ---------- */
+  .bg-photo{position:fixed; inset:0; z-index:-1; pointer-events:none; overflow:hidden; opacity:0; transition:opacity .9s ease;}
+  .bg-photo.show{opacity:1;}
+  .bg-photo i{position:absolute; left:0; right:0; top:0; height:78vh; background-size:cover; background-position:center 22%;
+    filter:saturate(.85) contrast(1.05); opacity:0; transform:scale(1.08); transition:opacity 1.1s ease;}
+  .bg-photo i.on{opacity:1; animation:bgDrift 14s cubic-bezier(.2,.6,.2,1) forwards;}
+  @keyframes bgDrift{from{transform:scale(1.08);} to{transform:scale(1);}}
+  /* tinte azul de la marca + fundido al azul marino: la foto se ve arriba y el texto siempre se lee */
+  .bg-photo::before{content:""; position:absolute; inset:0; z-index:1; background:#14345C; mix-blend-mode:color; opacity:.38;}
+  .bg-photo::after{content:""; position:absolute; inset:0; z-index:2;
+    background:
+      linear-gradient(180deg, rgba(10,25,48,.5) 0%, rgba(10,25,48,.06) 16%, rgba(10,25,48,.12) 30%, rgba(10,25,48,.78) 46%, #0A1930 60%),
+      radial-gradient(120% 70% at 50% 0%, transparent 40%, rgba(10,25,48,.55) 100%),
+      linear-gradient(rgba(169,203,238,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(169,203,238,.03) 1px, transparent 1px);
+    background-size:auto, auto, 32px 32px, 32px 32px;}
+  /* en la computadora la foto no se estira: va como retrato a la derecha y se funde con el azul */
+  @media (min-width:900px){
+    .bg-photo i{left:auto; right:max(0px, calc(50vw - 640px)); width:min(560px, 46vw); height:100vh; background-position:center 20%;
+      -webkit-mask-image:linear-gradient(90deg, transparent 0%, #000 45%); mask-image:linear-gradient(90deg, transparent 0%, #000 45%);}
+    body.has-photo .admin-dashboard[data-view="agenda"] .admin-header{min-height:200px;}
+  }
+  @media (prefers-reduced-motion: reduce){ .bg-photo i, .bg-photo i.on{animation:none; transform:none;} }
+  /* en la agenda, el encabezado es la "portada": la foto se ve entera arriba y el título apoya abajo */
+  body.has-photo .admin-dashboard[data-view="agenda"] .admin-header{min-height:clamp(200px, 34vh, 330px); display:flex; align-items:flex-end; margin-bottom:18px;}
+  body.has-photo .admin-dashboard[data-view="agenda"] .ph-title{font-size:36px;}
+  body.has-photo .ph-title, body.has-photo .ph-kicker, body.has-photo .ph-stats{text-shadow:0 2px 18px rgba(10,25,48,.8);}
+  body.has-photo .today{background:rgba(18,38,66,.55); backdrop-filter:blur(14px) saturate(130%); -webkit-backdrop-filter:blur(14px) saturate(130%); border-color:rgba(169,203,238,.18);}
+  body.has-photo .admin-chip:not(.active){background:rgba(10,25,48,.45); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);}
+  body.has-photo .panel-top{background:rgba(10,25,48,.55);}
 </style>
 </head>
 <body>
@@ -676,6 +705,8 @@
     <a class="panel-back" href="index.html">← Ver la página</a>
   </div>
 </header>
+
+<div class="bg-photo" id="bgPhoto" aria-hidden="true"><i></i><i></i></div>
 
 <!-- Entrada al panel después de iniciar sesión (se saltea con un toque) -->
 <div class="panel-intro" id="panelIntro" hidden aria-hidden="true">
@@ -1035,6 +1066,7 @@
 
   function showLoginScreen(){
     adminDashboard.hidden = true;
+    setBgPhoto(null); // en la pantalla de ingreso no se muestra la foto de nadie
     adminPinScreen.style.display = 'flex';
     adminPassword.value = '';
     adminPinError.classList.remove('show');
@@ -1134,7 +1166,33 @@
     return dt.getTime() < Date.now();
   }
 
+  // Foto de fondo: la de cada barbero (la misma que en la página). El dueño ve el local
+  // de noche, y si filtra por un barbero, la foto cambia a la de ese barbero.
+  const BG_PHOTO = { nicolas: 'nicolas', tula: 'tula', chino: 'chino', lucho: 'lucho' };
+  const bgPhoto = document.getElementById('bgPhoto');
+  let bgNow = null, bgReq = 0;
+  function setBgPhoto(id){
+    const name = id === null ? null : (BG_PHOTO[id] || 'local');
+    if (name === bgNow) return;
+    bgNow = name;
+    const req = ++bgReq;
+    if (!name){ bgPhoto.classList.remove('show'); document.body.classList.remove('has-photo'); bgPhoto.querySelectorAll('i').forEach(x => x.classList.remove('on')); return; }
+    const url = '/app/fondos/' + name + '.webp';
+    const img = new Image();
+    img.onload = () => {
+      if (req !== bgReq) return; // ya se pidió otra
+      const [a, b] = bgPhoto.querySelectorAll('i');
+      const next = a.classList.contains('on') ? b : a, prev = next === a ? b : a;
+      next.style.backgroundImage = 'url("' + url + '")';
+      next.classList.remove('on'); void next.offsetWidth; next.classList.add('on');
+      prev.classList.remove('on');
+      bgPhoto.classList.add('show'); document.body.classList.add('has-photo');
+    };
+    img.src = url; // si no carga, queda el fondo azul de siempre
+  }
+
   function renderAdminFilters(){
+    setBgPhoto(ME && ME.barber ? ME.barber : adminBarberFilter);
     adminFilters.innerHTML = '';
     if (ME && ME.barber){ adminFilters.hidden = true; adminBarberFilter = ME.barber; return; }
     adminFilters.hidden = false;
@@ -1466,7 +1524,7 @@
   });
   adminLock.addEventListener('click', async () => {
     stopAdminPolling();
-    adminBookingsCache = []; CASH = []; ME = null; adminBarberFilter = 'all'; adminList.innerHTML = ''; adminToday.innerHTML = ''; closeCash(); setView('agenda');
+    adminBookingsCache = []; CASH = []; ME = null; adminBarberFilter = 'all'; adminList.innerHTML = ''; adminToday.innerHTML = ''; closeCash(); setView('agenda'); setBgPhoto(null);
     try { if (supabase) await supabase.auth.signOut(); } catch(err){ /* igual mostramos el login */ }
     showLoginScreen();
   });
