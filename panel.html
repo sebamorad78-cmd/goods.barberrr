@@ -1,0 +1,2421 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Panel del dueño — Goods Barber Studio</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0A1930">
+<!-- App en el celular: se instala desde el navegador, sin tienda -->
+<link rel="manifest" href="/app/panel.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="data:image/png;base64,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">
+<link rel="icon" type="image/png" sizes="192x192" href="/app/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Goods Panel">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;0,6..96,700;0,6..96,800;1,6..96,500&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A1930;
+    --ink-2:#122642;
+    --paper:#EEF2F7;
+    --paper-2:#E1E8F0;
+    --blue-deep:#14345C;
+    --blue-accent:#4E8FD6;
+    --blue-light:#A9CBEE;
+    --charcoal:#10192A;
+    --line:#D2DCE7;
+    --line-dark:rgba(238,242,247,0.16);
+    --ok:#4E8FD6;
+    --shadow: 0 20px 50px -20px rgba(10,25,48,0.4);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--charcoal);
+    font-family:'Manrope', sans-serif;
+    font-weight:400;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;display:block;}
+  a{color:inherit;text-decoration:none;}
+  h1,h2,h3,h4{font-family:'Bodoni Moda', serif;margin:0;font-weight:600;letter-spacing:-0.01em;}
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--blue-accent);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--blue-accent);display:inline-block;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px;}
+  section{position:relative;}
+  button{font-family:inherit;cursor:pointer;}
+  :focus-visible{outline:2px solid var(--blue-accent);outline-offset:3px;}
+  ::selection{background:var(--blue-accent);color:#fff;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
+  }
+
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* ---------- LOGO ---------- */
+  .brand{display:inline-flex; align-items:center; gap:10px;}
+  .brand-icon{width:30px;height:40px;flex-shrink:0;}
+  .brand-text{display:flex; flex-direction:column; line-height:1;}
+  .brand-word{
+    font-family:'Baloo 2', sans-serif; font-weight:800; font-size:24px; color:var(--paper);
+    letter-spacing:0.01em;
+  }
+  .brand-sub{
+    font-family:'JetBrains Mono', monospace; font-size:8.5px; letter-spacing:0.28em;
+    color:var(--blue-light); text-transform:uppercase; margin-top:2px;
+  }
+  footer .brand-word{color:var(--paper);}
+
+  /* ---------- NAV ---------- */
+  header.nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:rgba(10,25,48,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line-dark);
+  }
+  .nav-inner{
+    max-width:1180px;margin:0 auto;padding:16px 28px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .nav-links{display:flex;gap:34px;align-items:center;}
+  .nav-links a{
+    color:var(--paper); opacity:0.8; font-size:14px; letter-spacing:0.02em;
+    position:relative; padding:4px 0;
+  }
+  .nav-links a:hover{opacity:1;}
+  .nav-links a::after{
+    content:"";position:absolute;bottom:0;left:0;width:0;height:1px;background:var(--blue-accent);
+    transition:width .25s ease;
+  }
+  .nav-links a:hover::after{width:100%;}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:12px 22px;
+    background:var(--blue-accent);
+    color:#fff;
+    border:1px solid var(--blue-accent);
+    font-size:13px; font-weight:600; letter-spacing:0.04em;
+    text-transform:uppercase;
+    border-radius:2px;
+    transition:background .25s ease, color .25s ease, transform .2s ease;
+  }
+  .btn:hover{background:transparent;color:var(--blue-accent);transform:translateY(-1px);}
+  .btn.ghost{background:transparent;color:var(--paper);border-color:var(--line-dark);}
+  .btn.ghost:hover{border-color:var(--blue-accent);color:var(--blue-accent);}
+  .btn.dark{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  .btn.dark:hover{background:transparent;color:var(--ink);}
+  .btn:disabled{opacity:0.35;cursor:not-allowed;transform:none;}
+  .btn:disabled:hover{background:var(--blue-accent);color:#fff;}
+
+  .burger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:6px;}
+  .burger span{width:22px;height:1.5px;background:var(--paper);display:block;}
+  .mobile-menu{
+    display:none; position:fixed; top:0; right:0; bottom:0; width:78%; max-width:320px;
+    background:var(--ink); z-index:200; padding:100px 30px 30px;
+    transform:translateX(100%); transition:transform .35s ease;
+    flex-direction:column; gap:26px;
+    border-left:1px solid var(--line-dark);
+  }
+  .mobile-menu.open{transform:translateX(0);}
+  .mobile-menu a{color:var(--paper); font-size:18px; font-family:'Fraunces',serif;}
+  .menu-close{position:absolute;top:26px;right:26px;background:none;border:none;color:var(--paper);font-size:26px;}
+  .scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:150;}
+  .scrim.open{display:block;}
+
+  .form-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .form-grid .full{grid-column:1/-1;}
+  .field label{font-size:12px; text-transform:uppercase; letter-spacing:0.06em; color:#57627a; display:block; margin-bottom:6px;}
+  .field input, .field textarea{
+    width:100%; padding:12px 14px; border:1px solid var(--line); background:var(--paper);
+    font-family:'Manrope',sans-serif; font-size:16px; border-radius:4px;
+  }
+  .field input:focus, .field textarea:focus{border-color:var(--blue-accent);}
+  .field input.invalid, .field textarea.invalid{border-color:#B3261E;}
+  .field-error{display:none; font-size:12px; color:#B3261E; margin-top:6px;}
+  .field-error.show{display:block;}
+  .form-error{
+    display:none; margin-top:16px; padding:14px 16px; font-size:13.5px;
+    background:rgba(179,38,30,0.08); border:1px solid #B3261E; color:#8f1f18; border-radius:6px;
+  }
+  .form-error.show{display:block;}
+
+  /* ---------- ADMIN / PANEL DEL DUEÑO ---------- */
+  .admin-scrim{
+    display:none; position:fixed; inset:0; z-index:400;
+    background:rgba(10,25,48,0.55); backdrop-filter:blur(3px);
+  }
+  .admin-scrim.open{display:block;}
+  .admin-panel{
+    display:none; position:fixed; z-index:401;
+    top:50%; left:50%; transform:translate(-50%,-50%);
+    width:min(92vw, 720px); max-height:86vh; overflow-y:auto;
+    background:var(--paper); border-radius:10px; box-shadow:var(--shadow);
+  }
+  .admin-panel.open{display:block;}
+  .admin-pin-screen{
+    display:flex; flex-direction:column; align-items:center; text-align:center;
+    padding:56px 40px; position:relative;
+  }
+  .admin-close{
+    position:absolute; top:18px; right:18px; background:none; border:none;
+    font-size:24px; color:#8a93a5; line-height:1;
+  }
+  .admin-pin-input{
+    width:180px; margin-top:22px; padding:14px; text-align:center;
+    font-size:26px; letter-spacing:0.5em; border:1px solid var(--line); border-radius:6px;
+    font-family:'JetBrains Mono',monospace; background:var(--paper);
+  }
+  .admin-pin-input:focus{border-color:var(--blue-accent);}
+  #adminPinError{margin-top:10px;}
+  .admin-dashboard{padding:32px 32px 40px;}
+  .admin-header{display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; margin-bottom:22px;}
+  .admin-header-actions{display:flex; gap:10px; align-items:center; position:relative; padding-right:34px; flex-wrap:wrap;}
+  .admin-header-actions .admin-close{position:absolute; top:-8px; right:-6px;}
+  .btn.ghost.danger-outline{border-color:#B3261E; color:#B3261E;}
+  .btn.ghost.danger-outline:hover{background:#B3261E; color:#fff;}
+  .admin-filters{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px;}
+  .admin-chip{
+    padding:7px 14px; font-size:12.5px; border:1px solid var(--line); border-radius:30px;
+    background:var(--paper);
+  }
+  .admin-chip.active{background:var(--ink); color:var(--paper); border-color:var(--ink);}
+  .admin-list{display:flex; flex-direction:column; gap:10px;}
+  .admin-empty{font-size:14px; color:#7a8496; font-style:italic; padding:30px 0; text-align:center;}
+  .admin-item{
+    border:1px solid var(--line); border-radius:8px; padding:16px 18px;
+    display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; align-items:center;
+  }
+  .admin-item-main{display:flex; flex-direction:column; gap:3px;}
+  .admin-item-when{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--blue-accent); font-weight:600;}
+  .admin-item-name{font-size:15.5px; font-weight:600;}
+  .admin-item-meta{font-size:12.5px; color:#57627a;}
+  .admin-item-meta a{color:var(--blue-accent); text-decoration:underline;}
+  .admin-badge{
+    font-size:11px; text-transform:uppercase; letter-spacing:0.06em; padding:4px 10px;
+    border-radius:20px; font-weight:600;
+  }
+  .admin-badge.confirmed{background:rgba(78,143,214,0.14); color:var(--blue-deep);}
+  .admin-badge.done{background:rgba(76,175,80,0.14); color:#2e7d32;}
+  .admin-badge.cancelled{background:rgba(179,38,30,0.1); color:#8f1f18;}
+  .admin-badge.overdue{background:rgba(230,145,29,0.16); color:#8a5416;}
+  .admin-item-actions{display:flex; gap:8px; flex-wrap:wrap;}
+  .admin-btn{
+    font-size:12px; padding:7px 12px; border-radius:5px; border:1px solid var(--line);
+    background:var(--paper);
+  }
+  .admin-btn:hover{border-color:var(--blue-accent);}
+  .admin-btn.danger:hover{border-color:#B3261E; color:#B3261E;}
+  .admin-note-banner{
+    font-size:12px; color:#57627a; background:var(--paper-2); border:1px solid var(--line);
+    border-radius:6px; padding:12px 14px; margin-bottom:20px;
+  }
+  .admin-tab.active{color:var(--ink); border-bottom-color:var(--blue-accent); font-weight:600;}
+
+
+  /* ---------- Panel como página propia ---------- */
+  body{background:var(--paper-2); min-height:100vh;}
+  .panel-top{background:var(--ink); border-bottom:1px solid var(--line-dark); padding-top:env(safe-area-inset-top, 0px);}
+  /* logo con brillo: una ola de luz lo recorre constantemente (solo CSS, casi sin consumo) */
+  .panel-top .brand{position:relative; overflow:hidden; padding:4px 8px 4px 4px; margin-left:-4px; border-radius:8px;}
+  .panel-top .brand::after{content:""; position:absolute; top:-40%; bottom:-40%; left:0; width:55%; pointer-events:none;
+    background:linear-gradient(100deg, transparent 0%, rgba(169,203,238,.0) 20%, rgba(214,232,252,.55) 48%, rgba(169,203,238,.0) 76%, transparent 100%);
+    transform:translateX(-160%) skewX(-18deg); animation:brandWave 3.6s cubic-bezier(.45,0,.25,1) infinite; mix-blend-mode:screen;}
+  .panel-top .brand-icon{animation:brandGlow 3.6s ease-in-out infinite;}
+  .panel-top .brand-word{background:linear-gradient(100deg, var(--paper) 0 40%, #cfe3f8 47%, #ffffff 50%, #cfe3f8 53%, var(--paper) 60% 100%);
+    background-size:260% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; animation:brandText 3.6s cubic-bezier(.45,0,.25,1) infinite;}
+  @keyframes brandWave{0%{transform:translateX(-160%) skewX(-18deg);} 55%,100%{transform:translateX(260%) skewX(-18deg);}}
+  @keyframes brandText{0%{background-position:100% 0;} 55%,100%{background-position:0 0;}}
+  @keyframes brandGlow{0%,100%{filter:drop-shadow(0 0 0 rgba(169,203,238,0));} 30%{filter:drop-shadow(0 0 6px rgba(169,203,238,.55));}}
+  @media (prefers-reduced-motion: reduce){ .panel-top .brand::after, .panel-top .brand-icon, .panel-top .brand-word{animation:none;} .panel-top .brand::after{display:none;} }
+  /* aviso para instalar la app */
+  [hidden]{display:none !important;} /* lo oculto no se ve nunca, aunque otro estilo diga lo contrario */
+  .install-tip{display:flex; gap:14px; align-items:flex-start; margin-bottom:18px; padding:14px 16px; border-radius:8px;
+    background:var(--ink); color:var(--paper); font-size:13.5px; line-height:1.5;}
+  .install-tip img{width:40px; height:40px; border-radius:9px; flex-shrink:0;}
+  .install-tip b{display:block; font-size:14.5px; margin-bottom:2px;}
+  .install-tip .share{display:inline-block; vertical-align:-3px; width:15px; height:15px;}
+  .install-tip button{margin-left:auto; flex-shrink:0; background:none; border:0; color:var(--blue-light); font-size:20px; line-height:1; cursor:pointer; padding:2px 4px;}
+  .install-tip .install-go{font-size:12.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; border:1px solid var(--blue-light); border-radius:4px; padding:7px 10px; margin-top:8px;}
+  .panel-top .nav-inner{padding:16px 28px;}
+  .panel-back{color:var(--paper); opacity:0.75; font-size:13.5px;}
+  .panel-back:hover{opacity:1; color:var(--blue-light);}
+  .admin-panel.open{position:static; transform:none; margin:40px auto 60px; max-height:none; overflow:visible; width:min(94vw, 760px);}
+  .admin-pin-screen{display:none;}
+  /* los botones del panel van sobre fondo claro: texto oscuro para que se lean */
+  .admin-header-actions .btn.ghost:not(.danger-outline){color:var(--ink); border-color:var(--line);}
+  .admin-header-actions .btn.ghost:not(.danger-outline):hover{color:var(--blue-accent); border-color:var(--blue-accent);}
+  @media (max-width:640px){
+    .admin-panel.open{margin:20px auto 40px;}
+    .admin-dashboard{padding:24px 18px 30px;}
+    .admin-pin-screen{padding:44px 24px;}
+    .admin-item{flex-direction:column; align-items:flex-start;}
+  }
+
+  /* ---------- Agenda de hoy ---------- */
+  .today{margin-bottom:26px; padding:20px; background:var(--ink); color:var(--paper); border-radius:8px;}
+  .today-head{display:flex; justify-content:space-between; align-items:baseline; gap:6px 14px; flex-wrap:wrap; margin-bottom:14px;}
+  .today-head h4{font-size:21px; color:var(--paper);}
+  .today-head .when{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--blue-light); letter-spacing:0.08em; text-transform:uppercase;}
+  .today-head.next-day{margin-top:22px; padding-top:18px; border-top:1px solid var(--line-dark);}
+  .today-head.next-day h4{font-size:18px;}
+
+  /* ---------- Entrada al panel después de iniciar sesión ---------- */
+  .panel-intro{
+    position:fixed; inset:0; z-index:700; cursor:pointer;
+    background:radial-gradient(120% 100% at 50% 40%, var(--ink-2) 0%, var(--ink) 70%);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    transition:opacity .5s ease;
+  }
+  .panel-intro[hidden]{display:none;}
+  .panel-intro.out{opacity:0; pointer-events:none;}
+  .pi-icon{width:52px; height:70px; opacity:0; transform:scale(.82) translateY(6px); animation:piIcon .6s cubic-bezier(.2,.8,.2,1) .05s forwards;}
+  .pi-word{margin-top:18px; font-family:'Baloo 2', sans-serif; font-weight:800; font-size:40px; color:var(--paper);
+    opacity:0; transform:translateY(10px); animation:piText .5s ease .35s forwards;}
+  .pi-hello{margin-top:18px; font-family:'Bodoni Moda', serif; font-size:26px; color:var(--paper);
+    opacity:0; transform:translateY(10px); animation:piText .5s ease .6s forwards;}
+  .pi-date{margin-top:8px; font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:.24em; text-transform:uppercase;
+    color:var(--blue-light); opacity:0; transform:translateY(8px); animation:piText .5s ease .8s forwards;}
+  .pi-line{margin-top:22px; height:2px; width:0; background:linear-gradient(90deg, var(--blue-deep), var(--blue-accent), var(--blue-light));
+    animation:piLine .5s ease .95s forwards;}
+  @keyframes piIcon{to{opacity:1; transform:none;}}
+  @keyframes piText{to{opacity:1; transform:none;}}
+  @keyframes piLine{to{width:120px;}}
+  @media (max-width:640px){ .pi-word{font-size:34px;} .pi-hello{font-size:22px;} }
+
+  /* después de la entrada, el panel aparece de a bloques */
+  @keyframes dashIn{from{opacity:0; transform:translateY(18px);} to{opacity:1; transform:none;}}
+  .admin-dashboard.enter-head > .admin-header{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) both;}
+  .admin-dashboard.enter-body .agenda-view > .today{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) .08s both;}
+  .admin-dashboard.enter-body .today-col{animation:dashIn .45s cubic-bezier(.2,.7,.2,1) both;}
+  .admin-dashboard.enter-body .today-col:nth-child(1){animation-delay:.2s;}
+  .admin-dashboard.enter-body .today-col:nth-child(2){animation-delay:.27s;}
+  .admin-dashboard.enter-body .today-col:nth-child(3){animation-delay:.34s;}
+  .admin-dashboard.enter-body .today-col:nth-child(4){animation-delay:.41s;}
+  .admin-dashboard.enter-body .agenda-view > .admin-filters{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) .3s both;}
+  .admin-dashboard.enter-body .agenda-view > .list-head, .admin-dashboard.enter-body .agenda-view > .admin-list{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) .38s both;}
+
+  /* con "reducir animaciones" activado en el dispositivo: sin movimiento, solo fundidos */
+  @media (prefers-reduced-motion: reduce){
+    @keyframes piIcon{from{opacity:0;} to{opacity:1;}}
+    @keyframes piText{from{opacity:0;} to{opacity:1;}}
+    @keyframes dashIn{from{opacity:0;} to{opacity:1;}}
+    .pi-icon, .pi-word, .pi-hello, .pi-date{transform:none;}
+    .pi-line{animation:none; width:120px;}
+  }
+  .today-next{font-size:13.5px; margin:-4px 0 14px; color:rgba(238,242,247,0.8);}
+  .today-next strong{color:var(--paper);}
+  .today-cols{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px;}
+  @media (max-width:560px){ .today-cols{grid-template-columns:1fr;} }
+  .today-none{font-size:13px; opacity:0.6; font-style:italic;}
+  .today-col{background:rgba(238,242,247,0.05); border:1px solid var(--line-dark); border-radius:6px; padding:12px 12px 6px;}
+  .today-col h5{font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--blue-light); margin:0 0 6px; display:flex; justify-content:space-between;}
+  .today-slot{display:flex; gap:10px; align-items:baseline; font-size:13.5px; padding:7px 6px; border-top:1px solid var(--line-dark);}
+  .today-slot .t{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--blue-light); min-width:42px;}
+  .today-slot .n{flex:1;}
+  .today-slot .s{font-size:11px; opacity:0.6;}
+  .today-slot.past{opacity:0.45;}
+  .today-slot.done .n{text-decoration:line-through;}
+  .today-slot.next{background:rgba(78,143,214,0.28); border-radius:4px; border-top-color:transparent;}
+  .today-empty{font-size:13px; opacity:0.55; font-style:italic; padding:6px 0 8px;}
+
+  /* ---------- Cargar turno a mano ---------- */
+  .manual-form{margin-bottom:26px; padding:22px; border:1px solid var(--blue-accent); border-radius:8px; background:var(--paper);}
+  .manual-form h4{font-size:20px;}
+  .manual-sub{font-size:13px; color:#57627a; margin:4px 0 16px;}
+  .field select{
+    width:100%; padding:12px 14px; border:1px solid var(--line); background:var(--paper);
+    font-family:'Manrope',sans-serif; font-size:16px; border-radius:4px; color:var(--charcoal);
+  }
+  .field select:focus{border-color:var(--blue-accent);}
+  .manual-hint{font-size:13px; color:#57627a; margin:12px 0 0; min-height:1em;}
+  .manual-hint.err{color:#8f1f18;}
+  .manual-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:16px;}
+  .manual-actions .btn.ghost{color:var(--ink); border-color:var(--line);}
+  .admin-offline{margin-bottom:18px; padding:10px 14px; border-radius:6px; font-size:13px; background:rgba(230,145,29,0.14); color:#8a5416; border:1px solid rgba(230,145,29,0.4);}
+  .admin-flash.err{background:rgba(179,38,30,0.08); color:#8f1f18; border-color:rgba(179,38,30,0.35);}
+  .admin-history{display:flex; align-items:center; gap:8px; font-size:13px; color:#57627a; margin:-8px 0 16px; cursor:pointer;}
+  .admin-section-title{font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#8a5416; margin:6px 0 10px;}
+  .admin-section-title.next{color:var(--blue-deep); margin-top:22px;}
+  .admin-item.busy{opacity:.55; pointer-events:none;}
+  .admin-flash{margin-bottom:18px; padding:12px 14px; border-radius:6px; font-size:13.5px; background:rgba(76,175,80,0.14); color:#2e7d32; border:1px solid rgba(46,125,50,0.35);}
+
+
+  /* ---------- Horarios y días bloqueados ---------- */
+  /* ---------- Caja: pantalla propia, oscura y limpia ---------- */
+  .cx{position:fixed; inset:0; z-index:800; background:#0A1930; color:#EEF2F7; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);
+    background-image:radial-gradient(90% 60% at 80% -10%, rgba(20,52,92,.95), transparent 65%);
+    animation:cxIn .35s cubic-bezier(.2,.7,.2,1);}
+  @keyframes cxIn{from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;}}
+  .cx-inner{max-width:760px; margin:0 auto; padding:22px 20px 40px; display:flex; flex-direction:column; gap:18px;}
+  .cx-top{display:flex; justify-content:space-between; align-items:flex-start;}
+  .cx-top h2{font-family:'Manrope', sans-serif; font-weight:700; font-size:28px; letter-spacing:-.02em; color:#fff;}
+  .cx-kicker{display:flex; align-items:center; gap:8px; font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#7f93ad; margin-bottom:4px;}
+  .cx-live{width:7px; height:7px; border-radius:50%; background:#5fd38a; box-shadow:0 0 0 0 rgba(95,211,138,.6); animation:cxPulse 2s infinite;}
+  .cx-live.off{background:#E8C77A; animation:none;}
+  @keyframes cxPulse{0%{box-shadow:0 0 0 0 rgba(95,211,138,.55);} 70%{box-shadow:0 0 0 8px rgba(95,211,138,0);} 100%{box-shadow:0 0 0 0 rgba(95,211,138,0);}}
+  .cx-close{width:40px; height:40px; border-radius:50%; border:1px solid rgba(169,203,238,.2); background:rgba(255,255,255,.04); color:#cfe0f3; font-size:22px; line-height:1; cursor:pointer;}
+  .cx-close:hover{background:rgba(255,255,255,.08);}
+  .cx-seg{display:grid; grid-template-columns:repeat(4,1fr); padding:4px; gap:4px; border-radius:12px; background:rgba(255,255,255,.04); border:1px solid rgba(169,203,238,.12);}
+  .cx-seg button{border:0; background:transparent; color:#9fb2c9; font:600 13px 'Manrope', sans-serif; padding:9px 0; border-radius:9px; cursor:pointer; transition:background .2s, color .2s;}
+  .cx-seg button.active{background:#EEF2F7; color:#0A1930;}
+  .cx-seg button:focus-visible, .cx-close:focus-visible{outline:2px solid #A9CBEE; outline-offset:2px;}
+  .cx-scope{display:flex; gap:6px;}
+  .cx-scope button{border:1px solid rgba(169,203,238,.2); background:transparent; color:#9fb2c9; font:600 12.5px 'Manrope', sans-serif; padding:7px 14px; border-radius:20px; cursor:pointer;}
+  .cx-scope button.active{background:rgba(78,143,214,.22); border-color:#4E8FD6; color:#fff;}
+  .cx-hero{padding:6px 2px 4px;}
+  .cx-label{font-family:'JetBrains Mono', monospace; font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:#7f93ad;}
+  .cx-big{font-family:'Manrope', sans-serif; font-weight:800; font-size:clamp(44px, 12vw, 64px); letter-spacing:-.035em; line-height:1.05; margin:6px 0 16px; color:#fff; font-variant-numeric:tabular-nums;}
+  .cx-kpis{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+  .cx-kpi{padding:12px 14px; border-radius:12px; background:rgba(255,255,255,.035); border:1px solid rgba(169,203,238,.1);}
+  .cx-kpi span{display:block; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:#7f93ad;}
+  .cx-kpi strong{display:block; margin-top:4px; font:700 19px 'Manrope', sans-serif; color:#EEF2F7; font-variant-numeric:tabular-nums;}
+  .cx-card{padding:16px; border-radius:16px; background:rgba(255,255,255,.03); border:1px solid rgba(169,203,238,.1);}
+  .cx-card-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px;}
+  .cx-card-head h3{font:700 14px 'Manrope', sans-serif; color:#EEF2F7;}
+  .cx-hint{font-family:'JetBrains Mono', monospace; font-size:11px; color:#7f93ad; font-variant-numeric:tabular-nums;}
+  .cx-chart{display:grid; grid-template-columns:repeat(14,1fr); gap:5px; height:160px; border-bottom:1px solid rgba(169,203,238,.14); position:relative;}
+  .cx-bar{position:relative; height:100%; min-width:0; cursor:pointer; background:none; border:0; padding:0; margin:0;}
+  .cx-bar i{position:absolute; left:0; right:0; bottom:0; display:block; border-radius:4px 4px 0 0; background:#4E8FD6; min-height:2px; transform-origin:bottom; transform:scaleY(0); animation:cxGrow .6s cubic-bezier(.2,.7,.2,1) forwards; animation-delay:calc(var(--n) * 25ms);}
+  .cx-bar.zero i{background:rgba(169,203,238,.18);}
+  .cx-bar.today i{background:#A9CBEE;}
+  .cx-bar.sel i{box-shadow:inset 0 0 0 2px #fff;}
+  .cx-bar:focus-visible{outline:2px solid #A9CBEE; outline-offset:2px; border-radius:4px;}
+  @keyframes cxGrow{to{transform:scaleY(1);}}
+  .cx-axis{display:grid; grid-template-columns:repeat(14,1fr); gap:5px; margin-top:6px; font-family:'JetBrains Mono', monospace; font-size:10px; color:#6b7f99; text-align:center;}
+  .cx-row{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:4px 12px; padding:12px 0; border-top:1px solid rgba(169,203,238,.08);}
+  .cx-row:first-child{border-top:0; padding-top:0;}
+  .cx-row .who{font:600 15px 'Manrope', sans-serif; color:#EEF2F7;}
+  .cx-row .who small{display:block; font:500 11.5px 'JetBrains Mono', monospace; color:#7f93ad; margin-top:2px;}
+  .cx-row .val{text-align:right; font:700 16px 'Manrope', sans-serif; color:#fff; font-variant-numeric:tabular-nums;}
+  .cx-row .val small{display:block; font:500 11.5px 'JetBrains Mono', monospace; color:#A9CBEE; margin-top:2px;}
+  .cx-track{grid-column:1 / -1; height:6px; border-radius:6px; background:rgba(169,203,238,.08); overflow:hidden;}
+  .cx-track i{display:block; height:100%; border-radius:6px; background:#4E8FD6; transform-origin:left; transform:scaleX(0); animation:cxBar .7s cubic-bezier(.2,.7,.2,1) .1s forwards;}
+  @keyframes cxBar{to{transform:scaleX(1);}}
+  .cx-foot{font-size:12px; color:#6b7f99; line-height:1.6;}
+  .cx-foot a{color:#A9CBEE;}
+  html.cx-open, html.cx-open body{overflow:hidden;}
+  @media (max-width:520px){ .cx-kpis{grid-template-columns:1fr 1fr;} .cx-kpis .cx-kpi:last-child{grid-column:1 / -1;} .cx-chart{gap:3px;} .cx-axis{gap:3px;} }
+  @media (prefers-reduced-motion: reduce){ .cx, .cx-bar i, .cx-track i{animation:none; transform:none;} .cx-live{animation:none;} }
+  .admin-amount{display:inline-flex; align-items:center; gap:8px; margin-top:6px; font-size:13px; font-variant-numeric:tabular-nums;}
+  .admin-amount strong{color:#2e7d32;}
+  .admin-amount button{background:none; border:0; color:var(--blue-accent); font-size:12.5px; text-decoration:underline; cursor:pointer; padding:0;}
+  .amount-edit{display:flex; gap:8px; align-items:center; margin-top:8px; flex-wrap:wrap;}
+  .amount-edit input{width:130px; padding:8px 10px; border:1px solid var(--line); border-radius:4px; font:inherit; font-size:15px;}
+  .amount-edit .admin-btn{padding:8px 12px;}
+  .money-form{display:grid; grid-template-columns:1fr 1fr; gap:10px 24px;}
+  .money-col{display:flex; flex-direction:column; gap:8px;}
+  .money-row{display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:14px;}
+  .money-row input{width:120px; padding:8px 10px; border:1px solid var(--line); border-radius:4px; font:inherit; text-align:right;}
+  .money-row small{color:#8b95a7;}
+  @media (max-width:640px){ .money-form{grid-template-columns:1fr;} .cash-total strong{font-size:22px;} }
+  .push-box .field{max-width:320px;}
+  .pass-form{display:grid; grid-template-columns:1fr 1fr; gap:10px; max-width:520px;}
+  @media (max-width:560px){ .pass-form{grid-template-columns:1fr;} }
+  .push-state{display:flex; align-items:center; gap:10px; padding:12px 14px; border-radius:6px; font-size:14px; margin:6px 0 12px;}
+  .push-state.on{background:rgba(76,175,80,0.12); color:#2e7d32;}
+  .push-state.off{background:rgba(230,145,29,0.12); color:#8a5416;}
+  .push-steps{font-size:14px; line-height:1.7; padding-left:20px; margin:6px 0 0;}
+  .settings{margin-bottom:26px; padding:22px; border:1px solid var(--line); border-radius:8px; background:var(--paper);}
+  .settings h4{font-size:20px;}
+  .settings h5{font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--blue-accent); margin:26px 0 10px;}
+  .settings .manual-sub{margin-bottom:6px;}
+  .sched-wrap{overflow-x:auto;}
+  .sched-table{width:100%; border-collapse:collapse; min-width:520px;}
+  .sched-table th{font-size:11.5px; text-transform:uppercase; letter-spacing:0.06em; color:#57627a; text-align:left; padding:6px 6px;}
+  .sched-table td{padding:6px; border-top:1px solid var(--line); vertical-align:middle;}
+  .sched-table td.day{font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--ink); font-weight:600; width:52px;}
+  .sched-cell{display:flex; gap:4px; align-items:center; flex-wrap:wrap;}
+  .sched-cell select{padding:7px 6px; border:1px solid var(--line); border-radius:4px; background:var(--paper); font-family:'JetBrains Mono',monospace; font-size:13px;}
+  .sched-cell label{display:flex; align-items:center; gap:4px; font-size:12px; color:#57627a; width:100%;}
+  .sched-cell.off select{opacity:0.35;}
+  .block-form{display:grid; grid-template-columns:1fr 1fr 1.4fr auto; gap:10px; align-items:end;}
+  .block-list{display:flex; flex-direction:column; gap:8px; margin-top:14px;}
+  .block-item{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--line); border-radius:6px; font-size:13.5px;}
+  .block-item .when{font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--blue-accent); font-weight:600; margin-right:8px;}
+  .block-item .why{color:#57627a;}
+  .today-col .today-blocked{font-size:12px; color:#f0b8b4; padding:4px 0 8px;}
+  @media (max-width:640px){ .block-form{grid-template-columns:1fr;} }
+
+  /* ---------- Recordatorio por WhatsApp ---------- */
+  .admin-btn.wa{border-color:#25D366; color:#128C4B; display:inline-flex; align-items:center; gap:6px;}
+  .admin-btn.wa:hover{background:#25D366; color:#fff; border-color:#25D366;}
+  /* =====================================================================
+     PANEL OSCURO (mismo lenguaje que la Caja) — capa final, pisa lo anterior
+     ===================================================================== */
+  :root{
+    color-scheme:dark;
+    /* paleta de goods.ar: azul marino, azul, celeste y blanco */
+    --bg:#0A1930; --s1:rgba(18,38,66,.72); --s2:rgba(20,52,92,.55);
+    --bd:rgba(169,203,238,.14); --bd2:rgba(169,203,238,.24);
+    --tx:#EEF2F7; --tx2:#B9CDE4; --tx3:#8FA6C2;
+    --ac:#4E8FD6; --ac2:#A9CBEE; --okc:#5fd38a; --warn:#EEF2F7; --bad:#F2A49C;
+    --tab-h:64px;
+  }
+  body{background:var(--bg); color:var(--tx);
+    background-image:radial-gradient(90% 50% at 85% -10%, rgba(20,52,92,.9), transparent 65%);
+    background-attachment:fixed;}
+  .panel-top{background:rgba(10,25,48,.82); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid var(--bd); position:sticky; top:0; z-index:300;}
+  .panel-top .nav-inner{max-width:760px; padding:10px 20px;}
+  .panel-top .brand-icon{width:24px; height:32px;}
+  .panel-top .brand-word{font-size:21px;}
+  .panel-back{font-size:12.5px; color:var(--tx2); opacity:1;}
+  .admin-panel.open{background:transparent; box-shadow:none; border-radius:0; width:100%; max-width:760px; margin:0 auto; padding:0 0 calc(var(--tab-h) + env(safe-area-inset-bottom, 0px) + 28px);}
+  .admin-dashboard{padding:20px 20px 0;}
+  h3, h4, h5{color:var(--tx);}
+
+  /* encabezado de cada pantalla */
+  .admin-header{margin-bottom:16px;}
+  .ph-kicker{display:flex; align-items:center; gap:8px; margin:0 0 4px; font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--tx3);}
+  .ph-title{font-family:'Manrope', sans-serif; font-weight:800; font-size:30px; letter-spacing:-.025em; line-height:1.1; color:#fff;}
+  .ph-stats{margin:6px 0 0; font-size:13.5px; color:var(--tx2); font-variant-numeric:tabular-nums;}
+
+  /* barra de navegación de abajo */
+  .tabbar{position:fixed; left:0; right:0; bottom:0; z-index:850; display:grid; grid-template-columns:repeat(4,1fr);
+    padding:6px 8px calc(6px + env(safe-area-inset-bottom, 0px)); background:rgba(10,25,48,.9);
+    backdrop-filter:blur(16px) saturate(140%); -webkit-backdrop-filter:blur(16px) saturate(140%); border-top:1px solid var(--bd);}
+  .tabbar button{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; height:52px; border:0; background:none; border-radius:12px;
+    color:var(--tx3); font:600 11px 'Manrope', sans-serif; letter-spacing:.02em; -webkit-tap-highlight-color:transparent; transition:color .2s;}
+  .tabbar button > svg{padding:2.5px;}
+  .tabbar svg{width:28px; height:28px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round;}
+  .tabbar button.active{color:#fff;}
+  .tabbar button.active svg{stroke:var(--ac2);}
+  .tabbar button:active{transform:scale(.94);}
+  .tabbar .tab-add i{display:grid; place-items:center; width:34px; height:28px; border-radius:10px; background:var(--ac); box-shadow:0 6px 18px -6px rgba(78,143,214,.8);}
+  .tabbar .tab-add i svg{width:19px; height:19px; stroke:#fff; stroke-width:2.2;}
+  .tabbar .tab-add.active i{background:#EEF2F7;}
+  .tabbar .tab-add.active i svg{stroke:#0A1930;}
+  .tabbar button:focus-visible{outline:2px solid var(--ac2); outline-offset:-2px;}
+  @media (min-width:700px){
+    .tabbar{left:50%; right:auto; bottom:18px; transform:translateX(-50%); width:440px; border:1px solid var(--bd2); border-radius:20px; padding:6px; box-shadow:0 18px 40px -16px rgba(0,0,0,.7);}
+    .admin-panel.open{padding-bottom:120px;}
+  }
+  .cx{padding-bottom:calc(var(--tab-h) + env(safe-area-inset-bottom, 0px));}
+  @media (min-width:700px){ .cx-inner{padding-bottom:110px;} }
+
+  /* avisos: aparecen flotando arriba de la barra, como en una app */
+  .admin-flash{position:fixed; left:16px; right:16px; bottom:calc(var(--tab-h) + env(safe-area-inset-bottom, 0px) + 14px); z-index:860; max-width:520px; margin:0 auto;
+    background:#122642; color:#EEF2F7; border:1px solid rgba(95,211,138,.45); border-radius:12px; padding:12px 14px; box-shadow:0 14px 30px -12px rgba(0,0,0,.7); animation:toastIn .3s cubic-bezier(.2,.7,.2,1);}
+  .admin-flash.err{background:#3a1a22; color:#FBD9D5; border-color:rgba(179,38,30,.7);}
+  @media (min-width:700px){ .admin-flash{bottom:96px;} }
+  @keyframes toastIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;}}
+  .admin-offline{background:rgba(238,242,247,.1); color:var(--warn); border-color:rgba(238,242,247,.3); border-radius:10px;}
+  .install-tip{background:var(--s1); border:1px solid var(--bd); border-radius:14px;}
+
+  /* filtros por barbero */
+  .admin-filters{gap:6px; margin-bottom:14px; flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; margin-left:-20px; margin-right:-20px; padding:0 20px;}
+  .admin-filters::-webkit-scrollbar{display:none;}
+  .admin-chip{flex-shrink:0; background:transparent; color:var(--tx2); border:1px solid var(--bd2); font:600 12.5px 'Manrope', sans-serif; padding:7px 14px; border-radius:20px;}
+  .admin-chip.active{background:var(--ac); border-color:var(--ac); color:#fff;}
+
+  /* agenda de hoy y mañana */
+  .today{background:var(--s1); border:1px solid var(--bd); border-radius:16px; padding:16px; margin-bottom:22px;}
+  .today-head h4{font-family:'Manrope', sans-serif; font-weight:700; font-size:17px; letter-spacing:-.01em;}
+  .today-head.next-day h4{font-size:16px;}
+  .today-head .when{color:var(--tx3); font-size:11px;}
+  .today-head.next-day{border-top-color:var(--bd);}
+  .today-next{color:var(--tx2);}
+  .today-next strong{color:#fff;}
+  .today-col{background:rgba(255,255,255,.025); border-color:var(--bd); border-radius:12px;}
+  .today-col h5{color:var(--ac2); font-family:'Manrope', sans-serif;}
+  .today-slot{border-top-color:var(--bd);}
+  .today-slot .t{color:var(--ac2);}
+  .today-slot.next{background:rgba(78,143,214,.3); border-radius:8px;}
+
+  /* lista de turnos */
+  .list-head{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:6px;}
+  .list-title{font-family:'Manrope', sans-serif; font-weight:700; font-size:17px; letter-spacing:-.01em;}
+  .admin-history{margin:0; font-size:12.5px; color:var(--tx3); gap:7px;}
+  .admin-history input{accent-color:var(--ac); width:16px; height:16px;}
+  .admin-list{gap:8px;}
+  .admin-section-title{margin:14px 0 2px; font:500 12.5px 'Manrope', sans-serif; letter-spacing:0; text-transform:none; color:var(--tx3);}
+  .admin-section-title b{display:block; font:700 11px 'JetBrains Mono', monospace; letter-spacing:.12em; text-transform:uppercase; color:var(--warn); margin-bottom:2px;}
+  .admin-section-title.next b{color:var(--ac2);}
+  .admin-section-title.next{margin-top:22px;}
+  .day-sep{margin:12px 2px 0; font:600 11px 'JetBrains Mono', monospace; letter-spacing:.1em; text-transform:uppercase; color:var(--tx3);}
+  .admin-empty{color:var(--tx3); font-style:normal; padding:28px 0;}
+  .admin-item{position:relative; display:grid; grid-template-columns:minmax(0,1fr); gap:10px; padding:12px 14px 12px 16px; border:1px solid var(--bd); border-radius:14px; background:var(--s1); overflow:hidden;}
+  .admin-item::before{content:""; position:absolute; left:0; top:12px; bottom:12px; width:3px; border-radius:0 3px 3px 0; background:var(--ac);}
+  .admin-item.st-overdue::before{background:var(--warn);}
+  .admin-item.st-done::before{background:var(--okc);}
+  .admin-item.st-cancelled::before{background:rgba(169,203,238,.25);}
+  .admin-item.st-cancelled .admin-item-name, .admin-item.st-cancelled .admin-item-when{opacity:.5; text-decoration:line-through;}
+  .admin-item-main{display:grid; grid-template-columns:auto minmax(0,1fr) auto; grid-template-areas:"t n b" "t m b" "x x x"; column-gap:12px; row-gap:1px; align-items:center;}
+  .admin-item-when{grid-area:t; align-self:start; font:700 17px 'JetBrains Mono', monospace; color:#fff; letter-spacing:-.02em; padding-top:1px; font-variant-numeric:tabular-nums;}
+  .admin-item-name{grid-area:n; font:700 15.5px 'Manrope', sans-serif; color:var(--tx); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .admin-item-meta{grid-area:m; font-size:12.5px; color:var(--tx3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .admin-item-main > .admin-badge{grid-area:b; align-self:start;}
+  .admin-item-main > .admin-amount, .admin-item-main > .amount-edit{grid-area:x;}
+  .admin-badge{font:700 10px 'JetBrains Mono', monospace; letter-spacing:.08em; padding:4px 8px; border-radius:6px;}
+  .admin-badge.confirmed{background:rgba(78,143,214,.2); color:var(--ac2);}
+  .admin-badge.done{background:rgba(95,211,138,.12); color:var(--okc);}
+  .admin-badge.cancelled{background:rgba(169,203,238,.08); color:var(--tx3);}
+  .admin-badge.overdue{background:rgba(238,242,247,.14); color:var(--warn);}
+  .admin-item-actions{display:flex; gap:8px; align-items:center; flex-wrap:nowrap;}
+  .admin-item-actions:empty{display:none;}
+  .admin-btn{height:36px; padding:0 14px; border-radius:10px; border:1px solid var(--bd2); background:transparent; color:var(--tx); font:600 13px 'Manrope', sans-serif; -webkit-tap-highlight-color:transparent;}
+  .admin-btn:hover{border-color:var(--ac2);}
+  .admin-btn:active{transform:scale(.96);}
+  .admin-btn.ok{background:#EEF2F7; border-color:#EEF2F7; color:#0A1930;}
+  .admin-btn.danger{color:var(--tx2);}
+  .admin-btn.danger:hover{border-color:var(--bad); color:var(--bad);}
+  .admin-icons{display:flex; gap:6px; margin-left:auto;}
+  .icon-btn{display:grid; place-items:center; width:36px; height:36px; border-radius:10px; border:1px solid var(--bd2); color:var(--tx2);}
+  .icon-btn svg{width:17px; height:17px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round;}
+  .icon-btn.wa{color:#25D366; border-color:rgba(37,211,102,.35);}
+  .icon-btn:active{transform:scale(.94);}
+  .admin-amount{margin-top:8px; color:var(--tx2);}
+  .admin-amount strong{color:var(--okc);}
+  .admin-amount .warn{color:var(--warn);}
+  .admin-amount button{color:var(--ac2);}
+  .amount-edit input{background:var(--s2); border-color:var(--bd2); color:var(--tx); border-radius:10px;}
+  .amount-edit .admin-btn{padding:0 12px;}
+  @media (max-width:640px){ .admin-item{flex-direction:initial; align-items:initial;} }
+
+  /* formularios y pantallas de Turno / Cuenta / Horarios */
+  .manual-form, .settings{background:transparent; border:0; padding:0; margin-bottom:24px;}
+  .manual-form > h4, .push-box > h4{display:none;}
+  .settings h4{font-family:'Manrope', sans-serif; font-weight:700; font-size:18px;}
+  .settings h5{font:700 11px 'JetBrains Mono', monospace; letter-spacing:.12em; color:var(--tx3); margin:28px 0 10px;}
+  .manual-sub, .manual-hint{color:var(--tx2);}
+  .manual-hint.err{color:var(--bad);}
+  .field label{color:var(--tx3); font-size:11px; letter-spacing:.08em;}
+  .field input, .field textarea, .field select, .money-row input, .sched-cell select{background:var(--s1); border:1px solid var(--bd2); color:var(--tx); border-radius:12px;}
+  .field input:focus, .field select:focus, .money-row input:focus, .amount-edit input:focus{border-color:var(--ac); outline:none; box-shadow:0 0 0 3px rgba(78,143,214,.2);}
+  .field input::placeholder{color:#5d708a;}
+  .field input.invalid{border-color:var(--bad);}
+  .field-error{color:var(--bad);}
+  .manual-form .form-grid{gap:12px;}
+  @media (max-width:560px){ .manual-form .form-grid{grid-template-columns:1fr;} }
+  .btn{border-radius:12px; text-transform:none; letter-spacing:0; font-size:14.5px; font-weight:700; padding:13px 20px;}
+  .btn.dark{background:#EEF2F7; color:#0A1930; border-color:#EEF2F7;}
+  .btn.dark:hover{background:#fff; color:#0A1930; transform:none;}
+  .btn.dark:disabled, .btn.dark:disabled:hover{background:#EEF2F7; color:#0A1930;}
+  .btn.ghost, .manual-actions .btn.ghost{background:transparent; color:var(--tx); border-color:var(--bd2);}
+  .btn.ghost:hover{color:#fff; border-color:var(--ac2);}
+  .manual-actions{gap:10px;}
+  @media (max-width:560px){ .manual-actions .btn{flex:1; justify-content:center;} }
+  .push-state{border-radius:12px;}
+  .push-state.on{background:rgba(95,211,138,.1); color:var(--okc);}
+  .push-state.off{background:rgba(238,242,247,.1); color:var(--warn);}
+  .push-steps{color:var(--tx2);}
+  .push-box .field{max-width:none;}
+  .acct-list{display:flex; flex-direction:column; margin:16px 0 6px; border:1px solid var(--bd); border-radius:14px; background:var(--s1); overflow:hidden;}
+  .acct-row{display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; padding:14px 16px; background:none; border:0; border-top:1px solid var(--bd); color:var(--tx); text-align:left;}
+  .acct-row:first-child{border-top:0;}
+  .acct-row[hidden] + .acct-row{border-top:0;}
+  .acct-row b{display:block; font:700 15px 'Manrope', sans-serif;}
+  .acct-row small{display:block; font-size:12.5px; color:var(--tx3); margin-top:1px;}
+  .acct-row em{font-style:normal; font-size:20px; color:var(--tx3);}
+  .acct-row:active{background:var(--s2);}
+  .acct-row.danger b{color:var(--bad);}
+  .acct-list.acct-out{margin-top:30px;}
+  .back-link{background:none; border:0; padding:0; margin:0 0 6px; color:var(--ac2); font:600 14px 'Manrope', sans-serif;}
+  .sched-wrap{border:1px solid var(--bd); border-radius:14px; background:var(--s1); padding:4px 8px;}
+  .sched-table th{color:var(--tx3);}
+  .sched-table td{border-top-color:var(--bd);}
+  .sched-table td.day{color:var(--tx);}
+  .sched-cell select{border-radius:8px;}
+  .sched-cell label{color:var(--tx3);}
+  .block-item{border-color:var(--bd); background:var(--s1); border-radius:12px;}
+  .block-item .when{color:var(--ac2);}
+  .block-item .why{color:var(--tx3);}
+  .money-row{color:var(--tx);}
+  .money-row input{border-radius:10px;}
+  .money-row small{color:var(--tx3);}
+
+  /* ingreso */
+  .admin-pin-screen{padding:64px 24px 40px;}
+  .admin-pin-screen h3{font-family:'Manrope', sans-serif; font-weight:800; letter-spacing:-.02em; color:#fff;}
+  #adminPinSub{color:var(--tx2) !important;}
+  .admin-pin-screen .btn.dark{margin-top:18px !important;}
+  /* ---------- Foto de fondo de cada barbero (la misma de la página) ---------- */
+  .bg-photo{position:fixed; inset:0; z-index:-1; pointer-events:none; overflow:hidden; opacity:0; transition:opacity .9s ease;}
+  .bg-photo.show{opacity:1;}
+  .bg-photo i{position:absolute; left:0; right:0; top:0; height:78vh; background-size:cover; background-position:center 22%;
+    filter:saturate(.85) contrast(1.05); opacity:0; transform:scale(1.08); transition:opacity 1.1s ease;}
+  .bg-photo i.on{opacity:1; animation:bgDrift 14s cubic-bezier(.2,.6,.2,1) forwards;}
+  @keyframes bgDrift{from{transform:scale(1.08);} to{transform:scale(1);}}
+  /* tinte azul de la marca + fundido al azul marino: la foto se ve arriba y el texto siempre se lee */
+  .bg-photo::before{content:""; position:absolute; inset:0; z-index:1; background:#14345C; mix-blend-mode:color; opacity:.38;}
+  .bg-photo::after{content:""; position:absolute; inset:0; z-index:2;
+    background:
+      linear-gradient(180deg, rgba(10,25,48,.5) 0%, rgba(10,25,48,.06) 16%, rgba(10,25,48,.12) 30%, rgba(10,25,48,.78) 46%, #0A1930 60%),
+      radial-gradient(120% 70% at 50% 0%, transparent 40%, rgba(10,25,48,.55) 100%);}
+  /* en la computadora la foto no se estira: va como retrato a la derecha y se funde con el azul */
+  @media (min-width:900px){
+    .bg-photo i{left:auto; right:max(0px, calc(50vw - 640px)); width:min(560px, 46vw); height:100vh; background-position:center 20%;
+      -webkit-mask-image:linear-gradient(90deg, transparent 0%, #000 45%); mask-image:linear-gradient(90deg, transparent 0%, #000 45%);}
+    body.has-photo .admin-dashboard[data-view="agenda"] .admin-header{min-height:200px;}
+  }
+  @media (prefers-reduced-motion: reduce){ .bg-photo i, .bg-photo i.on{animation:none; transform:none;} }
+  /* en la agenda, el encabezado es la "portada": la foto se ve entera arriba y el título apoya abajo */
+  body.has-photo .admin-dashboard[data-view="agenda"] .admin-header{min-height:clamp(200px, 34vh, 330px); display:flex; align-items:flex-end; margin-bottom:18px;}
+  body.has-photo .admin-dashboard[data-view="agenda"] .ph-title{font-size:36px;}
+  body.has-photo .ph-title, body.has-photo .ph-kicker, body.has-photo .ph-stats{text-shadow:0 2px 18px rgba(10,25,48,.8);}
+  body.has-photo .today{background:rgba(18,38,66,.55); backdrop-filter:blur(14px) saturate(130%); -webkit-backdrop-filter:blur(14px) saturate(130%); border-color:rgba(169,203,238,.18);}
+  body.has-photo .admin-chip:not(.active){background:rgba(10,25,48,.45); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);}
+  body.has-photo .panel-top{background:rgba(10,25,48,.55);}
+  /* ---------- Más sobrio: textos normales en vez de mayúsculas separadas, sin adornos ---------- */
+  .ph-kicker{font:500 14px 'Manrope', sans-serif; letter-spacing:0; text-transform:none; color:var(--tx2);}
+  .cx-live{display:none;}
+  .cx-live.off{display:inline-block; background:var(--warn); box-shadow:none; animation:none;}
+  .day-sep{font:600 13px 'Manrope', sans-serif; letter-spacing:0; text-transform:none; color:var(--tx2); margin-top:14px;}
+  .admin-section-title b{font:700 14px 'Manrope', sans-serif; letter-spacing:0; text-transform:none;}
+  .admin-badge{font:600 11.5px 'Manrope', sans-serif; letter-spacing:0; text-transform:none; padding:3px 9px; border-radius:20px;}
+  .today-head .when{font:500 12.5px 'Manrope', sans-serif; letter-spacing:0; text-transform:none; color:var(--tx3);}
+  .today-col h5{font:700 13px 'Manrope', sans-serif; letter-spacing:0; text-transform:none; color:var(--tx);}
+  .today-col h5 span:last-child{color:var(--tx3); font-weight:600;}
+  .settings h5{font:700 15px 'Manrope', sans-serif; letter-spacing:0; text-transform:none; color:var(--tx);}
+  .field label{font-size:13px; letter-spacing:0; text-transform:none; color:var(--tx2);}
+  .sched-table th{letter-spacing:0; text-transform:none; font-size:12.5px;}
+  .cx-kicker{font:500 13px 'Manrope', sans-serif; letter-spacing:0; text-transform:none;}
+  .cx-label{font:500 13.5px 'Manrope', sans-serif; letter-spacing:0; text-transform:none;}
+  .cx-kpi span{font-size:12.5px; letter-spacing:0; text-transform:none;}
+  .cx-hint{font-family:'Manrope', sans-serif; font-size:12px;}
+  /* en la app instalada no hace falta el link a la página */
+  html.app .panel-back{display:none;}
+  @media (display-mode: standalone){ .panel-back{display:none;} }
+  /* ---------- Sin zoom ni desplazamientos raros (como una app) ---------- */
+  html{-webkit-text-size-adjust:100%; text-size-adjust:100%; overflow-x:hidden; overscroll-behavior:none;}
+  body{overflow-x:clip; overscroll-behavior:none;}
+  /* solo se puede deslizar para recorrer: sin pellizcar para agrandar ni doble toque */
+  *, *::before, *::after{touch-action:pan-x pan-y;}
+  .cx, .admin-filters, .sched-wrap{overscroll-behavior:contain;}
+  /* el iPhone agranda la pantalla al tocar un campo con letra chica: con 16px no lo hace */
+  @media (pointer:coarse), (hover:none), (max-width:900px){ input, select, textarea{font-size:16px !important;} }
+  /* ---------- Formularios prolijos en el iPhone ---------- */
+  /* campos sólidos (no se ve la foto a través) */
+  .field input, .field select, .field textarea, .money-row input, .sched-cell select, .amount-edit input{background:#122642;}
+  .field select:disabled{opacity:.6;}
+  /* el campo de fecha del iPhone no respeta el ancho y se sale de la pantalla: se lo iguala a los demás */
+  input[type="date"]{-webkit-appearance:none; appearance:none; display:block; width:100%; min-width:0; max-width:100%; min-height:50px; text-align:left; line-height:1.2;}
+  input[type="date"]::-webkit-date-and-time-value{text-align:left; margin:0;}
+  input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(.85); opacity:.8; cursor:pointer;}
+  .field select{-webkit-appearance:none; appearance:none; min-height:50px; padding-right:40px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23A9CBEE' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 14px center; background-size:18px;}
+  .field input, .field textarea{min-height:50px;}
+  .form-grid > .field{min-width:0;}
+  /* la foto se ve en la agenda; en Turno, Cuenta y Horarios se apaga para que todo se lea limpio */
+  .bg-photo.dim{opacity:0 !important;}
+  body.typing .tabbar{display:none;}
+  body.typing .admin-panel.open{padding-bottom:24px;}
+</style>
+</head>
+<body>
+
+<header class="panel-top">
+  <div class="nav-inner">
+    <a href="index.html" class="brand" aria-label="Goods Barber Studio">
+      <svg class="brand-icon" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="9" y="3" width="42" height="23" rx="7" fill="#EEF2F7"/>
+        <rect x="15" y="21" width="4" height="6" fill="#0A1930"/>
+        <rect x="23" y="21" width="4" height="6" fill="#0A1930"/>
+        <rect x="31" y="21" width="4" height="6" fill="#0A1930"/>
+        <rect x="39" y="21" width="4" height="6" fill="#0A1930"/>
+        <circle cx="30" cy="40" r="13" fill="#EEF2F7"/>
+        <text x="30" y="45" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="14" fill="#0A1930">8</text>
+        <rect x="13" y="52" width="34" height="26" rx="9" fill="#EEF2F7"/>
+        <rect x="18" y="62" width="24" height="2.5" rx="1.25" fill="#0A1930" opacity="0.5"/>
+        <rect x="18" y="68" width="16" height="2.5" rx="1.25" fill="#0A1930" opacity="0.5"/>
+      </svg>
+      <span class="brand-text">
+        <span class="brand-word">goods</span>
+        <span class="brand-sub">Barber Studio</span>
+      </span>
+    </a>
+    <a class="panel-back" href="index.html">← Ver la página</a>
+  </div>
+</header>
+
+<div class="bg-photo" id="bgPhoto" aria-hidden="true"><i></i><i></i></div>
+
+<!-- Entrada al panel después de iniciar sesión (se saltea con un toque) -->
+<div class="panel-intro" id="panelIntro" hidden aria-hidden="true">
+  <svg class="pi-icon" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="9" y="3" width="42" height="23" rx="7" fill="#EEF2F7"/>
+        <rect x="15" y="21" width="4" height="6" fill="#0A1930"/>
+        <rect x="23" y="21" width="4" height="6" fill="#0A1930"/>
+        <rect x="31" y="21" width="4" height="6" fill="#0A1930"/>
+        <rect x="39" y="21" width="4" height="6" fill="#0A1930"/>
+        <circle cx="30" cy="40" r="13" fill="#EEF2F7"/>
+        <text x="30" y="45" text-anchor="middle" font-family="JetBrains Mono, monospace" font-weight="700" font-size="14" fill="#0A1930">8</text>
+        <rect x="13" y="52" width="34" height="26" rx="9" fill="#EEF2F7"/>
+        <rect x="18" y="62" width="24" height="2.5" rx="1.25" fill="#0A1930" opacity="0.5"/>
+        <rect x="18" y="68" width="16" height="2.5" rx="1.25" fill="#0A1930" opacity="0.5"/>
+      </svg>
+  <div class="pi-word">goods</div>
+  <div class="pi-hello" id="piHello"></div>
+  <div class="pi-date" id="piDate"></div>
+  <div class="pi-line"></div>
+</div>
+
+<!-- ================= CAJA (pantalla propia) ================= -->
+<div class="cx" id="adminCash" hidden role="dialog" aria-modal="true" aria-labelledby="cxTitle">
+  <div class="cx-inner">
+    <header class="cx-top">
+      <div>
+        <p class="cx-kicker"><span class="cx-live"></span><span id="cxSync">Actualizado recién</span></p>
+        <h2 id="cxTitle">Caja</h2>
+      </div>
+      <button type="button" class="cx-close" id="cxClose" aria-label="Cerrar caja">&times;</button>
+    </header>
+    <div class="cx-scope" id="cxScope" hidden>
+      <button type="button" data-s="mine">Lo mío</button>
+      <button type="button" data-s="all">Todo el local</button>
+    </div>
+    <div class="cx-seg" role="tablist" id="cxSeg">
+      <button type="button" data-p="day" role="tab">Hoy</button>
+      <button type="button" data-p="week" role="tab">7 días</button>
+      <button type="button" data-p="month" role="tab">Mes</button>
+      <button type="button" data-p="all" role="tab">Total</button>
+    </div>
+    <section class="cx-hero">
+      <p class="cx-label" id="cxPeriod"></p>
+      <p class="cx-big"><span id="cxTotal">$0</span></p>
+      <div class="cx-kpis" id="cxKpis"></div>
+    </section>
+    <section class="cx-card">
+      <div class="cx-card-head"><h3>Últimos 14 días</h3><span class="cx-hint" id="cxTip">Tocá una barra</span></div>
+      <div class="cx-chart" id="cxChart"></div>
+    </section>
+    <section class="cx-card">
+      <div class="cx-card-head"><h3>Por barbero</h3><span class="cx-hint" id="cxShareHint"></span></div>
+      <div id="cxRows"></div>
+    </section>
+    <p class="cx-foot" id="cxFoot"></p>
+  </div>
+</div>
+
+<!-- ================= PANEL DEL DUEÑO ================= -->
+<main class="admin-panel open" id="adminPanel">
+
+  <div class="admin-pin-screen" id="adminPinScreen">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="width:34px;height:34px;stroke:var(--blue-accent);margin-bottom:18px;"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+    <h3 id="adminPinTitle" style="font-size:24px;">Panel del dueño</h3>
+    <p id="adminPinSub" style="font-size:13.5px; color:#57627a; margin-top:8px; max-width:280px;">Ingresá con tu cuenta para ver los turnos reservados.</p>
+    <div style="width:100%; max-width:280px; margin-top:22px; display:flex; flex-direction:column; gap:12px; text-align:left;">
+      <div class="field">
+        <label for="adminEmail">Email</label>
+        <input type="email" id="adminEmail" placeholder="Tu email" autocomplete="username">
+      </div>
+      <div class="field">
+        <label for="adminPassword">Contraseña</label>
+        <input type="password" id="adminPassword" placeholder="••••••••" autocomplete="current-password">
+      </div>
+    </div>
+    <p class="field-error" id="adminPinError">Email o contraseña incorrectos.</p>
+    <button class="btn dark" id="adminPinSubmit" style="width:100%; max-width:280px; justify-content:center; margin-top:14px;">Entrar</button>
+  </div>
+
+  <div class="admin-dashboard" id="adminDashboard" hidden>
+    <div class="admin-header">
+      <div>
+        <p class="ph-kicker"><span class="cx-live" id="phLive"></span><span id="phDate"></span></p>
+        <h3 class="ph-title" id="phTitle">Agenda</h3>
+        <p class="ph-stats" id="adminStats"></p>
+      </div>
+    </div>
+    <div class="install-tip" id="installTip" hidden>
+      <img src="/app/apple-touch-icon.png" alt="">
+      <div id="installText"></div>
+      <button type="button" id="installClose" aria-label="Cerrar">&times;</button>
+    </div>
+    <div class="admin-flash" id="adminFlash" hidden></div>
+    <div class="admin-offline" id="adminOffline" hidden>Sin conexión con la base de datos. Se reintenta solo; lo que ves puede no estar actualizado.</div>
+
+    <form class="manual-form" id="manualForm" hidden novalidate>
+      <h4>Cargar turno a mano</h4>
+      <p class="manual-sub">Para clientes que llaman o pasan por el local. El horario queda ocupado en la página y le llega el aviso al barbero.</p>
+      <div class="form-grid">
+        <div class="field"><label for="mBarber">Barbero</label><select id="mBarber"></select></div>
+        <div class="field"><label for="mDate">Día</label><input type="date" id="mDate"></div>
+        <div class="field"><label for="mTime">Horario</label><select id="mTime"></select></div>
+        <div class="field"><label for="mService">Servicio</label>
+          <select id="mService"><option>Corte</option><option>Corte + Barba</option><option>Barba</option><option>Tintura</option></select></div>
+        <div class="field"><label for="mName">Nombre del cliente</label><input id="mName" maxlength="60" placeholder="Ej: Juan Pérez" autocomplete="off"></div>
+        <div class="field"><label for="mPhone">Teléfono (opcional)</label><input id="mPhone" inputmode="tel" maxlength="20" placeholder="Ej: 223 555-1234" autocomplete="off"></div>
+      </div>
+      <p class="manual-hint" id="mHint"></p>
+      <div class="manual-actions">
+        <button type="submit" class="btn dark" id="mSave">Guardar turno</button>
+        <button type="button" class="btn ghost" id="mCancel">Cancelar</button>
+      </div>
+    </form>
+
+    <section class="settings push-box" id="pushPanel" hidden>
+      <h4>Mi cuenta</h4>
+      <p class="manual-sub" id="meLine"></p>
+      <div class="acct-list">
+        <button type="button" class="acct-row" id="adminSettings"><span><b>Horarios, días bloqueados y precios</b><small>Lo que ven los clientes al reservar</small></span><em aria-hidden="true">›</em></button>
+        <button type="button" class="acct-row" id="adminExport"><span><b>Descargar Excel</b><small>Todos los turnos, por barbero</small></span><em aria-hidden="true">↓</em></button>
+      </div>
+      <h5>Avisos en este celular</h5>
+      <p class="manual-sub">Cuando entre o se cancele un turno, te llega una notificación a este celular. Sin Telegram ni otras apps.</p>
+      <div id="pushBody"></div>
+      <h5>Contraseña</h5>
+      <p class="manual-sub">Elegí una contraseña propia (mínimo 8 caracteres). La vas a usar para entrar desde cualquier celular.</p>
+      <div class="pass-form">
+        <div class="field"><label for="pass1">Nueva contraseña</label><input type="password" id="pass1" autocomplete="new-password" minlength="8"></div>
+        <div class="field"><label for="pass2">Repetila</label><input type="password" id="pass2" autocomplete="new-password" minlength="8"></div>
+      </div>
+      <p class="manual-hint" id="passHint"></p>
+      <div class="manual-actions"><button type="button" class="btn dark" id="passSave">Cambiar contraseña</button></div>
+      <div class="acct-list acct-out">
+        <button type="button" class="acct-row danger" id="adminLock"><span><b>Cerrar sesión</b><small>Para entrar de nuevo se pide email y contraseña</small></span></button>
+      </div>
+    </section>
+
+    <section class="settings" id="settingsPanel" hidden>
+      <button type="button" class="back-link" id="settingsBack">‹ Mi cuenta</button>
+      <p class="manual-sub">Lo que guardes acá se aplica en la página al instante: los clientes solo ven los horarios en que cada barbero atiende.</p>
+
+      <h5>Horario de cada barbero</h5>
+      <div class="sched-wrap"><table class="sched-table" id="schedTable"></table></div>
+      <p class="manual-hint" id="schedHint"></p>
+      <div class="manual-actions">
+        <button type="button" class="btn dark" id="schedSave">Guardar horarios</button>
+      </div>
+
+      <h5>Bloquear un día</h5>
+      <p class="manual-sub">Feriados, vacaciones o un barbero que falta. Ese día no se va a poder reservar.</p>
+      <div class="block-form">
+        <div class="field"><label for="bDate">Día</label><input type="date" id="bDate"></div>
+        <div class="field"><label for="bBarber">Quién</label><select id="bBarber"></select></div>
+        <div class="field"><label for="bReason">Motivo (solo lo ves vos)</label><input id="bReason" maxlength="60" placeholder="Ej: feriado, vacaciones"></div>
+        <button type="button" class="btn dark" id="bSave" style="justify-content:center;">Bloquear</button>
+      </div>
+      <p class="manual-hint" id="blockHint"></p>
+      <div class="block-list" id="blockList"></div>
+
+      <h5>Precios y porcentajes</h5>
+      <p class="manual-sub">El precio se completa solo al marcar un turno como atendido (se puede corregir en cada turno). El porcentaje es lo que se lleva cada barbero de lo que corta; el resto va al local.</p>
+      <div class="money-form">
+        <div class="money-col" id="priceFields"></div>
+        <div class="money-col" id="shareFields"></div>
+      </div>
+      <p class="manual-hint" id="moneyHint"></p>
+      <div class="manual-actions">
+        <button type="button" class="btn dark" id="moneySave">Guardar precios y porcentajes</button>
+      </div>
+    </section>
+
+    <div class="agenda-view" id="agendaView">
+      <div class="admin-filters" id="adminFilters"></div>
+      <section class="today" id="adminToday" aria-label="Agenda de hoy"></section>
+      <div class="list-head">
+        <h4 class="list-title">Turnos</h4>
+        <label class="admin-history"><input type="checkbox" id="adminShowAll"> Ver atendidos y cancelados</label>
+      </div>
+      <div class="admin-list" id="adminList"></div>
+    </div>
+
+    <nav class="tabbar" id="tabbar" aria-label="Secciones del panel">
+      <button type="button" data-v="agenda" class="active" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Agenda</span></button>
+      <button type="button" data-v="caja" id="adminCashBtn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Caja</span></button>
+      <button type="button" data-v="turno" id="adminNew" class="tab-add">
+        <i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></i><span>Turno</span></button>
+      <button type="button" data-v="cuenta" id="adminPushBtn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="4"/><path d="M4 20.5c1.4-3.6 4.4-5.5 8-5.5s6.6 1.9 8 5.5"/></svg><span>Cuenta</span></button>
+    </nav>
+  </div>
+</main>
+
+<!-- Cliente de Supabase: conecta esta página a tu base de datos real -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+  onerror="var s=document.createElement('script'); s.src='https://unpkg.com/@supabase/supabase-js@2'; document.head.appendChild(s);"></script>
+<!-- Generador de archivos Excel (.xlsx) reales, con hojas, anchos de columna y encabezado con estilo -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  // ============================================================
+  // ⚠️ CONFIGURACIÓN OBLIGATORIA — completar antes de publicar
+  // Reemplazá estos dos valores con los de TU proyecto de Supabase.
+  // Los encontrás en: Project Settings → API (en supabase.com)
+  // ============================================================
+  const SUPABASE_URL = 'https://vsnnetxorvzindxrgzjn.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_BbjQNyqvm6P6jjTSAKyurw_kgPpijZH';
+
+  // Si la librería de Supabase no llega a cargar a tiempo (bloqueador de
+  // anuncios, corte de red momentáneo, CDN lento), esto evita que se rompa
+  // TODA la página, y además REINTENTA solo durante unos segundos en vez
+  // de quedar roto hasta que la persona recargue manualmente.
+  let supabase = null;
+  function trySupabaseInit(){
+    try {
+      if (window.supabase && typeof window.supabase.createClient === 'function'){
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+          auth: { persistSession: true, autoRefreshToken: true, storageKey: 'goods-panel' } // la sesión queda iniciada en este dispositivo; "Bloquear" la cierra
+        });
+        return true;
+      }
+    } catch(e){
+      console.error('Goods: error inicializando Supabase:', e);
+    }
+    return false;
+  }
+  if (!trySupabaseInit()){
+    console.error('Goods: Supabase no cargó a la primera. Reintentando durante unos segundos…');
+    let supabaseRetryAttempts = 0;
+    const supabaseRetryTimer = setInterval(() => {
+      supabaseRetryAttempts++;
+      const ok = trySupabaseInit();
+      if (ok){
+        console.info('Goods: Supabase conectó tras reintentar. Ya está todo funcionando.');
+        clearInterval(supabaseRetryTimer);
+      } else if (supabaseRetryAttempts >= 30){ // ~15 segundos de reintentos, para conexiones lentas
+        console.error('Goods: no se pudo conectar con Supabase tras varios intentos.');
+        clearInterval(supabaseRetryTimer);
+      }
+    }, 500);
+  }
+
+  const BARBERS = [
+    {id:'nicolas', name:'Nicolás'},
+    {id:'tula', name:'Franco'},
+    {id:'chino', name:'Chino'},
+    {id:'lucho', name:'Lucho'},
+  ];
+
+  // Fecha AAAA-MM-DD según la hora de Argentina (la del dispositivo).
+  // No usar toISOString(): esa da la fecha en hora UTC y después de las
+  // 21 h ya marca el día siguiente.
+  function localDateKey(d){
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+
+  // Trae TODOS los datos de los turnos (incluye nombre y teléfono) —
+  // solo funciona si el dueño inició sesión, por las reglas de seguridad
+  // configuradas en Supabase (Row Level Security).
+  // Toda consulta a la base tiene tiempo límite: si la respuesta no llega
+  // (señal floja, red móvil que se corta), se cancela y el panel sigue
+  // funcionando en vez de quedar esperando para siempre.
+  const DB_TIMEOUT_MS = 10000;
+  function withTimeout(query, ms){
+    const ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+    if (ctrl && typeof query.abortSignal === 'function') query = query.abortSignal(ctrl.signal);
+    let timer;
+    const limit = new Promise((_, reject) => {
+      timer = setTimeout(() => {
+        if (ctrl) ctrl.abort();
+        const err = new Error('La conexión tardó demasiado');
+        err.isTimeout = true;
+        reject(err);
+      }, ms || DB_TIMEOUT_MS);
+    });
+    return Promise.race([Promise.resolve(query), limit]).finally(() => clearTimeout(timer));
+  }
+
+  const PENDING_DAYS = 21; // días hacia atrás en los que se muestran turnos sin marcar
+  async function fetchAllBookings(){
+    const now = new Date();
+    const todayKey = localDateKey(now);
+    const fromKey = localDateKey(new Date(now.getFullYear(), now.getMonth(), now.getDate() - PENDING_DAYS));
+    const { data, error } = await withTimeout(supabase
+      .from('bookings')
+      .select('*')
+      .or('date.gte.' + todayKey + ',and(date.gte.' + fromKey + ',status.eq.confirmed)')
+      .order('date', {ascending:true})
+      .order('time', {ascending:true}));
+    if (error) throw error;
+    return (data || []).map(row => ({
+      id: row.id,
+      barberId: row.barber_id,
+      barberName: row.barber_name,
+      date: row.date,
+      dateLabel: row.date_label,
+      time: row.time,
+      customerName: row.customer_name,
+      phone: row.phone,
+      note: row.note,
+      status: row.status,
+      ticketNum: row.ticket_num,
+      amount: row.amount == null ? null : Number(row.amount)
+    }));
+  }
+
+  async function updateBookingStatusRemote(id, newStatus, amount){
+    const patch = { status: newStatus };
+    if (newStatus === 'done' && amount != null) patch.amount = amount;
+    const { error } = await withTimeout(supabase.from('bookings').update(patch).eq('id', id));
+    if (error) throw error;
+  }
+
+  /* ================= PANEL DEL DUEÑO (login real con Supabase Auth) ================= */
+  // El acceso queda protegido por un usuario y contraseña reales, creados
+  // por vos en el panel de Supabase (no acá). Row Level Security en la base
+  // de datos garantiza que solo una cuenta autenticada puede leer los
+  // nombres y teléfonos de los clientes — ver la guía de configuración.
+
+  const adminPinScreen = document.getElementById('adminPinScreen');
+  const adminDashboard = document.getElementById('adminDashboard');
+  const adminEmail = document.getElementById('adminEmail');
+  const adminPassword = document.getElementById('adminPassword');
+  const adminPinSubmit = document.getElementById('adminPinSubmit');
+  const adminPinError = document.getElementById('adminPinError');
+  const adminStats = document.getElementById('adminStats');
+  const adminFilters = document.getElementById('adminFilters');
+  const adminList = document.getElementById('adminList');
+  const adminExport = document.getElementById('adminExport');
+  const adminOffline = document.getElementById('adminOffline');
+  const adminShowAll = document.getElementById('adminShowAll');
+  const adminLock = document.getElementById('adminLock');
+
+  let adminBarberFilter = 'all';
+  // celular o tablet (pantalla táctil): ahí no se abre el teclado solo ni se muestra la barra encima del teclado
+  const IS_TOUCH = matchMedia('(hover:none), (pointer:coarse)').matches || navigator.maxTouchPoints > 0;
+  let VIEW = 'agenda', setView = () => {};
+  // Cuenta que inició sesión: null = ve todo (dueño). socio: ve todo, arranca en lo suyo. barbero: solo lo suyo.
+  let ME = null;
+  async function loadMe(){
+    ME = null;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      const email = String((user && user.email) || '').toLowerCase();
+      const { data } = await withTimeout(supabase.from('staff').select('barber_id,role').eq('email', email).maybeSingle());
+      if (data) ME = { barber: data.barber_id, role: data.role, email };
+      else ME = { barber: null, role: 'dueno', email };
+    } catch(e){ ME = null; }
+    const limited = ME && ME.role === 'barbero';
+    adminBarberFilter = ME && ME.barber ? ME.barber : 'all';
+    document.getElementById('adminSettings').hidden = limited;
+    adminExport.hidden = limited;
+  }
+  const myName = () => ME && ME.barber ? ((BARBERS.find(b => b.id === ME.barber) || {}).name || '') : '';
+  let adminBookingsCache = [];
+
+  function showLoginScreen(){
+    adminDashboard.hidden = true;
+    setBgPhoto(null); // en la pantalla de ingreso no se muestra la foto de nadie
+    adminPinScreen.style.display = 'flex';
+    adminPassword.value = '';
+    adminPinError.classList.remove('show');
+    if (!IS_TOUCH) setTimeout(() => adminEmail.focus(), 100);
+  }
+
+  async function handleLogin(){
+    const email = adminEmail.value.trim();
+    const password = adminPassword.value;
+    if (!email || !password){
+      adminPinError.textContent = 'Completá email y contraseña.';
+      adminPinError.classList.add('show');
+      return;
+    }
+    adminPinSubmit.disabled = true;
+    adminPinSubmit.textContent = 'Entrando…';
+
+    let error;
+    try {
+      if (!supabase) throw new Error('Supabase no disponible');
+      ({ error } = await supabase.auth.signInWithPassword({ email, password }));
+    } catch(err){
+      adminPinSubmit.disabled = false;
+      adminPinSubmit.textContent = 'Entrar';
+      adminPinError.textContent = 'No pudimos conectar. Revisá tu conexión e intentá de nuevo.';
+      adminPinError.classList.add('show');
+      return;
+    }
+    adminPinSubmit.disabled = false;
+    adminPinSubmit.textContent = 'Entrar';
+
+    if (error){
+      adminPinError.textContent = 'Email o contraseña incorrectos.';
+      adminPinError.classList.add('show');
+      return;
+    }
+    adminPinError.classList.remove('show');
+    await openDashboard();
+  }
+
+  let adminPollTimer = null;
+  function startAdminPolling(){
+    stopAdminPolling();
+    adminPollTimer = setInterval(() => {
+      // no molesta si la pestaña del navegador no está a la vista
+      if (!document.hidden) loadAndRenderBookings(true);
+    }, 20000);
+  }
+  function stopAdminPolling(){
+    if (adminPollTimer){ clearInterval(adminPollTimer); adminPollTimer = null; }
+  }
+
+  // Entrada: logo, saludo y fecha durante poco más de un segundo (un toque la saltea).
+  // Mientras tanto se cargan los turnos, así al terminar la agenda ya está lista.
+  const panelIntro = document.getElementById('panelIntro');
+  function saludoSegunHora(){
+    const h = new Date().getHours();
+    return h >= 5 && h < 12 ? 'Buen día' : h >= 12 && h < 20 ? 'Buenas tardes' : 'Buenas noches';
+  }
+  function playPanelIntro(){
+    return new Promise(resolve => {
+      const now = new Date();
+      document.getElementById('piHello').textContent = saludoSegunHora();
+      document.getElementById('piDate').textContent = now.toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long'});
+      panelIntro.classList.remove('out');
+      panelIntro.hidden = false;
+      let done = false;
+      function finish(){
+        if (done) return; done = true;
+        panelIntro.classList.add('out');
+        setTimeout(() => { panelIntro.hidden = true; panelIntro.classList.remove('out'); }, 520);
+        resolve();
+      }
+      panelIntro.onclick = finish;
+      setTimeout(finish, 1650);
+    });
+  }
+
+  async function openDashboard(){
+    adminPinScreen.style.display = 'none';
+    adminDashboard.classList.remove('enter-head', 'enter-body');
+    setView('agenda'); renderHead();
+    const loading = loadMe().then(() => loadAndRenderBookings());
+    await playPanelIntro();
+    adminDashboard.hidden = false;
+    adminDashboard.classList.add('enter-head');
+    // la agenda y la lista entran cuando ya tienen los turnos cargados
+    await loading;
+    adminDashboard.classList.add('enter-body');
+    setTimeout(() => adminDashboard.classList.remove('enter-head', 'enter-body'), 1200);
+    startAdminPolling();
+  }
+
+  function isBookingOverdue(b){
+    if (b.status !== 'confirmed') return false;
+    const dt = new Date(b.date + 'T' + (b.time || '00:00'));
+    return dt.getTime() < Date.now();
+  }
+
+  // Foto de fondo: la de cada barbero (la misma que en la página). El dueño ve el local
+  // de noche, y si filtra por un barbero, la foto cambia a la de ese barbero.
+  const BG_PHOTO = { nicolas: 'nicolas', tula: 'tula', chino: 'chino', lucho: 'lucho' };
+  // punto de la foto que tiene que quedar siempre a la vista (la de Chino es horizontal y él está a la izquierda)
+  const BG_POS = { chino: '6% 30%', lucho: '90% 30%' };
+  const bgPhoto = document.getElementById('bgPhoto');
+  let bgNow = null, bgReq = 0;
+  function setBgPhoto(id){
+    const name = id === null ? null : (BG_PHOTO[id] || 'local');
+    if (name === bgNow) return;
+    bgNow = name;
+    const req = ++bgReq;
+    if (!name){ bgPhoto.classList.remove('show'); document.body.classList.remove('has-photo'); bgPhoto.querySelectorAll('i').forEach(x => x.classList.remove('on')); return; }
+    const url = '/app/fondos/' + name + '.webp';
+    const img = new Image();
+    img.onload = () => {
+      if (req !== bgReq) return; // ya se pidió otra
+      const [a, b] = bgPhoto.querySelectorAll('i');
+      const next = a.classList.contains('on') ? b : a, prev = next === a ? b : a;
+      next.style.backgroundImage = 'url("' + url + '")';
+      next.style.backgroundPosition = BG_POS[name] || '';
+      next.classList.remove('on'); void next.offsetWidth; next.classList.add('on');
+      prev.classList.remove('on');
+      bgPhoto.classList.add('show'); document.body.classList.add('has-photo');
+    };
+    img.src = url; // si no carga, queda el fondo azul de siempre
+  }
+
+  function renderAdminFilters(){
+    setBgPhoto(ME && ME.barber ? ME.barber : adminBarberFilter);
+    adminFilters.innerHTML = '';
+    if (ME && ME.barber){ adminFilters.hidden = true; adminBarberFilter = ME.barber; return; }
+    adminFilters.hidden = false;
+    const allChip = document.createElement('button');
+    allChip.type = 'button';
+    allChip.className = 'admin-chip' + (adminBarberFilter === 'all' ? ' active' : '');
+    allChip.textContent = 'Todos';
+    allChip.addEventListener('click', () => { adminBarberFilter = 'all'; renderAdminFilters(); renderAdminList(); });
+    adminFilters.appendChild(allChip);
+    BARBERS.forEach(b => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'admin-chip' + (adminBarberFilter === b.id ? ' active' : '');
+      chip.textContent = b.name;
+      chip.addEventListener('click', () => { adminBarberFilter = b.id; renderAdminFilters(); renderAdminList(); });
+      adminFilters.appendChild(chip);
+    });
+  }
+
+  let loadSeq = 0;
+  async function loadAndRenderBookings(silent){
+    const seq = ++loadSeq;
+    if (!silent && !adminBookingsCache.length) adminList.innerHTML = '<p class="admin-empty">Cargando turnos…</p>';
+    let rows;
+    try {
+      // horarios, bloqueos y turnos se piden a la vez: con mala señal el aviso sale en el primer corte, no al final de tres esperas
+      [, rows] = await Promise.all([loadOwnerSettings(), fetchAllBookings(), loadMoney()]);
+    } catch(err){
+      if (seq !== loadSeq) return;
+      // sesión vencida o cerrada desde otro lado: se vuelve a pedir el ingreso
+      if (err && (err.status === 401 || /jwt|token|auth/i.test(err.message || ''))){
+        stopAdminPolling(); showLoginScreen();
+        adminPinError.textContent = 'La sesión se cerró. Volvé a ingresar.'; adminPinError.classList.add('show');
+        return;
+      }
+      adminOffline.hidden = false;
+      renderHead();
+      if (!adminBookingsCache.length){
+        adminList.innerHTML = '<p class="admin-empty">No pudimos cargar los turnos. Revisá tu conexión: se reintenta solo.</p>';
+      }
+      return;
+    }
+    if (seq !== loadSeq) return; // llegó una respuesta más nueva
+    adminOffline.hidden = true;
+    renderHead();
+    adminBookingsCache = rows;
+    renderAdminFilters();
+    renderAdminList();
+  }
+  // al volver a la app o a la pestaña, se actualiza en el momento
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && !adminDashboard.hidden) loadAndRenderBookings(true);
+  });
+  window.addEventListener('online', () => { if (!adminDashboard.hidden) loadAndRenderBookings(true); });
+  // al tocar una notificación con el panel abierto, se actualiza
+  if ('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', ev => { if (ev.data === 'refrescar' && !adminDashboard.hidden) loadAndRenderBookings(true); });
+  adminShowAll.addEventListener('change', () => renderAdminList());
+
+  function renderAdminList(){
+    renderToday();
+    renderCash();
+    const mine = adminBookingsCache.filter(b => adminBarberFilter === 'all' || b.barberId === adminBarberFilter);
+    const pending = mine.filter(isBookingOverdue);
+    const upcoming = mine.filter(b => !isBookingOverdue(b) && (adminShowAll.checked || b.status === 'confirmed'));
+    const confirmedCount = mine.filter(b => b.status === 'confirmed' && !isBookingOverdue(b)).length;
+    adminStats.textContent = confirmedCount + (confirmedCount === 1 ? ' turno próximo' : ' turnos próximos') +
+      (pending.length ? ' · ' + pending.length + ' sin marcar' : '');
+
+    adminList.innerHTML = '';
+    if (!pending.length && !upcoming.length){
+      adminList.innerHTML = '<p class="admin-empty">No hay turnos próximos' + (adminBarberFilter === 'all' ? '' : ' para este barbero') + '.</p>';
+      return;
+    }
+    // los turnos van agrupados por día: la fecha se lee una vez y cada tarjeta queda corta
+    const byDay = (list) => {
+      let last = null;
+      list.forEach(b => {
+        if (b.date !== last){
+          last = b.date;
+          const h = document.createElement('p'); h.className = 'day-sep';
+          h.textContent = dayTitle(b);
+          adminList.appendChild(h);
+        }
+        adminList.appendChild(bookingItem(b));
+      });
+    };
+    if (pending.length){
+      const t = document.createElement('p'); t.className = 'admin-section-title';
+      t.innerHTML = '<b>Sin marcar · ' + pending.length + '</b>¿Vinieron? Marcalos como atendidos o “no vino”.';
+      adminList.appendChild(t);
+      byDay(pending.slice().sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time)));
+    }
+    if (upcoming.length){
+      if (pending.length){ const t = document.createElement('p'); t.className = 'admin-section-title next'; t.innerHTML = '<b>' + (adminShowAll.checked ? 'Turnos' : 'Próximos') + '</b>'; adminList.appendChild(t); }
+      byDay(upcoming.slice().sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time)));
+    }
+  }
+  function dayTitle(b){
+    const now = new Date();
+    const k = d => localDateKey(d);
+    const off = n => new Date(now.getFullYear(), now.getMonth(), now.getDate() + n);
+    const label = b.dateLabel || dateLabelFor(keyToDate(b.date));
+    if (b.date === k(now)) return 'Hoy · ' + label;
+    if (b.date === k(off(1))) return 'Mañana · ' + label;
+    if (b.date === k(off(-1))) return 'Ayer · ' + label;
+    return label;
+  }
+  const ICON_PHONE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h3.5l1.8 4.6-2.3 1.4a11 11 0 0 0 6 6l1.4-2.3L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5A16.5 16.5 0 0 1 3.5 5.6 1.5 1.5 0 0 1 5 4z"/></svg>';
+  const ICON_WA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4A8 8 0 1 1 8.4 19L4 20z"/><path d="M9 8.6c0 3.3 2.9 6.3 6.3 6.4l1-1.4-1.9-1-0.9.9a4.6 4.6 0 0 1-2.4-2.4l.9-.9-1-1.9L9.6 8"/></svg>';
+
+  function bookingItem(b){
+    const item = document.createElement('div');
+    item.className = 'admin-item st-' + (isBookingOverdue(b) ? 'overdue' : b.status);
+    const waPhone = waNumber(b.phone);
+    const overdue = isBookingOverdue(b);
+    const statusLabel = overdue ? 'Sin marcar' : (b.status === 'done' ? 'Atendido' : (b.status === 'cancelled' ? 'Cancelado' : 'Confirmado'));
+
+    const main = document.createElement('div');
+    main.className = 'admin-item-main';
+    const showBarber = !(ME && ME.role === 'barbero') && adminBarberFilter === 'all';
+    main.innerHTML =
+      '<span class="admin-item-when">' + escapeHtml(b.time) + '</span>' +
+      '<span class="admin-item-name">' + escapeHtml(b.customerName || 'Sin nombre') + '</span>' +
+      '<span class="admin-item-meta">' +
+        [showBarber ? escapeHtml(b.barberName || '') : '', b.note ? escapeHtml(b.note) : '', b.phone ? '' : 'Sin teléfono'].filter(Boolean).join(' · ') +
+      '</span>';
+    const badge = document.createElement('span');
+    badge.className = 'admin-badge ' + (overdue ? 'overdue' : b.status);
+    badge.textContent = statusLabel;
+    main.appendChild(badge);
+
+    const actions = document.createElement('div');
+    actions.className = 'admin-item-actions';
+    const btn = (label, cls, status) => {
+      const x = document.createElement('button');
+      x.type = 'button'; x.className = 'admin-btn' + (cls ? ' ' + cls : ''); x.textContent = label;
+      x.addEventListener('click', () => updateBookingStatus(b, status, item));
+      actions.appendChild(x);
+    };
+    if (b.status === 'confirmed'){
+      // un turno de otro día todavía no se puede marcar como atendido (evita sumar plata por error)
+      const isFuture = b.date > localDateKey(new Date());
+      const doneBtn = document.createElement('button');
+      doneBtn.hidden = isFuture;
+      doneBtn.type = 'button'; doneBtn.className = 'admin-btn ok'; doneBtn.textContent = overdue ? 'Vino' : 'Atendido';
+      doneBtn.addEventListener('click', () => {
+        if (priceFor(b.note) == null) askAmount(b, item, main); // tintura u otro servicio sin precio fijo
+        else updateBookingStatus(b, 'done', item);
+      });
+      actions.appendChild(doneBtn);
+      btn(overdue ? 'No vino' : 'Cancelar', 'danger', 'cancelled');
+    } else {
+      btn('Deshacer', '', 'confirmed');
+    }
+    // llamar y WhatsApp: íconos chicos a la derecha (si está confirmado, el WhatsApp ya lleva el recordatorio escrito)
+    if (b.phone){
+      const icons = document.createElement('span'); icons.className = 'admin-icons';
+      const tel = document.createElement('a');
+      tel.className = 'icon-btn'; tel.href = 'tel:' + String(b.phone).replace(/[^0-9+]/g, '');
+      tel.setAttribute('aria-label', 'Llamar a ' + (b.customerName || 'el cliente') + ' · ' + b.phone); tel.title = b.phone;
+      tel.innerHTML = ICON_PHONE;
+      icons.appendChild(tel);
+      if (waPhone){
+        const wa = document.createElement('a');
+        wa.className = 'icon-btn wa'; wa.target = '_blank'; wa.rel = 'noopener';
+        const remind = b.status === 'confirmed' && !overdue;
+        wa.href = 'https://wa.me/' + waPhone + (remind ? '?text=' + encodeURIComponent(reminderText(b)) : '');
+        wa.setAttribute('aria-label', remind ? 'Recordarle el turno por WhatsApp' : 'Escribirle por WhatsApp');
+        wa.title = remind ? 'Recordar por WhatsApp' : 'WhatsApp';
+        wa.innerHTML = ICON_WA;
+        icons.appendChild(wa);
+      }
+      actions.appendChild(icons);
+    }
+    if (b.status === 'done'){
+      const am = document.createElement('div');
+      am.className = 'admin-amount';
+      am.innerHTML = b.amount != null ? 'Cobrado <strong>' + money(b.amount) + '</strong>' : '<span class="warn">Sin monto cargado</span>';
+      const ch = document.createElement('button'); ch.type = 'button'; ch.textContent = b.amount != null ? 'Cambiar' : 'Cargar monto';
+      ch.addEventListener('click', () => askAmount(b, item, main));
+      am.appendChild(ch);
+      main.appendChild(am);
+    }
+    item.appendChild(main);
+    item.appendChild(actions);
+    return item;
+  }
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
+
+  function flash(msg, isErr){
+    adminFlash.textContent = msg;
+    adminFlash.classList.toggle('err', !!isErr);
+    adminFlash.hidden = false;
+    clearTimeout(flash.t);
+    flash.t = setTimeout(() => { adminFlash.hidden = true; }, isErr ? 9000 : 5000);
+  }
+  const savingIds = new Set();
+  async function updateBookingStatus(booking, newStatus, itemEl, amount){
+    if (savingIds.has(booking.id)) return; // un toque de más no manda dos cambios
+    savingIds.add(booking.id);
+    if (itemEl) itemEl.classList.add('busy');
+    const before = booking.status;
+    try {
+      await updateBookingStatusRemote(booking.id, newStatus, amount);
+      booking.status = newStatus; // se ve al instante, sin esperar la recarga
+      booking.amount = newStatus === 'done' ? (amount != null ? amount : priceFor(booking.note)) : null;
+      cashAddLocal(booking);
+      renderAdminList();
+      const quien = (booking.customerName || 'el cliente') + ' · ' + booking.time;
+      flash(newStatus === 'done' ? '✓ Atendido: ' + quien + (booking.amount != null ? ' · ' + money(booking.amount) : '') : newStatus === 'cancelled' ? 'Cancelado: ' + quien + '. El horario quedó libre en la página.' : '✓ Turno reactivado: ' + quien);
+    } catch(err){
+      booking.status = before;
+      if (itemEl) itemEl.classList.remove('busy');
+      const dup = /duplicate key|bookings_un_turno_por_horario/.test((err && err.message) || '');
+      flash(dup ? 'No se puede reactivar: ese horario ya lo tomó otro cliente.' :
+        err && err.isTimeout ? 'La conexión está lenta y no se guardó el cambio. Probá de nuevo.' :
+        'No se pudo actualizar el turno. Probá de nuevo.', true);
+    } finally {
+      savingIds.delete(booking.id);
+    }
+    loadAndRenderBookings(true);
+  }
+
+  const STATUS_LABEL = { confirmed: 'Confirmado', done: 'Atendido', cancelled: 'Cancelado' };
+
+  function bookingRow(b){
+    return [b.dateLabel || b.date, b.date, b.time, b.barberName || '', b.customerName || '', b.phone || '', b.note || '', STATUS_LABEL[b.status] || b.status, b.ticketNum || ''];
+  }
+  const EXCEL_HEADERS = ['Fecha', 'Fecha (AAAA-MM-DD)', 'Hora', 'Barbero', 'Cliente', 'Teléfono', 'Nota', 'Estado', 'N° Ticket'];
+  const EXCEL_COL_WIDTHS = [{wch:13},{wch:15},{wch:8},{wch:14},{wch:24},{wch:16},{wch:28},{wch:13},{wch:11}];
+
+  function styleHeaderRow(ws, numCols){
+    for (let c = 0; c < numCols; c++){
+      const ref = XLSX.utils.encode_cell({r:0, c});
+      if (!ws[ref]) continue;
+      ws[ref].s = {
+        font: { bold: true, color: { rgb: 'FFFFFF' } },
+        fill: { fgColor: { rgb: '0A1930' } },
+        alignment: { vertical: 'center' }
+      };
+    }
+  }
+
+  function buildSheet(rows){
+    const data = [EXCEL_HEADERS, ...rows.map(bookingRow)];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = EXCEL_COL_WIDTHS;
+    ws['!autofilter'] = { ref: XLSX.utils.encode_range({s:{r:0,c:0}, e:{r:data.length-1, c:EXCEL_HEADERS.length-1}}) };
+    styleHeaderRow(ws, EXCEL_HEADERS.length);
+    return ws;
+  }
+
+  function buildSummarySheet(rows){
+    const total = rows.length;
+    const confirmed = rows.filter(b => b.status === 'confirmed').length;
+    const done = rows.filter(b => b.status === 'done').length;
+    const cancelled = rows.filter(b => b.status === 'cancelled').length;
+
+    const data = [
+      ['Resumen de turnos — Goods Barber Studio'],
+      ['Generado el', new Date().toLocaleString('es-AR')],
+      [],
+      ['Total de turnos', total],
+      ['Confirmados', confirmed],
+      ['Atendidos', done],
+      ['Cancelados', cancelled],
+      [],
+      ['Por barbero', 'Confirmados', 'Atendidos', 'Cancelados', 'Total'],
+    ];
+    BARBERS.forEach(b => {
+      const mine = rows.filter(r => r.barberId === b.id);
+      data.push([
+        b.name,
+        mine.filter(r => r.status === 'confirmed').length,
+        mine.filter(r => r.status === 'done').length,
+        mine.filter(r => r.status === 'cancelled').length,
+        mine.length
+      ]);
+    });
+
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{wch:18},{wch:14},{wch:12},{wch:12},{wch:10}];
+    // título en negrita
+    if (ws['A1']) ws['A1'].s = { font:{ bold:true, sz:14, color:{rgb:'0A1930'} } };
+    // encabezado de la tabla por barbero, fila 9 (índice 8)
+    ['A9','B9','C9','D9','E9'].forEach(ref => {
+      if (ws[ref]) ws[ref].s = { font:{bold:true, color:{rgb:'FFFFFF'}}, fill:{fgColor:{rgb:'4E8FD6'}} };
+    });
+    return ws;
+  }
+
+  async function downloadExcel(){
+    if (typeof XLSX === 'undefined'){
+      flash('No se pudo cargar el generador de Excel. Revisá tu conexión e intentá de nuevo.', true);
+      return;
+    }
+
+    const filtered = adminBookingsCache.filter(b => adminBarberFilter === 'all' || b.barberId === adminBarberFilter);
+    const wb = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(wb, buildSummarySheet(filtered), 'Resumen');
+    XLSX.utils.book_append_sheet(wb, buildSheet(filtered), 'Todos los turnos');
+    BARBERS.forEach(b => {
+      const mine = filtered.filter(r => r.barberId === b.id);
+      if (mine.length === 0) return;
+      // el nombre de hoja no puede tener más de 31 caracteres ni ciertos símbolos
+      XLSX.utils.book_append_sheet(wb, buildSheet(mine), b.name.slice(0,31));
+    });
+
+    const todayStr = localDateKey(new Date());
+    XLSX.writeFile(wb, `turnos-goods-barber-studio-${todayStr}.xlsx`);
+  }
+
+  adminPinSubmit.addEventListener('click', handleLogin);
+  adminPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
+  adminExport.addEventListener('click', async () => {
+    adminExport.disabled = true;
+    const original = adminExport.textContent;
+    adminExport.textContent = 'Generando…';
+    try {
+      await downloadExcel();
+    } finally {
+      adminExport.disabled = false;
+      adminExport.textContent = original;
+    }
+  });
+  adminLock.addEventListener('click', async () => {
+    stopAdminPolling();
+    adminBookingsCache = []; CASH = []; ME = null; adminBarberFilter = 'all'; adminList.innerHTML = ''; adminToday.innerHTML = ''; closeCash(); setView('agenda'); setBgPhoto(null);
+    try { if (supabase) await supabase.auth.signOut(); } catch(err){ /* igual mostramos el login */ }
+    showLoginScreen();
+  });
+
+
+  /* ================= MEJORAS DEL PANEL: agenda de hoy, recordatorios y turnos a mano ================= */
+
+  const STEP_MIN = 30;
+
+  // Horarios reales de Goods: cada barbero tiene su propia franja según
+  // el día de la semana. Las claves de día coinciden con state.date.dow
+  // (Lun, Mar, Mié, Jue, Vie, Sáb — domingo ya está cerrado en buildDays).
+  const SCHEDULE = {
+    Lun: { nicolas: ['09:30','17:30'], tula: ['12:00','20:00'], chino: ['14:00','20:00'], lucho: ['11:00','18:00'] },
+    Mar: { chino: ['09:30','17:30'], nicolas: ['12:00','20:00'], tula: ['14:00','20:00'], lucho: ['10:00','18:00'] },
+    Mié: { tula: ['09:30','17:30'], chino: ['12:00','20:00'], nicolas: ['14:00','20:00'], lucho: ['11:00','18:00'] },
+    Jue: { chino: ['09:30','17:30'], nicolas: ['12:00','20:00'], tula: ['14:00','20:00'], lucho: ['10:00','18:00'] },
+    Vie: { nicolas: ['09:30','17:30'], tula: ['12:00','20:30'], chino: ['14:00','20:30'], lucho: ['11:00','18:00'] },
+    Sáb: { tula: ['09:30','17:30'], chino: ['12:00','20:30'], nicolas: ['14:00','20:30'], lucho: ['11:00','20:30'] },
+  };
+
+  function buildTimesRange(startStr, endStr){
+    const times = [];
+    let [h, m] = startStr.split(':').map(Number);
+    const [endH, endM] = endStr.split(':').map(Number);
+    while (h < endH || (h === endH && m < endM)) {
+      times.push(String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0'));
+      m += STEP_MIN;
+      if (m >= 60) { m = 0; h += 1; }
+    }
+    return times;
+  }
+
+  // Devuelve los horarios de ese barbero para ese día puntual, o un
+  // arreglo vacío si ese barbero no atiende ese día de la semana.
+  function getTimesForBarberDay(barberId, dow){
+    const daySchedule = SCHEDULE[dow];
+    if (!daySchedule) return [];
+    const range = daySchedule[barberId];
+    if (!range) return [];
+    return buildTimesRange(range[0], range[1]);
+  }
+
+  // Trae los horarios ya ocupados para un barbero y un día, consultando
+  // la vista pública (sin nombres ni teléfonos) para no exponer datos de clientes.
+  async function getStoredBooked(barberId, dateKey){
+    if (!supabase){
+      console.error('Goods: Supabase no está disponible.');
+      throw new Error('Supabase no disponible');
+    }
+    const { data, error } = await withTimeout(supabase
+      .from('bookings_public')
+      .select('time')
+      .eq('barber_id', barberId)
+      .eq('date', dateKey));
+    if (error){
+      console.error('Error consultando disponibilidad:', error.message);
+      throw error;
+    }
+    return new Set((data || []).map(row => row.time));
+  }
+
+  const DOW_SHORT = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  function keyToDate(k){ const p = k.split('-').map(Number); return new Date(p[0], p[1]-1, p[2]); }
+  // Mismo formato de fecha que usa la página al reservar (ej: "Mar 13 oct")
+  function dateLabelFor(d){ return DOW_SHORT[d.getDay()] + ' ' + d.getDate() + ' ' + d.toLocaleDateString('es-AR', {month:'short'}); }
+  const toMin = t => { const p = String(t).split(':').map(Number); return p[0]*60 + (p[1]||0); };
+
+  // ---- Número para WhatsApp en formato internacional argentino (549 + área + número)
+  function waNumber(phone){
+    let d = String(phone || '').replace(/[^0-9]/g, '');
+    if (!d) return '';
+    if (d.startsWith('00')) d = d.slice(2);
+    if (d.startsWith('549')) return d;
+    if (d.startsWith('54')) return '549' + d.slice(2);
+    if (d.startsWith('0')) d = d.slice(1);
+    // celular escrito con "15" después de la característica (ej: 223 15 555-1234): se saca el 15
+    if (d.length === 12){
+      for (const area of [2, 3, 4]){
+        if (d.substr(area, 2) === '15'){ d = d.slice(0, area) + d.slice(area + 2); break; }
+      }
+    }
+    if (d.length === 10) return '549' + d;
+    return d;
+  }
+  function reminderText(b){
+    const first = String(b.customerName || '').trim().split(/\s+/)[0];
+    const now = new Date();
+    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    const when = b.date === localDateKey(now) ? 'hoy' : (b.date === localDateKey(tomorrow) ? 'mañana' : 'el ' + (b.dateLabel || b.date));
+    return 'Hola' + (first ? ' ' + first : '') + ' 👋 Te recordamos tu turno en Goods Barber Studio ' + when +
+      ' a las ' + b.time + ' con ' + (b.barberName || 'tu barbero') + '. Te esperamos en Olavarría 2583. ' +
+      'Si no podés venir, avisanos por acá así liberamos el horario. 💈';
+  }
+
+  // ---- Agenda de hoy, separada por barbero
+  const adminToday = document.getElementById('adminToday');
+  // Agenda de arriba: hoy y el próximo día de atención (mañana, o el lunes si
+  // mañana es domingo), con el mismo formato, así los turnos para el día
+  // siguiente se ven de un vistazo apenas entran.
+  function agendaCols(dayDate, isToday, nowMin){
+    const key = localDateKey(dayDate);
+    const barbers = BARBERS.filter(b => adminBarberFilter === 'all' || b.id === adminBarberFilter);
+    const list = adminBookingsCache
+      .filter(b => b.date === key && b.status !== 'cancelled')
+      .sort((a, b) => toMin(a.time) - toMin(b.time));
+    // en el día siguiente se muestran solo los barberos que ya tienen turnos
+    const shown = isToday ? barbers : barbers.filter(br => list.some(b => b.barberId === br.id));
+    const count = list.filter(b => adminBarberFilter === 'all' || b.barberId === adminBarberFilter).length;
+    if (!shown.length) return { html: '<p class="today-none">Todavía no hay turnos reservados para este día.</p>', count };
+    let html = '<div class="today-cols">';
+    shown.forEach(br => {
+      const mine = list.filter(b => b.barberId === br.id);
+      const nextMine = isToday ? mine.find(b => b.status === 'confirmed' && toMin(b.time) + STEP_MIN > nowMin) : null;
+      html += '<div class="today-col"><h5><span>' + escapeHtml(br.name) + '</span><span>' + mine.length + '</span></h5>';
+      if (isBlockedDay(key, br.id)){
+        html += '<p class="today-blocked">Día bloqueado</p>';
+      } else if (!mine.length){
+        html += '<p class="today-empty">' + (getTimesForBarberDay(br.id, DOW_SHORT[dayDate.getDay()]).length ? 'Sin turnos' : (isToday ? 'Hoy no atiende' : 'No atiende')) + '</p>';
+      }
+      mine.forEach(b => {
+        const cls = ['today-slot'];
+        if (b.status === 'done') cls.push('done');
+        else if (isToday && toMin(b.time) + STEP_MIN <= nowMin) cls.push('past');
+        if (b === nextMine) cls.push('next');
+        html += '<div class="' + cls.join(' ') + '"><span class="t">' + escapeHtml(b.time) + '</span><span class="n">' +
+          escapeHtml(b.customerName || 'Sin nombre') + '</span><span class="s">' + escapeHtml(b.note || '') + '</span></div>';
+      });
+      html += '</div>';
+    });
+    return { html: html + '</div>', count };
+  }
+  const plural = n => n + (n === 1 ? ' turno' : ' turnos');
+  function renderToday(){
+    const now = new Date();
+    const todayKey = localDateKey(now);
+    const nowMin = now.getHours()*60 + now.getMinutes();
+    const upcoming = adminBookingsCache
+      .filter(b => b.date === todayKey && b.status === 'confirmed' && toMin(b.time) + STEP_MIN > nowMin &&
+        (adminBarberFilter === 'all' || b.barberId === adminBarberFilter))
+      .sort((a, b) => toMin(a.time) - toMin(b.time));
+    const next = upcoming[0];
+
+    const today = agendaCols(now, true, nowMin);
+    let html = '<div class="today-head"><h4>Hoy</h4><span class="when">' + escapeHtml(dateLabelFor(now)) + ' · ' + plural(today.count) + '</span></div>';
+    html += next
+      ? '<p class="today-next">Próximo: <strong>' + escapeHtml(next.time) + ' · ' + escapeHtml(next.customerName || 'Sin nombre') + '</strong> con ' + escapeHtml(next.barberName || '') + '</p>'
+      : '<p class="today-next">No quedan turnos pendientes por hoy.</p>';
+    html += today.html;
+
+    // próximo día de atención (el domingo el local está cerrado)
+    const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    if (nextDay.getDay() === 0) nextDay.setDate(nextDay.getDate() + 1);
+    const isTomorrow = nextDay.getDate() === new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getDate();
+    const nd = agendaCols(nextDay, false, 0);
+    html += '<div class="today-head next-day"><h4>' + (isTomorrow ? 'Mañana' : 'Lunes') + '</h4><span class="when">' + escapeHtml(dateLabelFor(nextDay)) + ' · ' + plural(nd.count) + '</span></div>';
+    html += nd.html;
+    adminToday.innerHTML = html;
+  }
+  // la agenda se actualiza sola cada minuto (para marcar el próximo turno)
+  setInterval(() => { if (!adminDashboard.hidden) renderToday(); }, 60000);
+
+  // ---- Cargar un turno a mano
+  const manualForm = document.getElementById('manualForm');
+  const mBarber = document.getElementById('mBarber');
+  const mDate = document.getElementById('mDate');
+  const mTime = document.getElementById('mTime');
+  const mService = document.getElementById('mService');
+  const mName = document.getElementById('mName');
+  const mPhone = document.getElementById('mPhone');
+  const mHint = document.getElementById('mHint');
+  const mSave = document.getElementById('mSave');
+  const adminFlash = document.getElementById('adminFlash');
+  BARBERS.forEach(b => { const o = document.createElement('option'); o.value = b.id; o.textContent = b.name; mBarber.appendChild(o); });
+
+  function setHint(msg, isErr){ mHint.textContent = msg || ''; mHint.classList.toggle('err', !!isErr); }
+  // Horarios ocupados: misma consulta que usa la página; si fallara, se usan los turnos ya cargados en el panel
+  async function takenTimes(barberId, key){
+    try { return await getStoredBooked(barberId, key); }
+    catch(e){
+      return new Set(adminBookingsCache.filter(b => b.barberId === barberId && b.date === key && b.status !== 'cancelled').map(b => b.time));
+    }
+  }
+  let timesReq = 0;
+  function emptyTimes(label){ mTime.innerHTML = '<option value="">' + label + '</option>'; mTime.disabled = true; }
+  async function refreshManualTimes(){
+    const req = ++timesReq;
+    emptyTimes('Buscando…');
+    mSave.disabled = true;
+    if (!mDate.value){ emptyTimes('Elegí el día'); setHint('Elegí el día.'); return; }
+    const d = keyToDate(mDate.value);
+    const barber = BARBERS.find(b => b.id === mBarber.value);
+    if (isBlockedDay(mDate.value, barber.id)){ emptyTimes('Día bloqueado'); setHint('Ese día está bloqueado para ' + barber.name + ' (' + dateLabelFor(d) + '). Si querés cargarlo igual, primero quitá el bloqueo en "Horarios".', true); return; }
+    const times = getTimesForBarberDay(barber.id, DOW_SHORT[d.getDay()]);
+    if (!times.length){ emptyTimes('No atiende ese día'); setHint(barber.name + ' no atiende ese día (' + dateLabelFor(d) + ').', true); return; }
+    setHint('Buscando horarios libres…');
+    const taken = await takenTimes(barber.id, mDate.value);
+    if (req !== timesReq) return; // el dueño cambió de barbero o de día mientras se consultaba
+    // si es hoy, no se ofrecen los horarios que ya pasaron (sí el que está en curso)
+    const now = new Date();
+    const nowMin = mDate.value === localDateKey(now) ? now.getHours()*60 + now.getMinutes() : -1;
+    const free = times.filter(t => !taken.has(t) && toMin(t) + STEP_MIN > nowMin);
+    if (!free.length){ emptyTimes('Sin horarios libres'); setHint('No quedan horarios libres ese día con ' + barber.name + '.', true); return; }
+    mTime.innerHTML = ''; mTime.disabled = false;
+    free.forEach(t => { const o = document.createElement('option'); o.value = t; o.textContent = t; mTime.appendChild(o); });
+    setHint((free.length === 1 ? '1 horario libre' : free.length + ' horarios libres') + ' el ' + dateLabelFor(d) + '.');
+    mSave.disabled = false;
+  }
+  // ¿El barbero atiende ese día y todavía le quedan horarios? (para no abrir el formulario en un día cerrado)
+  function worksOn(barberId, key){
+    if (isBlockedDay(key, barberId)) return false;
+    const d = keyToDate(key);
+    const times = getTimesForBarberDay(barberId, DOW_SHORT[d.getDay()]);
+    if (!times.length) return false;
+    const now = new Date();
+    if (key === localDateKey(now)){
+      const nowMin = now.getHours()*60 + now.getMinutes();
+      return times.some(t => toMin(t) + STEP_MIN > nowMin);
+    }
+    return true;
+  }
+  function nextWorkDay(barberId, fromKey){
+    const d = keyToDate(fromKey);
+    for (let i = 0; i < 21; i++){
+      const k = localDateKey(new Date(d.getFullYear(), d.getMonth(), d.getDate() + i));
+      if (worksOn(barberId, k)) return k;
+    }
+    return fromKey;
+  }
+  function openManualForm(){
+    manualForm.reset();
+    const today = localDateKey(new Date());
+    mDate.min = today;
+    if (ME && ME.role === 'barbero' && ME.barber) mBarber.value = ME.barber;
+    else if (adminBarberFilter !== 'all') mBarber.value = adminBarberFilter;
+    Array.from(mBarber.options).forEach(o => { o.hidden = o.disabled = !!(ME && ME.role === 'barbero' && o.value !== ME.barber); });
+    mDate.value = nextWorkDay(mBarber.value, today); // arranca en el próximo día que atiende (nunca en domingo o día cerrado)
+    manualForm.hidden = false;
+    adminFlash.hidden = true;
+    refreshManualTimes();
+    // en el celular no se abre el teclado solo: así la pantalla no salta al entrar
+    if (!IS_TOUCH) mName.focus();
+  }
+  function closeManualForm(){ manualForm.hidden = true; setHint(''); if (VIEW === 'turno') setView('agenda'); }
+  document.getElementById('mCancel').addEventListener('click', closeManualForm);
+  mBarber.addEventListener('change', () => {
+    if (mDate.value && !worksOn(mBarber.value, mDate.value)) mDate.value = nextWorkDay(mBarber.value, mDate.value);
+    refreshManualTimes();
+  });
+  mDate.addEventListener('change', refreshManualTimes);
+
+  manualForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = mName.value.trim();
+    if (name.length < 3 || !/[a-zA-ZÀ-ÿ]/.test(name)){ setHint('Escribí el nombre del cliente.', true); mName.focus(); return; }
+    const phoneDigits = mPhone.value.replace(/[^0-9]/g, '');
+    if (phoneDigits && (phoneDigits.length < 7 || phoneDigits.length > 15)){ setHint('El teléfono no parece válido (7 a 15 números) — o dejalo vacío.', true); return; }
+    if (!mTime.value){ setHint('Elegí un horario.', true); return; }
+    const barber = BARBERS.find(b => b.id === mBarber.value);
+    const key = mDate.value, time = mTime.value;
+    mSave.disabled = true; mSave.textContent = 'Guardando…';
+    try {
+      const taken = await takenTimes(barber.id, key);
+      if (taken.has(time)){
+        setHint('Justo se ocupó ese horario. Elegí otro.', true);
+        await refreshManualTimes();
+        return;
+      }
+      const ticket = String(Math.floor(1000 + Math.random()*8999));
+      const { error } = await withTimeout(supabase.from('bookings').insert({
+        barber_id: barber.id,
+        barber_name: barber.name,
+        date: key,
+        date_label: dateLabelFor(keyToDate(key)),
+        time: time,
+        customer_name: name,
+        phone: mPhone.value.trim(),
+        note: mService.value,
+        status: 'confirmed',
+        ticket_num: ticket
+      }));
+      if (error) throw error;
+      closeManualForm();
+      flash('✓ Turno cargado: ' + dateLabelFor(keyToDate(key)) + ' · ' + time + ' · ' + name + ' con ' + barber.name + ' (ticket #' + ticket + ').');
+      await loadAndRenderBookings();
+    } catch(err){
+      console.error('Goods: no se pudo cargar el turno:', err);
+      const m = (err && err.message) || '';
+      if (/duplicate key|bookings_un_turno_por_horario/.test(m)){ setHint('Justo se ocupó ese horario. Elegí otro.', true); refreshManualTimes(); }
+      else if (/ya pasó/.test(m)) setHint('Ese horario ya pasó. Elegí otro.', true);
+      else if (/no hay atención/.test(m)) setHint('Ese día está bloqueado.', true);
+      else if (err && err.isTimeout) setHint('La conexión está lenta y no se guardó. Probá de nuevo.', true);
+      else setHint('No se pudo guardar el turno. Probá de nuevo.', true);
+    } finally {
+      mSave.textContent = 'Guardar turno';
+      if (!manualForm.hidden && mTime.value) mSave.disabled = false;
+    }
+  });
+
+  /* ================= HORARIOS Y DÍAS BLOQUEADOS ================= */
+  const SCHED_DAYS = ['Lun','Mar','Mié','Jue','Vie','Sáb'];
+  let BLOCKS = []; // días bloqueados de hoy en adelante: {id, date, barber_id, reason}
+  function isBlockedDay(key, barberId){
+    return BLOCKS.some(b => b.date === key && (!b.barber_id || b.barber_id === barberId));
+  }
+  // Lee los horarios guardados y los días bloqueados. Si fallara, quedan los horarios escritos arriba.
+  async function loadOwnerSettings(){
+    const [sched, blocks] = await Promise.allSettled([
+      withTimeout(supabase.from('goods_settings').select('schedule').limit(1)),
+      withTimeout(supabase.from('blocked_days').select('id,date,barber_id,reason')
+        .gte('date', localDateKey(new Date())).order('date', {ascending:true}))
+    ]);
+    const sv = sched.status === 'fulfilled' ? sched.value : null;
+    if (sv && !sv.error && sv.data && sv.data[0] && sv.data[0].schedule && typeof sv.data[0].schedule === 'object'){
+      Object.keys(SCHEDULE).forEach(k => delete SCHEDULE[k]);
+      Object.assign(SCHEDULE, sv.data[0].schedule);
+    } else console.error('Goods: no se pudieron leer los horarios');
+    const bv = blocks.status === 'fulfilled' ? blocks.value : null;
+    if (bv && !bv.error) BLOCKS = bv.data || [];
+    else console.error('Goods: no se pudieron leer los días bloqueados');
+  }
+
+  const settingsPanel = document.getElementById('settingsPanel');
+  const schedTable = document.getElementById('schedTable');
+  const schedHint = document.getElementById('schedHint');
+  const schedSave = document.getElementById('schedSave');
+  const bDate = document.getElementById('bDate');
+  const bBarber = document.getElementById('bBarber');
+  const bReason = document.getElementById('bReason');
+  const bSave = document.getElementById('bSave');
+  const blockHint = document.getElementById('blockHint');
+  const blockList = document.getElementById('blockList');
+  const HOUR_OPTIONS = buildTimesRange('08:00', '23:30').concat(['23:30']);
+  function hintIn(el, msg, isErr){ el.textContent = msg || ''; el.classList.toggle('err', !!isErr); }
+
+  function timeSelect(value){
+    return '<select>' + HOUR_OPTIONS.map(t => '<option' + (t === value ? ' selected' : '') + '>' + t + '</option>').join('') + '</select>';
+  }
+  function renderSchedTable(){
+    let html = '<tr><th></th>' + BARBERS.map(b => '<th>' + escapeHtml(b.name) + '</th>').join('') + '</tr>';
+    SCHED_DAYS.forEach(day => {
+      html += '<tr><td class="day">' + day + '</td>';
+      BARBERS.forEach(b => {
+        const r = (SCHEDULE[day] || {})[b.id];
+        html += '<td><div class="sched-cell' + (r ? '' : ' off') + '" data-day="' + day + '" data-barber="' + b.id + '">' +
+          '<label><input type="checkbox"' + (r ? ' checked' : '') + '> Atiende</label>' +
+          timeSelect(r ? r[0] : '09:30') + '<span>a</span>' + timeSelect(r ? r[1] : '17:30') + '</div></td>';
+      });
+      html += '</tr>';
+    });
+    schedTable.innerHTML = html;
+    schedTable.querySelectorAll('.sched-cell input[type=checkbox]').forEach(cb => {
+      cb.addEventListener('change', () => cb.closest('.sched-cell').classList.toggle('off', !cb.checked));
+    });
+  }
+  schedSave.addEventListener('click', async () => {
+    const next = {};
+    let bad = null;
+    schedTable.querySelectorAll('.sched-cell').forEach(cell => {
+      const day = cell.dataset.day, id = cell.dataset.barber;
+      next[day] = next[day] || {};
+      if (!cell.querySelector('input').checked) return;
+      const [from, to] = Array.from(cell.querySelectorAll('select')).map(s => s.value);
+      if (from >= to && !bad) bad = day + ' · ' + BARBERS.find(b => b.id === id).name;
+      next[day][id] = [from, to];
+    });
+    if (bad){ hintIn(schedHint, 'Revisá ' + bad + ': la hora de salida tiene que ser después de la de entrada.', true); return; }
+    schedSave.disabled = true; schedSave.textContent = 'Guardando…';
+    try {
+      const { error } = await withTimeout(supabase.from('goods_settings').upsert({ id: true, schedule: next, updated_at: new Date().toISOString() }));
+      if (error) throw error;
+      Object.keys(SCHEDULE).forEach(k => delete SCHEDULE[k]);
+      Object.assign(SCHEDULE, next);
+      hintIn(schedHint, '✓ Horarios guardados. Ya se ven en la página.');
+      renderToday();
+    } catch(err){
+      console.error('Goods: no se pudieron guardar los horarios:', err);
+      hintIn(schedHint, 'No se pudieron guardar los horarios. Revisá tu conexión e intentá de nuevo.', true);
+    } finally {
+      schedSave.disabled = false; schedSave.textContent = 'Guardar horarios';
+    }
+  });
+
+  bBarber.innerHTML = '<option value="">Todo el local</option>' + BARBERS.map(b => '<option value="' + b.id + '">Solo ' + escapeHtml(b.name) + '</option>').join('');
+  function renderBlockList(){
+    if (!BLOCKS.length){ blockList.innerHTML = '<p class="admin-empty" style="padding:10px 0;">No hay días bloqueados.</p>'; return; }
+    blockList.innerHTML = '';
+    BLOCKS.forEach(b => {
+      const who = b.barber_id ? 'Solo ' + ((BARBERS.find(x => x.id === b.barber_id) || {}).name || b.barber_id) : 'Todo el local';
+      const row = document.createElement('div');
+      row.className = 'block-item';
+      row.innerHTML = '<span><span class="when">' + escapeHtml(dateLabelFor(keyToDate(b.date))) + '</span>' + escapeHtml(who) +
+        (b.reason ? ' <span class="why">· ' + escapeHtml(b.reason) + '</span>' : '') + '</span>';
+      const del = document.createElement('button');
+      del.type = 'button'; del.className = 'admin-btn danger'; del.textContent = 'Quitar';
+      del.addEventListener('click', async () => {
+        del.disabled = true;
+        try {
+          const { error } = await withTimeout(supabase.from('blocked_days').delete().eq('id', b.id));
+          if (error) throw error;
+          BLOCKS = BLOCKS.filter(x => x.id !== b.id);
+          renderBlockList(); renderToday();
+        } catch(err){ del.disabled = false; hintIn(blockHint, 'No se pudo quitar el bloqueo. Probá de nuevo.', true); }
+      });
+      row.appendChild(del);
+      blockList.appendChild(row);
+    });
+  }
+  bSave.addEventListener('click', async () => {
+    const key = bDate.value, barberId = bBarber.value || null;
+    if (!key){ hintIn(blockHint, 'Elegí el día que querés bloquear.', true); return; }
+    if (key < localDateKey(new Date())){ hintIn(blockHint, 'Ese día ya pasó.', true); return; }
+    if (BLOCKS.some(b => b.date === key && (!b.barber_id || b.barber_id === barberId))){
+      hintIn(blockHint, 'Ese día ya está bloqueado.', true); return;
+    }
+    // Avisar si ya hay turnos reservados ese día (no se cancelan solos)
+    const affected = adminBookingsCache.filter(b => b.date === key && b.status === 'confirmed' && (!barberId || b.barberId === barberId));
+    if (affected.length){
+      const list = affected.map(b => b.time + ' ' + (b.customerName || '') + ' (' + (b.barberName || '') + ')').join('\n');
+      if (!confirm('Ese día ya hay ' + affected.length + ' turno(s) reservado(s):\n\n' + list +
+        '\n\nEl bloqueo no los cancela: avisales a esos clientes y cancelalos desde la lista. ¿Bloquear igual?')) return;
+    }
+    bSave.disabled = true;
+    try {
+      const { data, error } = await withTimeout(supabase.from('blocked_days').insert({ date: key, barber_id: barberId, reason: bReason.value.trim() || null }).select('id,date,barber_id,reason'));
+      if (error) throw error;
+      BLOCKS = BLOCKS.concat(data || []).sort((a, b) => a.date < b.date ? -1 : 1);
+      bReason.value = '';
+      hintIn(blockHint, '✓ Día bloqueado. Ya no se puede reservar en la página.');
+      renderBlockList(); renderToday();
+    } catch(err){
+      console.error('Goods: no se pudo bloquear el día:', err);
+      hintIn(blockHint, 'No se pudo bloquear el día. Revisá tu conexión e intentá de nuevo.', true);
+    } finally { bSave.disabled = false; }
+  });
+
+  document.getElementById('settingsBack').addEventListener('click', () => setView('cuenta'));
+  document.getElementById('adminSettings').addEventListener('click', () => {
+    bDate.min = localDateKey(new Date());
+    if (!bDate.value) bDate.value = localDateKey(new Date());
+    hintIn(schedHint, ''); hintIn(blockHint, '');
+    renderSchedTable(); renderBlockList(); renderMoneyForm(); hintIn(moneyHint, '');
+    pushPanel.hidden = true;
+    settingsPanel.hidden = false;
+    setTitle('Horarios y precios');
+    window.scrollTo(0, 0);
+  });
+
+  /* ================= CAJA: plata por barbero ================= */
+  // Precios y porcentajes viven en una tabla privada (goods_money): solo con sesión iniciada.
+  // Cada turno atendido guarda su monto; la base completa el precio del servicio si no se cargó otro.
+  const SERVICES = ['Corte', 'Corte + Barba', 'Barba', 'Tintura'];
+  let PRICES = { 'Corte': 20000, 'Corte + Barba': 22000, 'Barba': 14000, 'Tintura': null };
+  let SHARES = {};          // { nicolas: 60, ... } = % que se lleva cada barbero
+  let CASH = [];            // turnos atendidos: {id, barberId, date, amount}
+  let cashPeriod = 'day';
+  const adminCash = document.getElementById('adminCash');
+  const money = n => '$' + Math.round(Number(n) || 0).toLocaleString('es-AR');
+  function priceFor(service){
+    const v = PRICES[String(service || '').trim()];
+    return v == null || v === '' ? null : Number(v);
+  }
+  async function loadMoney(){
+    const [cfg, done] = await Promise.allSettled([
+      withTimeout(supabase.from('goods_money').select('prices,shares').limit(1)),
+      withTimeout(supabase.from('bookings').select('id,barber_id,date,amount').eq('status', 'done').not('amount', 'is', null))
+    ]);
+    const c = cfg.status === 'fulfilled' ? cfg.value : null;
+    if (c && !c.error && c.data && c.data[0]){
+      PRICES = Object.assign({}, PRICES, c.data[0].prices || {});
+      SHARES = c.data[0].shares || {};
+    }
+    const d = done.status === 'fulfilled' ? done.value : null;
+    if (d && !d.error){ CASH = (d.data || []).map(r => ({ id: r.id, barberId: r.barber_id, date: r.date, amount: Number(r.amount) || 0 })); lastSync = Date.now(); }
+  }
+  // al marcar o deshacer, la caja se actualiza al instante (después se confirma con la base)
+  function cashAddLocal(b){
+    CASH = CASH.filter(x => x.id !== b.id);
+    if (b.status === 'done' && b.amount != null) CASH.push({ id: b.id, barberId: b.barberId, date: b.date, amount: b.amount });
+    renderCash();
+  }
+  let cashOpen = false, cxSel = null, lastSync = 0, cashScope = 'mine';
+  function countTo(el, to){
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const from = Number(el.dataset.v || 0); el.dataset.v = to;
+    if (reduce || from === to){ el.textContent = money(to); return; }
+    const t0 = performance.now(), d = 650;
+    const step = t => { const k = Math.min(1, (t - t0) / d), e = 1 - Math.pow(1 - k, 3);
+      el.textContent = money(from + (to - from) * e); if (k < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  }
+  function renderCash(){
+    if (!cashOpen) return;
+    const now = new Date(), today = localDateKey(now), month = today.slice(0, 7);
+    const weekFrom = localDateKey(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6));
+    const inPeriod = r => cashPeriod === 'day' ? r.date === today : cashPeriod === 'week' ? r.date >= weekFrom && r.date <= today :
+      cashPeriod === 'month' ? r.date.slice(0, 7) === month : true;
+    const socio = ME && ME.role === 'socio';
+    document.getElementById('cxScope').hidden = !socio;
+    document.querySelectorAll('#cxScope button').forEach(x => x.classList.toggle('active', x.dataset.s === cashScope));
+    const scopeId = socio ? (cashScope === 'all' ? 'all' : ME.barber) : adminBarberFilter;
+    const barbers = BARBERS.filter(b => scopeId === 'all' || b.id === scopeId);
+    const ids = new Set(barbers.map(b => b.id));
+    const mineAll = CASH.filter(r => ids.has(r.barberId));
+    const rows = mineAll.filter(inPeriod);
+    const total = rows.reduce((a, r) => a + r.amount, 0);
+    const hasShares = barbers.every(b => SHARES[b.id] != null && SHARES[b.id] !== '');
+    let local = 0;
+    const per = barbers.map(b => {
+      const m = rows.filter(r => r.barberId === b.id), gen = m.reduce((a, r) => a + r.amount, 0);
+      const pct = SHARES[b.id] != null && SHARES[b.id] !== '' ? Number(SHARES[b.id]) : null;
+      const his = pct != null ? Math.round(gen * pct / 100) : null;
+      if (his != null) local += gen - his;
+      return { b, n: m.length, gen, pct, his };
+    }).sort((x, y) => y.gen - x.gen);
+
+    document.querySelectorAll('#cxSeg button').forEach(x => { x.classList.toggle('active', x.dataset.p === cashPeriod); x.setAttribute('aria-selected', x.dataset.p === cashPeriod); });
+    document.getElementById('cxPeriod').textContent = (cashPeriod === 'day' ? 'Hoy · ' + dateLabelFor(now) : cashPeriod === 'week' ? 'Últimos 7 días' :
+      cashPeriod === 'month' ? now.toLocaleDateString('es-AR', {month:'long', year:'numeric'}) : 'Desde que se empezó a contar') +
+      (scopeId === 'all' ? '' : ' · ' + barbers[0].name);
+    countTo(document.getElementById('cxTotal'), total);
+    document.getElementById('cxKpis').innerHTML =
+      '<div class="cx-kpi"><span>Atendidos</span><strong>' + rows.length + '</strong></div>' +
+      '<div class="cx-kpi"><span>Ticket promedio</span><strong>' + (rows.length ? money(total / rows.length) : '—') + '</strong></div>' +
+      '<div class="cx-kpi"><span>Para el local</span><strong>' + (hasShares ? money(local) : '—') + '</strong></div>';
+
+    // barras de los últimos 14 días (una serie, un color; hoy resaltado)
+    const days = [];
+    for (let k = 13; k >= 0; k--) days.push(new Date(now.getFullYear(), now.getMonth(), now.getDate() - k));
+    const sums = days.map(d => { const key = localDateKey(d); return mineAll.filter(r => r.date === key).reduce((a, r) => a + r.amount, 0); });
+    const max = Math.max(1, ...sums);
+    const chart = document.getElementById('cxChart');
+    chart.innerHTML = days.map((d, k) => {
+      const key = localDateKey(d), v = sums[k];
+      return '<button type="button" class="cx-bar' + (v ? '' : ' zero') + (key === today ? ' today' : '') + (cxSel === key ? ' sel' : '') +
+        '" data-k="' + key + '" data-v="' + v + '" style="--n:' + k + '" aria-label="' + dateLabelFor(d) + ': ' + money(v) + '"><i style="height:' + Math.max(2, v / max * 86) + '%"></i></button>';
+    }).join('');
+    const axis = document.createElement('div'); axis.className = 'cx-axis';
+    axis.innerHTML = days.map(d => '<span>' + (d.getDay() === 0 ? '·' : d.getDate()) + '</span>').join('');
+    chart.after(axis); if (axis.nextElementSibling && axis.nextElementSibling.classList.contains('cx-axis')) axis.nextElementSibling.remove();
+    const tip = document.getElementById('cxTip');
+    const showTip = el => { cxSel = el.dataset.k; chart.querySelectorAll('.cx-bar').forEach(x => x.classList.toggle('sel', x === el));
+      tip.textContent = dateLabelFor(keyToDate(el.dataset.k)) + ' · ' + money(Number(el.dataset.v)); };
+    chart.querySelectorAll('.cx-bar').forEach(el => { el.addEventListener('click', () => showTip(el)); el.addEventListener('mouseenter', () => showTip(el)); });
+    const selEl = cxSel && chart.querySelector('.cx-bar[data-k="' + cxSel + '"]');
+    if (selEl) showTip(selEl); else tip.textContent = 'Tocá una barra';
+
+    // ranking por barbero
+    const top = Math.max(1, ...per.map(x => x.gen));
+    document.getElementById('cxShareHint').textContent = hasShares ? 'Generó · le corresponde' : 'Generó';
+    document.getElementById('cxRows').innerHTML = per.map(x =>
+      '<div class="cx-row"><div class="who">' + escapeHtml(x.b.name) + '<small>' + x.n + (x.n === 1 ? ' turno' : ' turnos') + (x.pct != null ? ' · ' + x.pct + '%' : '') + '</small></div>' +
+      '<div class="val">' + money(x.gen) + (x.his != null ? '<small>' + money(x.his) + '</small>' : '') + '</div>' +
+      '<div class="cx-track"><i style="width:' + (x.gen / top * 100) + '%"></i></div></div>').join('');
+    document.getElementById('cxFoot').innerHTML = hasShares
+      ? 'Lo que le corresponde a cada uno sale de su porcentaje; el resto es para el local.'
+      : 'Para ver cuánto le corresponde a cada uno, cargá los porcentajes en <b>Horarios → Precios y porcentajes</b>.';
+  }
+  const cxEl = document.getElementById('adminCash');
+  function openCash(){
+    cashOpen = true; cxEl.hidden = false; document.documentElement.classList.add('cx-open');
+    document.getElementById('cxTotal').dataset.v = 0;
+    renderCash(); document.getElementById('cxClose').focus();
+  }
+  function closeCash(){ cashOpen = false; cxEl.hidden = true; document.documentElement.classList.remove('cx-open'); markTab(VIEW); }
+  document.getElementById('cxClose').addEventListener('click', closeCash);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && cashOpen) closeCash(); });
+  document.getElementById('cxScope').addEventListener('click', e => { const x = e.target.closest('button'); if (x){ cashScope = x.dataset.s; cxSel = null; renderCash(); } });
+  document.getElementById('cxSeg').addEventListener('click', e => { const x = e.target.closest('button'); if (x){ cashPeriod = x.dataset.p; renderCash(); } });
+  // indicador "en vivo": cuándo se actualizó por última vez
+  setInterval(() => {
+    if (!cashOpen) return;
+    const off = !adminOffline.hidden, sec = Math.round((Date.now() - lastSync) / 1000);
+    document.querySelector('.cx-live').classList.toggle('off', off);
+    document.getElementById('cxSync').textContent = off ? 'Sin conexión' : sec < 60 ? 'Actualizado recién' : 'Actualizado hace ' + Math.round(sec / 60) + ' min';
+  }, 1000);
+
+  // monto de un turno: para servicios sin precio fijo o para corregir lo cobrado
+  function askAmount(b, item, main){
+    if (main.querySelector('.amount-edit')) return;
+    const box = document.createElement('div');
+    box.className = 'amount-edit';
+    const sugerido = b.amount != null ? b.amount : priceFor(b.note);
+    box.innerHTML = '<input type="number" inputmode="numeric" min="0" step="500" placeholder="Monto cobrado" value="' + (sugerido != null ? sugerido : '') + '">' +
+      '<button type="button" class="admin-btn">Guardar</button><button type="button" class="admin-btn danger">Cancelar</button>';
+    const [inp, ok, no] = [box.querySelector('input'), ...box.querySelectorAll('button')];
+    main.appendChild(box); inp.focus();
+    no.addEventListener('click', () => box.remove());
+    const save = async () => {
+      const v = Math.round(Number(String(inp.value).replace(/[^0-9]/g, '')));
+      if (!v || v < 0 || v > 10000000){ inp.style.borderColor = '#B3261E'; inp.focus(); return; }
+      if (b.status === 'done'){
+        ok.disabled = true;
+        try {
+          const { error } = await withTimeout(supabase.from('bookings').update({ amount: v }).eq('id', b.id));
+          if (error) throw error;
+          b.amount = v; cashAddLocal(b); renderAdminList(); flash('✓ Monto actualizado: ' + money(v));
+        } catch(e){ ok.disabled = false; flash('No se pudo guardar el monto. Probá de nuevo.', true); }
+      } else {
+        box.remove();
+        updateBookingStatus(b, 'done', item, v);
+      }
+    };
+    ok.addEventListener('click', save);
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') save(); });
+  }
+  // precios y porcentajes (en Horarios)
+  const priceFields = document.getElementById('priceFields');
+  const shareFields = document.getElementById('shareFields');
+  const moneyHint = document.getElementById('moneyHint');
+  const moneySave = document.getElementById('moneySave');
+  function renderMoneyForm(){
+    priceFields.innerHTML = '<p class="manual-sub" style="margin:0">Precio de cada servicio</p>' + SERVICES.map(sv =>
+      '<label class="money-row"><span>' + escapeHtml(sv) + '</span><input type="number" inputmode="numeric" min="0" step="500" data-sv="' + escapeHtml(sv) + '" value="' + (PRICES[sv] != null ? PRICES[sv] : '') + '" placeholder="Sin precio fijo"></label>').join('');
+    shareFields.innerHTML = '<p class="manual-sub" style="margin:0">% que se lleva cada barbero</p>' + BARBERS.map(b =>
+      '<label class="money-row"><span>' + escapeHtml(b.name) + '</span><span><input type="number" inputmode="numeric" min="0" max="100" step="1" data-b="' + b.id + '" value="' + (SHARES[b.id] != null ? SHARES[b.id] : '') + '" placeholder="—"> <small>%</small></span></label>').join('');
+  }
+  moneySave.addEventListener('click', async () => {
+    const prices = {}, shares = {};
+    let bad = null;
+    priceFields.querySelectorAll('input').forEach(i => { const v = i.value.trim(); prices[i.dataset.sv] = v === '' ? null : Math.round(Number(v)); if (v !== '' && !(Number(v) >= 0)) bad = 'el precio de ' + i.dataset.sv; });
+    shareFields.querySelectorAll('input').forEach(i => { const v = i.value.trim(); if (v !== ''){ const n = Number(v); if (!(n >= 0 && n <= 100)) bad = 'el porcentaje de ' + (BARBERS.find(b => b.id === i.dataset.b) || {}).name; shares[i.dataset.b] = n; } });
+    if (bad){ hintIn(moneyHint, 'Revisá ' + bad + '.', true); return; }
+    moneySave.disabled = true; moneySave.textContent = 'Guardando…';
+    try {
+      const { error } = await withTimeout(supabase.from('goods_money').upsert({ id: true, prices, shares, updated_at: new Date().toISOString() }));
+      if (error) throw error;
+      PRICES = prices; SHARES = shares;
+      hintIn(moneyHint, '✓ Guardado. Los turnos que se marquen desde ahora usan estos precios.');
+      renderCash();
+    } catch(e){ hintIn(moneyHint, 'No se pudo guardar. Revisá tu conexión e intentá de nuevo.', true); }
+    finally { moneySave.disabled = false; moneySave.textContent = 'Guardar precios y porcentajes'; }
+  });
+
+  /* ================= AVISOS AL CELULAR (Web Push) ================= */
+  // El celular se suscribe y queda guardado de qué barbero quiere los avisos.
+  // En iPhone funciona solo con el panel agregado a inicio (iOS 16.4 o más nuevo).
+  const VAPID_PUBLIC = 'BHr2Qvxqf9wWfjKl0MqJEJZ9KOYqLdiTIQtAw3VS2WWGJ6PZs1NqApBoFHmxy8F_mNT3vX7FTNDg101r2uKfeYQ';
+  const pushPanel = document.getElementById('pushPanel');
+  const pushBody = document.getElementById('pushBody');
+  const pushSupported = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+  function b64ToBytes(b64){
+    const pad = '='.repeat((4 - b64.length % 4) % 4);
+    const raw = atob((b64 + pad).replace(/-/g, '+').replace(/_/g, '/'));
+    return Uint8Array.from(raw, c => c.charCodeAt(0));
+  }
+  async function currentSub(){
+    try { const reg = await navigator.serviceWorker.getRegistration('/panel'); return reg ? await reg.pushManager.getSubscription() : null; }
+    catch(e){ return null; }
+  }
+  const PUSH_WHO_ALL = [['nicolas','Nicolás'],['tula','Franco'],['chino','Chino'],['lucho','Lucho'],['todos','Todos los turnos']];
+  let PUSH_WHO = PUSH_WHO_ALL;
+  async function renderPush(msg, isErr){
+    const standaloneNow = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+    if (!pushSupported || (isIOS && !standaloneNow)){
+      pushBody.innerHTML = '<div class="push-state off">Para recibir avisos, primero instalá el panel en este celular y abrilo desde el ícono.</div>' +
+        '<ol class="push-steps"><li>Tocá <b>Compartir</b> en Safari.</li><li>Elegí <b>Agregar a inicio</b>.</li><li>Abrí <b>Goods Panel</b> desde el ícono y volvé a tocar <b>Avisos</b>.</li></ol>' +
+        (isIOS ? '<p class="manual-sub" style="margin-top:10px">Hace falta iOS 16.4 o más nuevo.</p>' : '');
+      return;
+    }
+    const sub = await currentSub();
+    let who = null; try { who = localStorage.getItem('goodsPushWho'); } catch(e){}
+    PUSH_WHO = ME && ME.role === 'barbero' ? PUSH_WHO_ALL.filter(x => x[0] === ME.barber) : PUSH_WHO_ALL;
+    if (!who && ME && ME.barber) who = ME.barber;
+    if (Notification.permission === 'denied'){
+      pushBody.innerHTML = '<div class="push-state off">Los avisos están bloqueados en este celular.</div>' +
+        '<p class="manual-sub">Para habilitarlos: Ajustes del iPhone → Notificaciones → Goods Panel → Permitir notificaciones. Después volvé acá.</p>';
+      return;
+    }
+    const opts = PUSH_WHO.map(([id, n]) => '<option value="' + id + '"' + (id === who ? ' selected' : '') + '>' + n + '</option>').join('');
+    pushBody.innerHTML = (sub && who ? '<div class="push-state on">✓ Avisos activados para <b>&nbsp;' + escapeHtml((PUSH_WHO.find(x => x[0] === who) || [,''])[1]) + '</b></div>' : '') +
+      '<div class="field"><label for="pushWho">¿Quién usa este celular?</label><select id="pushWho">' + opts + '</select></div>' +
+      '<div class="manual-actions">' +
+        '<button type="button" class="btn dark" id="pushOn">' + (sub && who ? 'Guardar cambio' : 'Activar avisos') + '</button>' +
+        (sub ? '<button type="button" class="btn ghost" id="pushOff">Desactivar</button>' : '') +
+      '</div><p class="manual-hint' + (isErr ? ' err' : '') + '" id="pushHint">' + (msg ? escapeHtml(msg) : '') + '</p>';
+    document.getElementById('pushOn').onclick = pushEnable;
+    const off = document.getElementById('pushOff'); if (off) off.onclick = pushDisable;
+  }
+  async function pushEnable(){
+    const btn = document.getElementById('pushOn');
+    const who = document.getElementById('pushWho').value;
+    btn.disabled = true; btn.textContent = 'Activando…';
+    try {
+      // el permiso se pide en el mismo toque (iPhone lo exige)
+      const perm = Notification.permission === 'granted' ? 'granted' : await Notification.requestPermission();
+      if (perm !== 'granted'){ renderPush('Sin permiso no se pueden mandar avisos. Si te equivocaste, habilitalo en Ajustes → Notificaciones → Goods Panel.', true); return; }
+      const reg = await navigator.serviceWorker.register('/sw-panel.js', {scope: '/panel'});
+      await navigator.serviceWorker.ready;
+      let sub = await reg.pushManager.getSubscription();
+      if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToBytes(VAPID_PUBLIC) });
+      const j = sub.toJSON();
+      const { error } = await withTimeout(supabase.from('push_subscriptions').upsert({
+        endpoint: j.endpoint, barber_id: who, p256dh: j.keys.p256dh, auth: j.keys.auth,
+        user_agent: navigator.userAgent.slice(0, 200), updated_at: new Date().toISOString()
+      }));
+      if (error) throw error;
+      try { localStorage.setItem('goodsPushWho', who); } catch(e){}
+      renderPush('Listo. Los próximos turnos te van a llegar como notificación.');
+    } catch(e){
+      console.error('Goods: no se pudieron activar los avisos', e);
+      renderPush('No se pudieron activar los avisos. Revisá la conexión y probá de nuevo.', true);
+    }
+  }
+  async function pushDisable(){
+    const sub = await currentSub();
+    try {
+      if (sub){
+        await withTimeout(supabase.from('push_subscriptions').delete().eq('endpoint', sub.endpoint));
+        await sub.unsubscribe();
+      }
+      try { localStorage.removeItem('goodsPushWho'); } catch(e){}
+      renderPush('Avisos desactivados en este celular.');
+    } catch(e){ renderPush('No se pudo desactivar. Probá de nuevo.', true); }
+  }
+  function openAccount(){
+    pushPanel.hidden = false; renderPush();
+    document.getElementById('meLine').textContent = ME ? 'Entraste como ' + (myName() || 'dueño') + (ME.email ? ' · ' + ME.email : '') + '.' : '';
+    hintIn(passHint, '');
+  }
+
+  /* ---------- Navegación de abajo: Agenda · Caja · Turno · Cuenta ---------- */
+  // Una sola pantalla a la vez, como una app. La agenda es la principal.
+  const tabbar = document.getElementById('tabbar');
+  const agendaView = document.getElementById('agendaView');
+  const VIEW_TITLE = { agenda: 'Agenda', turno: 'Nuevo turno', cuenta: 'Mi cuenta' };
+  function setTitle(t){ document.getElementById('phTitle').textContent = t; }
+  function markTab(v){
+    tabbar.querySelectorAll('button').forEach(x => {
+      const on = x.dataset.v === v;
+      x.classList.toggle('active', on);
+      if (on) x.setAttribute('aria-current', 'page'); else x.removeAttribute('aria-current');
+    });
+  }
+  setView = function(v){
+    if (cashOpen && v !== 'caja') closeCash();
+    VIEW = v;
+    adminDashboard.dataset.view = v;
+    bgPhoto.classList.toggle('dim', v !== 'agenda');
+    agendaView.hidden = v !== 'agenda';
+    document.getElementById('adminStats').hidden = v !== 'agenda';
+    manualForm.hidden = true; pushPanel.hidden = true; settingsPanel.hidden = true;
+    setTitle(VIEW_TITLE[v] || '');
+    markTab(v);
+    if (v === 'turno') openManualForm();
+    if (v === 'cuenta') openAccount();
+    window.scrollTo(0, 0);
+  };
+  tabbar.addEventListener('click', e => {
+    const x = e.target.closest('button'); if (!x) return;
+    const v = x.dataset.v;
+    if (v === 'caja'){ if (cashOpen) closeCash(); else { openCash(); markTab('caja'); } return; }
+    if (v === VIEW && !cashOpen){ window.scrollTo({top:0, behavior:'smooth'}); return; } // tocar la pestaña en la que estás sube al principio
+    setView(v);
+  });
+  // fecha de hoy y estado de la conexión arriba de todo
+  function renderHead(){
+    const now = new Date();
+    const off = !adminOffline.hidden;
+    document.getElementById('phLive').classList.toggle('off', off);
+    document.getElementById('phDate').textContent = off ? 'Sin conexión' : (d => d.charAt(0).toUpperCase() + d.slice(1))(now.toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long'}).replace(',', ''));
+  }
+  setInterval(() => { if (!adminDashboard.hidden) renderHead(); }, 30000);
+
+  const passHint = document.getElementById('passHint');
+  document.getElementById('passSave').addEventListener('click', async () => {
+    const a = document.getElementById('pass1'), b = document.getElementById('pass2'), btn = document.getElementById('passSave');
+    if (a.value.length < 8){ hintIn(passHint, 'La contraseña tiene que tener al menos 8 caracteres.', true); a.focus(); return; }
+    if (a.value !== b.value){ hintIn(passHint, 'Las dos contraseñas no coinciden.', true); b.focus(); return; }
+    btn.disabled = true; btn.textContent = 'Guardando…';
+    try {
+      const { error } = await withTimeout(supabase.auth.updateUser({ password: a.value }));
+      if (error) throw error;
+      a.value = b.value = '';
+      hintIn(passHint, '✓ Contraseña cambiada. La próxima vez entrá con la nueva.');
+    } catch(e){
+      hintIn(passHint, /same|different/i.test((e && e.message) || '') ? 'Tiene que ser distinta a la anterior.' : 'No se pudo cambiar. Probá de nuevo.', true);
+    } finally { btn.disabled = false; btn.textContent = 'Cambiar contraseña'; }
+  });
+
+
+  /* ---------- Sin zoom: refuerzo para el iPhone (Safari a veces ignora la configuración de la página) ---------- */
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach(t => document.addEventListener(t, e => e.preventDefault(), {passive:false}));
+  document.addEventListener('touchmove', e => { if (e.touches.length > 1 || (e.scale && e.scale !== 1)) e.preventDefault(); }, {passive:false});
+
+  /* mientras se escribe en el celular, la barra de abajo se esconde (si no, el teclado la sube) */
+  if (IS_TOUCH){
+    const isField = el => el && el.matches && el.matches('input:not([type=checkbox]):not([type=radio]), select, textarea');
+    document.addEventListener('focusin', e => { if (isField(e.target)) document.body.classList.add('typing'); });
+    document.addEventListener('focusout', () => setTimeout(() => { if (!isField(document.activeElement)) document.body.classList.remove('typing'); }, 60));
+  }
+
+  /* ---------- App en el celular ---------- */
+  // Service worker: solo la cáscara del panel (nunca datos de clientes). Sin él, todo funciona igual.
+  if ('serviceWorker' in navigator && location.protocol === 'https:'){
+    navigator.serviceWorker.register('/sw-panel.js', {scope: '/panel'}).catch(() => {});
+  }
+  const installTip = document.getElementById('installTip');
+  const installText = document.getElementById('installText');
+  const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  if (standalone) document.documentElement.classList.add('app');
+  let tipOff = false;
+  try { tipOff = localStorage.getItem('goodsPanelTip') === 'no'; } catch(e){}
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  let deferredPrompt = null;
+  function showInstallTip(){
+    if (standalone || tipOff) return;
+    if (isIOS){
+      installText.innerHTML = '<b>Instalá el panel en tu iPhone</b>Tocá <svg class="share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5M5 13v7h14v-7"/></svg> <b style="display:inline">Compartir</b> y después <b style="display:inline">Agregar a inicio</b>. Te queda como una app más, sin descargar nada.';
+      installTip.hidden = false;
+    } else if (deferredPrompt){
+      installText.innerHTML = '<b>Instalá el panel en tu celular</b>Te queda como una app más, sin descargar nada.<br><button type="button" class="install-go" id="installGo">Instalar</button>';
+      installTip.hidden = false;
+      document.getElementById('installGo').onclick = async () => {
+        deferredPrompt.prompt();
+        try { await deferredPrompt.userChoice; } catch(e){}
+        deferredPrompt = null; installTip.hidden = true;
+      };
+    }
+  }
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; if (!adminDashboard.hidden) showInstallTip(); });
+  window.addEventListener('appinstalled', () => { installTip.hidden = true; });
+  document.getElementById('installClose').addEventListener('click', () => {
+    installTip.hidden = true;
+    try { localStorage.setItem('goodsPanelTip', 'no'); } catch(e){}
+  });
+  const _openDashboard = openDashboard;
+  openDashboard = async function(){ await _openDashboard(); showInstallTip(); };
+
+  // Al abrir el panel: si ya hay sesión iniciada va directo a los turnos,
+  // si no, muestra el login. Espera a que Supabase termine de conectar.
+  (async () => {
+    for (let i = 0; i < 32 && !supabase; i++) await new Promise(r => setTimeout(r, 500));
+    try {
+      if (!supabase) throw new Error('Supabase no disponible');
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session){ await openDashboard(); } else { showLoginScreen(); }
+    } catch(err){
+      showLoginScreen();
+      adminPinError.textContent = 'No pudimos conectar con la base de datos. Revisá tu conexión.';
+      adminPinError.classList.add('show');
+    }
+  })();
+
+})();
+</script>
+</body>
+</html>
