@@ -719,6 +719,33 @@
   .bg-photo.dim{opacity:0 !important;}
   body.typing .tabbar{display:none;}
   body.typing .admin-panel.open{padding-bottom:24px;}
+  /* ---------- Recordatorios de mañana ---------- */
+  .remind{background:var(--s1); border:1px solid var(--bd); border-radius:16px; padding:16px; margin:-8px 0 22px;}
+  .rm-head{display:flex; justify-content:space-between; align-items:flex-start; gap:12px;}
+  .rm-head h4{font:700 17px 'Manrope', sans-serif; letter-spacing:-.01em; color:var(--tx);}
+  .rm-head p{margin:2px 0 0; font-size:12.5px; color:var(--tx3);}
+  .rm-count{flex-shrink:0; font:600 12px 'Manrope', sans-serif; color:var(--tx2); padding:4px 10px; border-radius:20px; background:rgba(169,203,238,.1);}
+  .rm-count.ok{color:#fff; background:rgba(78,143,214,.35);}
+  .rm-bar{height:4px; border-radius:4px; background:rgba(169,203,238,.1); margin:12px 0 4px; overflow:hidden;}
+  .rm-bar i{display:block; height:100%; border-radius:4px; background:var(--ac); transition:width .4s ease;}
+  .rm-list{display:flex; flex-direction:column; margin-top:6px;}
+  .rm-row{display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:12px; padding:10px 0; border-top:1px solid var(--bd);}
+  .rm-row:first-child{border-top:0;}
+  .rm-t{font:600 14px 'JetBrains Mono', monospace; color:var(--ac2); font-variant-numeric:tabular-nums;}
+  .rm-n{font:600 14.5px 'Manrope', sans-serif; color:var(--tx); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .rm-n small{display:block; font:500 12px 'Manrope', sans-serif; color:var(--tx3);}
+  .rm-row.sent .rm-n, .rm-row.sent .rm-t{opacity:.55;}
+  .rm-row.nophone .rm-n, .rm-row.nophone .rm-t{opacity:.45;}
+  .rm-act{display:flex; align-items:center; gap:10px;}
+  .rm-send{display:inline-flex; align-items:center; gap:7px; height:36px; padding:0 14px; border-radius:10px; background:#25D366; color:#06301a; font:700 13px 'Manrope', sans-serif;}
+  .rm-send svg{width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round;}
+  .rm-send:active{transform:scale(.96);}
+  .rm-done{font:600 12.5px 'Manrope', sans-serif; color:var(--tx2);}
+  .rm-done::before{content:"✓ ";}
+  .rm-again{font:600 12.5px 'Manrope', sans-serif; color:var(--ac2); text-decoration:underline; text-underline-offset:2px;}
+  .rm-none{font-size:12.5px; color:var(--tx3);}
+  .rm-toggle{margin-top:8px; background:none; border:0; padding:4px 0; color:var(--ac2); font:600 13px 'Manrope', sans-serif;}
+  body.has-photo .remind{background:rgba(18,38,66,.72);}
 </style>
 </head>
 <body>
@@ -922,6 +949,7 @@
     <div class="agenda-view" id="agendaView">
       <div class="admin-filters" id="adminFilters"></div>
       <section class="today" id="adminToday" aria-label="Agenda de hoy"></section>
+      <section class="remind" id="adminRemind" aria-label="Recordatorios por WhatsApp" hidden></section>
       <div class="list-head">
         <h4 class="list-title">Turnos</h4>
         <label class="admin-history"><input type="checkbox" id="adminShowAll"> Ver atendidos y cancelados</label>
@@ -1053,7 +1081,8 @@
       note: row.note,
       status: row.status,
       ticketNum: row.ticket_num,
-      amount: row.amount == null ? null : Number(row.amount)
+      amount: row.amount == null ? null : Number(row.amount),
+      remindedAt: row.reminded_at || null
     }));
   }
 
@@ -1299,6 +1328,7 @@
 
   function renderAdminList(){
     renderToday();
+    renderRemind();
     renderCash();
     const mine = adminBookingsCache.filter(b => adminBarberFilter === 'all' || b.barberId === adminBarberFilter);
     const pending = mine.filter(isBookingOverdue);
@@ -1409,6 +1439,7 @@
         wa.setAttribute('aria-label', remind ? 'Recordarle el turno por WhatsApp' : 'Escribirle por WhatsApp');
         wa.title = remind ? 'Recordar por WhatsApp' : 'WhatsApp';
         wa.innerHTML = ICON_WA;
+        if (remind) wa.addEventListener('click', () => markReminded(b));
         icons.appendChild(wa);
       }
       actions.appendChild(icons);
@@ -1666,6 +1697,76 @@
       'Si no podés venir, avisanos por acá así liberamos el horario. 💈';
   }
 
+
+  /* ================= RECORDATORIOS DE MAÑANA (WhatsApp, un toque por cliente) ================= */
+  // Lista de los turnos del próximo día de atención con un botón que abre WhatsApp con el mensaje
+  // ya escrito. Lo enviado queda guardado en la base (reminded_at): todo el equipo ve que ya se mandó.
+  const adminRemind = document.getElementById('adminRemind');
+  let remindOpen = false;
+  function remindDay(){
+    const now = new Date();
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    if (d.getDay() === 0) d.setDate(d.getDate() + 1); // el domingo está cerrado
+    return d;
+  }
+  async function markReminded(b){
+    if (b.remindedAt) return;
+    b.remindedAt = new Date().toISOString();
+    renderRemind();
+    try {
+      const { error } = await withTimeout(supabase.from('bookings').update({ reminded_at: b.remindedAt }).eq('id', b.id));
+      if (error) throw error;
+    } catch(e){
+      b.remindedAt = null; renderRemind();
+      flash('No se pudo guardar que el recordatorio se envió. Si ya lo mandaste, no hace falta repetirlo.', true);
+    }
+  }
+  function renderRemind(){
+    const day = remindDay();
+    const key = localDateKey(day);
+    const now = new Date();
+    const isTomorrow = day.getDate() === new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).getDate();
+    const list = adminBookingsCache
+      .filter(b => b.date === key && b.status === 'confirmed' && (adminBarberFilter === 'all' || b.barberId === adminBarberFilter))
+      .sort((a, b) => toMin(a.time) - toMin(b.time));
+    if (!list.length){ adminRemind.hidden = true; adminRemind.innerHTML = ''; return; }
+    const withPhone = list.filter(b => waNumber(b.phone));
+    const sent = withPhone.filter(b => b.remindedAt).length;
+    const all = withPhone.length && sent === withPhone.length;
+    const showBarber = adminBarberFilter === 'all' && !(ME && ME.role === 'barbero');
+    adminRemind.hidden = false;
+    let html = '<div class="rm-head"><div><h4>Recordatorios</h4><p>' + (isTomorrow ? 'Mañana' : 'Lunes') + ' · ' + escapeHtml(dateLabelFor(day)) + '</p></div>' +
+      '<span class="rm-count' + (all ? ' ok' : '') + '">' + (withPhone.length ? (all ? 'Todos enviados' : sent + ' de ' + withPhone.length + ' enviados') : 'Sin teléfonos') + '</span></div>';
+    if (withPhone.length) html += '<div class="rm-bar"><i style="width:' + Math.round(sent / withPhone.length * 100) + '%"></i></div>';
+    const collapsed = all && !remindOpen;
+    if (collapsed){
+      html += '<button type="button" class="rm-toggle" data-rm="open">Ver la lista</button>';
+    } else {
+      html += '<div class="rm-list">' + list.map(b => {
+        const wa = waNumber(b.phone);
+        const who = '<span class="rm-t">' + escapeHtml(b.time) + '</span><span class="rm-n">' + escapeHtml(b.customerName || 'Sin nombre') +
+          (showBarber ? '<small>' + escapeHtml(b.barberName || '') + '</small>' : '') + '</span>';
+        let act;
+        if (!wa) act = '<span class="rm-none">Sin teléfono</span>';
+        else {
+          const href = 'https://wa.me/' + wa + '?text=' + encodeURIComponent(reminderText(b));
+          act = b.remindedAt
+            ? '<span class="rm-done">Enviado</span><a class="rm-again" href="' + href + '" target="_blank" rel="noopener" aria-label="Volver a enviar a ' + escapeHtml(b.customerName || 'el cliente') + '">Reenviar</a>'
+            : '<a class="rm-send" data-id="' + escapeHtml(b.id) + '" href="' + href + '" target="_blank" rel="noopener">' + ICON_WA + '<span>Enviar</span></a>';
+        }
+        return '<div class="rm-row' + (b.remindedAt ? ' sent' : '') + (wa ? '' : ' nophone') + '">' + who + '<span class="rm-act">' + act + '</span></div>';
+      }).join('') + '</div>';
+      if (all) html += '<button type="button" class="rm-toggle" data-rm="close">Ocultar la lista</button>';
+    }
+    adminRemind.innerHTML = html;
+  }
+  adminRemind.addEventListener('click', e => {
+    const send = e.target.closest('.rm-send');
+    if (send){ const b = adminBookingsCache.find(x => String(x.id) === send.dataset.id); if (b) markReminded(b); return; }
+    const t = e.target.closest('.rm-toggle');
+    if (t){ remindOpen = t.dataset.rm === 'open'; renderRemind(); }
+  });
+
   // ---- Agenda de hoy, separada por barbero
   const adminToday = document.getElementById('adminToday');
   // Agenda de arriba: hoy y el próximo día de atención (mañana, o el lunes si
@@ -1678,7 +1779,17 @@
       .filter(b => b.date === key && b.status !== 'cancelled')
       .sort((a, b) => toMin(a.time) - toMin(b.time));
     // en el día siguiente se muestran solo los barberos que ya tienen turnos
-    const shown = isToday ? barbers : barbers.filter(br => list.some(b => b.barberId === br.id));
+    let shown = isToday ? barbers : barbers.filter(br => list.some(b => b.barberId === br.id));
+    if (isToday){
+      // hoy solo se muestran los que atienden o tienen turnos; si no atiende nadie, una sola línea
+      const works = br => getTimesForBarberDay(br.id, DOW_SHORT[dayDate.getDay()]).length && !isBlockedDay(key, br.id);
+      const active = barbers.filter(br => works(br) || list.some(b => b.barberId === br.id));
+      if (!active.length){
+        const count0 = list.filter(b => adminBarberFilter === 'all' || b.barberId === adminBarberFilter).length;
+        return { html: '<p class="today-none">' + (barbers.length === 1 ? 'Hoy no atendés.' : 'Hoy el local está cerrado.') + '</p>', count: count0, closed: true };
+      }
+      if (barbers.length > 1) shown = active;
+    }
     const count = list.filter(b => adminBarberFilter === 'all' || b.barberId === adminBarberFilter).length;
     if (!shown.length) return { html: '<p class="today-none">Todavía no hay turnos reservados para este día.</p>', count };
     let html = '<div class="today-cols">';
@@ -1716,7 +1827,7 @@
 
     const today = agendaCols(now, true, nowMin);
     let html = '<div class="today-head"><h4>Hoy</h4><span class="when">' + escapeHtml(dateLabelFor(now)) + ' · ' + plural(today.count) + '</span></div>';
-    html += next
+    if (!today.closed) html += next
       ? '<p class="today-next">Próximo: <strong>' + escapeHtml(next.time) + ' · ' + escapeHtml(next.customerName || 'Sin nombre') + '</strong> con ' + escapeHtml(next.barberName || '') + '</p>'
       : '<p class="today-next">No quedan turnos pendientes por hoy.</p>';
     html += today.html;
