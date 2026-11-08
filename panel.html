@@ -719,6 +719,11 @@
   .bg-photo.dim{opacity:0 !important;}
   body.typing .tabbar{display:none;}
   body.typing .admin-panel.open{padding-bottom:24px;}
+  /* tilde en el ícono de WhatsApp: el recordatorio ya se mandó */
+  .icon-btn.wa{position:relative;}
+  .icon-btn.wa.sent::after{content:""; position:absolute; top:-5px; right:-5px; width:16px; height:16px; border-radius:50%;
+    background:#25D366 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23062a16' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center/11px no-repeat;
+    box-shadow:0 0 0 2px #0A1930;}
 </style>
 </head>
 <body>
@@ -1053,7 +1058,8 @@
       note: row.note,
       status: row.status,
       ticketNum: row.ticket_num,
-      amount: row.amount == null ? null : Number(row.amount)
+      amount: row.amount == null ? null : Number(row.amount),
+      remindedAt: row.reminded_at || null
     }));
   }
 
@@ -1409,6 +1415,10 @@
         wa.setAttribute('aria-label', remind ? 'Recordarle el turno por WhatsApp' : 'Escribirle por WhatsApp');
         wa.title = remind ? 'Recordar por WhatsApp' : 'WhatsApp';
         wa.innerHTML = ICON_WA;
+        if (remind){
+          if (b.remindedAt){ wa.classList.add('sent'); wa.setAttribute('aria-label', 'Recordatorio ya enviado. Volver a enviar por WhatsApp'); wa.title = 'Recordatorio enviado'; }
+          wa.addEventListener('click', () => markReminded(b, wa));
+        }
         icons.appendChild(wa);
       }
       actions.appendChild(icons);
@@ -1666,6 +1676,23 @@
       'Si no podés venir, avisanos por acá así liberamos el horario. 💈';
   }
 
+
+  /* ---------- Recordatorio por WhatsApp: queda marcado para todo el equipo ---------- */
+  // Al tocar el ícono de WhatsApp de un turno confirmado se guarda en la base (reminded_at),
+  // así en todos los celulares aparece la tilde y nadie le escribe dos veces al mismo cliente.
+  async function markReminded(b, icon){
+    if (b.remindedAt) return;
+    b.remindedAt = new Date().toISOString();
+    if (icon) icon.classList.add('sent');
+    try {
+      const { error } = await withTimeout(supabase.from('bookings').update({ reminded_at: b.remindedAt }).eq('id', b.id));
+      if (error) throw error;
+    } catch(e){
+      b.remindedAt = null;
+      if (icon) icon.classList.remove('sent');
+    }
+  }
+
   // ---- Agenda de hoy, separada por barbero
   const adminToday = document.getElementById('adminToday');
   // Agenda de arriba: hoy y el próximo día de atención (mañana, o el lunes si
@@ -1678,7 +1705,17 @@
       .filter(b => b.date === key && b.status !== 'cancelled')
       .sort((a, b) => toMin(a.time) - toMin(b.time));
     // en el día siguiente se muestran solo los barberos que ya tienen turnos
-    const shown = isToday ? barbers : barbers.filter(br => list.some(b => b.barberId === br.id));
+    let shown = isToday ? barbers : barbers.filter(br => list.some(b => b.barberId === br.id));
+    if (isToday){
+      // hoy solo se muestran los que atienden o tienen turnos; si no atiende nadie, una sola línea
+      const works = br => getTimesForBarberDay(br.id, DOW_SHORT[dayDate.getDay()]).length && !isBlockedDay(key, br.id);
+      const active = barbers.filter(br => works(br) || list.some(b => b.barberId === br.id));
+      if (!active.length){
+        const count0 = list.filter(b => adminBarberFilter === 'all' || b.barberId === adminBarberFilter).length;
+        return { html: '<p class="today-none">' + (barbers.length === 1 ? 'Hoy no atendés.' : 'Hoy el local está cerrado.') + '</p>', count: count0, closed: true };
+      }
+      if (barbers.length > 1) shown = active;
+    }
     const count = list.filter(b => adminBarberFilter === 'all' || b.barberId === adminBarberFilter).length;
     if (!shown.length) return { html: '<p class="today-none">Todavía no hay turnos reservados para este día.</p>', count };
     let html = '<div class="today-cols">';
@@ -1716,7 +1753,7 @@
 
     const today = agendaCols(now, true, nowMin);
     let html = '<div class="today-head"><h4>Hoy</h4><span class="when">' + escapeHtml(dateLabelFor(now)) + ' · ' + plural(today.count) + '</span></div>';
-    html += next
+    if (!today.closed) html += next
       ? '<p class="today-next">Próximo: <strong>' + escapeHtml(next.time) + ' · ' + escapeHtml(next.customerName || 'Sin nombre') + '</strong> con ' + escapeHtml(next.barberName || '') + '</p>'
       : '<p class="today-next">No quedan turnos pendientes por hoy.</p>';
     html += today.html;
