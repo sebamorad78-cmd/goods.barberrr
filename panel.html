@@ -379,6 +379,9 @@
   .cx-seg button{border:0; background:transparent; color:#9fb2c9; font:600 13px 'Manrope', sans-serif; padding:9px 0; border-radius:9px; cursor:pointer; transition:background .2s, color .2s;}
   .cx-seg button.active{background:#E6EDF6; color:#0A1930;}
   .cx-seg button:focus-visible, .cx-close:focus-visible{outline:2px solid #A9CBEE; outline-offset:2px;}
+  .cx-scope{display:flex; gap:6px;}
+  .cx-scope button{border:1px solid rgba(169,203,238,.2); background:transparent; color:#9fb2c9; font:600 12.5px 'Manrope', sans-serif; padding:7px 14px; border-radius:20px; cursor:pointer;}
+  .cx-scope button.active{background:rgba(78,143,214,.22); border-color:#4E8FD6; color:#fff;}
   .cx-hero{padding:6px 2px 4px;}
   .cx-label{font-family:'JetBrains Mono', monospace; font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:#7f93ad;}
   .cx-big{font-family:'Manrope', sans-serif; font-weight:800; font-size:clamp(44px, 12vw, 64px); letter-spacing:-.035em; line-height:1.05; margin:6px 0 16px; color:#fff; font-variant-numeric:tabular-nums;}
@@ -514,6 +517,10 @@
       </div>
       <button type="button" class="cx-close" id="cxClose" aria-label="Cerrar caja">&times;</button>
     </header>
+    <div class="cx-scope" id="cxScope" hidden>
+      <button type="button" data-s="mine">Lo mío</button>
+      <button type="button" data-s="all">Todo el local</button>
+    </div>
     <div class="cx-seg" role="tablist" id="cxSeg">
       <button type="button" data-p="day" role="tab">Hoy</button>
       <button type="button" data-p="week" role="tab">7 días</button>
@@ -924,7 +931,7 @@
 
   function renderAdminFilters(){
     adminFilters.innerHTML = '';
-    if (ME && ME.role === 'barbero'){ adminFilters.hidden = true; return; }
+    if (ME && ME.barber){ adminFilters.hidden = true; adminBarberFilter = ME.barber; return; }
     adminFilters.hidden = false;
     const allChip = document.createElement('button');
     allChip.type = 'button';
@@ -1673,7 +1680,7 @@
     if (b.status === 'done' && b.amount != null) CASH.push({ id: b.id, barberId: b.barberId, date: b.date, amount: b.amount });
     renderCash();
   }
-  let cashOpen = false, cxSel = null, lastSync = 0;
+  let cashOpen = false, cxSel = null, lastSync = 0, cashScope = 'mine';
   function countTo(el, to){
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const from = Number(el.dataset.v || 0); el.dataset.v = to;
@@ -1689,7 +1696,11 @@
     const weekFrom = localDateKey(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6));
     const inPeriod = r => cashPeriod === 'day' ? r.date === today : cashPeriod === 'week' ? r.date >= weekFrom && r.date <= today :
       cashPeriod === 'month' ? r.date.slice(0, 7) === month : true;
-    const barbers = BARBERS.filter(b => adminBarberFilter === 'all' || b.id === adminBarberFilter);
+    const socio = ME && ME.role === 'socio';
+    document.getElementById('cxScope').hidden = !socio;
+    document.querySelectorAll('#cxScope button').forEach(x => x.classList.toggle('active', x.dataset.s === cashScope));
+    const scopeId = socio ? (cashScope === 'all' ? 'all' : ME.barber) : adminBarberFilter;
+    const barbers = BARBERS.filter(b => scopeId === 'all' || b.id === scopeId);
     const ids = new Set(barbers.map(b => b.id));
     const mineAll = CASH.filter(r => ids.has(r.barberId));
     const rows = mineAll.filter(inPeriod);
@@ -1707,7 +1718,7 @@
     document.querySelectorAll('#cxSeg button').forEach(x => { x.classList.toggle('active', x.dataset.p === cashPeriod); x.setAttribute('aria-selected', x.dataset.p === cashPeriod); });
     document.getElementById('cxPeriod').textContent = (cashPeriod === 'day' ? 'Hoy · ' + dateLabelFor(now) : cashPeriod === 'week' ? 'Últimos 7 días' :
       cashPeriod === 'month' ? now.toLocaleDateString('es-AR', {month:'long', year:'numeric'}) : 'Desde que se empezó a contar') +
-      (adminBarberFilter === 'all' ? '' : ' · ' + barbers[0].name);
+      (scopeId === 'all' ? '' : ' · ' + barbers[0].name);
     countTo(document.getElementById('cxTotal'), total);
     document.getElementById('cxKpis').innerHTML =
       '<div class="cx-kpi"><span>Atendidos</span><strong>' + rows.length + '</strong></div>' +
@@ -1756,6 +1767,7 @@
   document.getElementById('adminCashBtn').addEventListener('click', openCash);
   document.getElementById('cxClose').addEventListener('click', closeCash);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && cashOpen) closeCash(); });
+  document.getElementById('cxScope').addEventListener('click', e => { const x = e.target.closest('button'); if (x){ cashScope = x.dataset.s; cxSel = null; renderCash(); } });
   document.getElementById('cxSeg').addEventListener('click', e => { const x = e.target.closest('button'); if (x){ cashPeriod = x.dataset.p; renderCash(); } });
   // indicador "en vivo": cuándo se actualizó por última vez
   setInterval(() => {
