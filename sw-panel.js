@@ -6,7 +6,7 @@
      (otro dominio) no pasan por acá.
    - Siempre intenta la versión más nueva primero; lo guardado se usa solo sin conexión.
    - Al publicar una versión nueva se borra lo guardado de la anterior. */
-const CACHE = 'goods-panel-v2';
+const CACHE = 'goods-panel-v3';
 const SHELL = ['/panel', '/app/icon-192.png', '/app/apple-touch-icon.png'];
 
 self.addEventListener('install', e => {

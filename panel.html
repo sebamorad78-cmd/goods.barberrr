@@ -303,14 +303,14 @@
   /* después de la entrada, el panel aparece de a bloques */
   @keyframes dashIn{from{opacity:0; transform:translateY(18px);} to{opacity:1; transform:none;}}
   .admin-dashboard.enter-head > .admin-header{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) both;}
-  .admin-dashboard.enter-body > .today{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) .08s both;}
+  .admin-dashboard.enter-body .agenda-view > .today{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) .08s both;}
   .admin-dashboard.enter-body .today-col{animation:dashIn .45s cubic-bezier(.2,.7,.2,1) both;}
   .admin-dashboard.enter-body .today-col:nth-child(1){animation-delay:.2s;}
   .admin-dashboard.enter-body .today-col:nth-child(2){animation-delay:.27s;}
   .admin-dashboard.enter-body .today-col:nth-child(3){animation-delay:.34s;}
   .admin-dashboard.enter-body .today-col:nth-child(4){animation-delay:.41s;}
-  .admin-dashboard.enter-body > .admin-filters{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) .3s both;}
-  .admin-dashboard.enter-body > .admin-list{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) .38s both;}
+  .admin-dashboard.enter-body .agenda-view > .admin-filters{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) .3s both;}
+  .admin-dashboard.enter-body .agenda-view > .list-head, .admin-dashboard.enter-body .agenda-view > .admin-list{animation:dashIn .5s cubic-bezier(.2,.7,.2,1) .38s both;}
 
   /* con "reducir animaciones" activado en el dispositivo: sin movimiento, solo fundidos */
   @media (prefers-reduced-motion: reduce){
@@ -459,6 +459,195 @@
   /* ---------- Recordatorio por WhatsApp ---------- */
   .admin-btn.wa{border-color:#25D366; color:#128C4B; display:inline-flex; align-items:center; gap:6px;}
   .admin-btn.wa:hover{background:#25D366; color:#fff; border-color:#25D366;}
+  /* =====================================================================
+     PANEL OSCURO (mismo lenguaje que la Caja) — capa final, pisa lo anterior
+     ===================================================================== */
+  :root{
+    color-scheme:dark;
+    --bg:#060f1d; --s1:rgba(255,255,255,.035); --s2:rgba(255,255,255,.06);
+    --bd:rgba(169,203,238,.12); --bd2:rgba(169,203,238,.2);
+    --tx:#E6EDF6; --tx2:#9fb2c9; --tx3:#7f93ad;
+    --ac:#4E8FD6; --ac2:#A9CBEE; --okc:#3ddc97; --warn:#f0b35a; --bad:#ff8a80;
+    --tab-h:64px;
+  }
+  body{background:var(--bg); color:var(--tx);
+    background-image:radial-gradient(90% 50% at 85% -10%, rgba(78,143,214,.16), transparent 60%),
+      linear-gradient(rgba(169,203,238,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(169,203,238,.03) 1px, transparent 1px);
+    background-size:auto, 32px 32px, 32px 32px; background-attachment:fixed;}
+  .panel-top{background:rgba(6,15,29,.82); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid var(--bd); position:sticky; top:0; z-index:300;}
+  .panel-top .nav-inner{max-width:760px; padding:10px 20px;}
+  .panel-top .brand-icon{width:24px; height:32px;}
+  .panel-top .brand-word{font-size:21px;}
+  .panel-back{font-size:12.5px; color:var(--tx2); opacity:1;}
+  .admin-panel.open{background:transparent; box-shadow:none; border-radius:0; width:100%; max-width:760px; margin:0 auto; padding:0 0 calc(var(--tab-h) + env(safe-area-inset-bottom, 0px) + 28px);}
+  .admin-dashboard{padding:20px 20px 0;}
+  h3, h4, h5{color:var(--tx);}
+
+  /* encabezado de cada pantalla */
+  .admin-header{margin-bottom:16px;}
+  .ph-kicker{display:flex; align-items:center; gap:8px; margin:0 0 4px; font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--tx3);}
+  .ph-title{font-family:'Manrope', sans-serif; font-weight:800; font-size:30px; letter-spacing:-.025em; line-height:1.1; color:#fff;}
+  .ph-stats{margin:6px 0 0; font-size:13.5px; color:var(--tx2); font-variant-numeric:tabular-nums;}
+
+  /* barra de navegación de abajo */
+  .tabbar{position:fixed; left:0; right:0; bottom:0; z-index:850; display:grid; grid-template-columns:repeat(4,1fr);
+    padding:6px 8px calc(6px + env(safe-area-inset-bottom, 0px)); background:rgba(6,15,29,.9);
+    backdrop-filter:blur(16px) saturate(140%); -webkit-backdrop-filter:blur(16px) saturate(140%); border-top:1px solid var(--bd);}
+  .tabbar button{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; height:52px; border:0; background:none; border-radius:12px;
+    color:var(--tx3); font:600 11px 'Manrope', sans-serif; letter-spacing:.02em; -webkit-tap-highlight-color:transparent; transition:color .2s;}
+  .tabbar button > svg{padding:2.5px;}
+  .tabbar svg{width:28px; height:28px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round;}
+  .tabbar button.active{color:#fff;}
+  .tabbar button.active svg{stroke:var(--ac2);}
+  .tabbar button:active{transform:scale(.94);}
+  .tabbar .tab-add i{display:grid; place-items:center; width:34px; height:28px; border-radius:10px; background:var(--ac); box-shadow:0 6px 18px -6px rgba(78,143,214,.8);}
+  .tabbar .tab-add i svg{width:19px; height:19px; stroke:#fff; stroke-width:2.2;}
+  .tabbar .tab-add.active i{background:#E6EDF6;}
+  .tabbar .tab-add.active i svg{stroke:#0A1930;}
+  .tabbar button:focus-visible{outline:2px solid var(--ac2); outline-offset:-2px;}
+  @media (min-width:700px){
+    .tabbar{left:50%; right:auto; bottom:18px; transform:translateX(-50%); width:440px; border:1px solid var(--bd2); border-radius:20px; padding:6px; box-shadow:0 18px 40px -16px rgba(0,0,0,.7);}
+    .admin-panel.open{padding-bottom:120px;}
+  }
+  .cx{padding-bottom:calc(var(--tab-h) + env(safe-area-inset-bottom, 0px));}
+  @media (min-width:700px){ .cx-inner{padding-bottom:110px;} }
+
+  /* avisos: aparecen flotando arriba de la barra, como en una app */
+  .admin-flash{position:fixed; left:16px; right:16px; bottom:calc(var(--tab-h) + env(safe-area-inset-bottom, 0px) + 14px); z-index:860; max-width:520px; margin:0 auto;
+    background:#0f2a1f; color:#bff3dc; border:1px solid rgba(61,220,151,.35); border-radius:12px; padding:12px 14px; box-shadow:0 14px 30px -12px rgba(0,0,0,.7); animation:toastIn .3s cubic-bezier(.2,.7,.2,1);}
+  .admin-flash.err{background:#2a1214; color:#ffd2cd; border-color:rgba(255,138,128,.4);}
+  @media (min-width:700px){ .admin-flash{bottom:96px;} }
+  @keyframes toastIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;}}
+  .admin-offline{background:rgba(240,179,90,.1); color:var(--warn); border-color:rgba(240,179,90,.3); border-radius:10px;}
+  .install-tip{background:var(--s1); border:1px solid var(--bd); border-radius:14px;}
+
+  /* filtros por barbero */
+  .admin-filters{gap:6px; margin-bottom:14px; flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; margin-left:-20px; margin-right:-20px; padding:0 20px;}
+  .admin-filters::-webkit-scrollbar{display:none;}
+  .admin-chip{flex-shrink:0; background:transparent; color:var(--tx2); border:1px solid var(--bd2); font:600 12.5px 'Manrope', sans-serif; padding:7px 14px; border-radius:20px;}
+  .admin-chip.active{background:rgba(78,143,214,.22); border-color:var(--ac); color:#fff;}
+
+  /* agenda de hoy y mañana */
+  .today{background:var(--s1); border:1px solid var(--bd); border-radius:16px; padding:16px; margin-bottom:22px;}
+  .today-head h4{font-family:'Manrope', sans-serif; font-weight:700; font-size:17px; letter-spacing:-.01em;}
+  .today-head.next-day h4{font-size:16px;}
+  .today-head .when{color:var(--tx3); font-size:11px;}
+  .today-head.next-day{border-top-color:var(--bd);}
+  .today-next{color:var(--tx2);}
+  .today-next strong{color:#fff;}
+  .today-col{background:rgba(255,255,255,.025); border-color:var(--bd); border-radius:12px;}
+  .today-col h5{color:var(--ac2); font-family:'Manrope', sans-serif;}
+  .today-slot{border-top-color:var(--bd);}
+  .today-slot .t{color:var(--ac2);}
+  .today-slot.next{background:rgba(78,143,214,.22); border-radius:8px;}
+
+  /* lista de turnos */
+  .list-head{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:6px;}
+  .list-title{font-family:'Manrope', sans-serif; font-weight:700; font-size:17px; letter-spacing:-.01em;}
+  .admin-history{margin:0; font-size:12.5px; color:var(--tx3); gap:7px;}
+  .admin-history input{accent-color:var(--ac); width:16px; height:16px;}
+  .admin-list{gap:8px;}
+  .admin-section-title{margin:14px 0 2px; font:500 12.5px 'Manrope', sans-serif; letter-spacing:0; text-transform:none; color:var(--tx3);}
+  .admin-section-title b{display:block; font:700 11px 'JetBrains Mono', monospace; letter-spacing:.12em; text-transform:uppercase; color:var(--warn); margin-bottom:2px;}
+  .admin-section-title.next b{color:var(--ac2);}
+  .admin-section-title.next{margin-top:22px;}
+  .day-sep{margin:12px 2px 0; font:600 11px 'JetBrains Mono', monospace; letter-spacing:.1em; text-transform:uppercase; color:var(--tx3);}
+  .admin-empty{color:var(--tx3); font-style:normal; padding:28px 0;}
+  .admin-item{position:relative; display:grid; grid-template-columns:minmax(0,1fr); gap:10px; padding:12px 14px 12px 16px; border:1px solid var(--bd); border-radius:14px; background:var(--s1); overflow:hidden;}
+  .admin-item::before{content:""; position:absolute; left:0; top:12px; bottom:12px; width:3px; border-radius:0 3px 3px 0; background:var(--ac);}
+  .admin-item.st-overdue::before{background:var(--warn);}
+  .admin-item.st-done::before{background:var(--okc);}
+  .admin-item.st-cancelled::before{background:rgba(169,203,238,.25);}
+  .admin-item.st-cancelled .admin-item-name, .admin-item.st-cancelled .admin-item-when{opacity:.5; text-decoration:line-through;}
+  .admin-item-main{display:grid; grid-template-columns:auto minmax(0,1fr) auto; grid-template-areas:"t n b" "t m b" "x x x"; column-gap:12px; row-gap:1px; align-items:center;}
+  .admin-item-when{grid-area:t; align-self:start; font:700 17px 'JetBrains Mono', monospace; color:#fff; letter-spacing:-.02em; padding-top:1px; font-variant-numeric:tabular-nums;}
+  .admin-item-name{grid-area:n; font:700 15.5px 'Manrope', sans-serif; color:var(--tx); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .admin-item-meta{grid-area:m; font-size:12.5px; color:var(--tx3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .admin-item-main > .admin-badge{grid-area:b; align-self:start;}
+  .admin-item-main > .admin-amount, .admin-item-main > .amount-edit{grid-area:x;}
+  .admin-badge{font:700 10px 'JetBrains Mono', monospace; letter-spacing:.08em; padding:4px 8px; border-radius:6px;}
+  .admin-badge.confirmed{background:rgba(78,143,214,.16); color:var(--ac2);}
+  .admin-badge.done{background:rgba(61,220,151,.12); color:var(--okc);}
+  .admin-badge.cancelled{background:rgba(169,203,238,.08); color:var(--tx3);}
+  .admin-badge.overdue{background:rgba(240,179,90,.14); color:var(--warn);}
+  .admin-item-actions{display:flex; gap:8px; align-items:center; flex-wrap:nowrap;}
+  .admin-item-actions:empty{display:none;}
+  .admin-btn{height:36px; padding:0 14px; border-radius:10px; border:1px solid var(--bd2); background:transparent; color:var(--tx); font:600 13px 'Manrope', sans-serif; -webkit-tap-highlight-color:transparent;}
+  .admin-btn:hover{border-color:var(--ac2);}
+  .admin-btn:active{transform:scale(.96);}
+  .admin-btn.ok{background:#E6EDF6; border-color:#E6EDF6; color:#0A1930;}
+  .admin-btn.danger{color:var(--tx2);}
+  .admin-btn.danger:hover{border-color:var(--bad); color:var(--bad);}
+  .admin-icons{display:flex; gap:6px; margin-left:auto;}
+  .icon-btn{display:grid; place-items:center; width:36px; height:36px; border-radius:10px; border:1px solid var(--bd2); color:var(--tx2);}
+  .icon-btn svg{width:17px; height:17px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round;}
+  .icon-btn.wa{color:#5ee08f; border-color:rgba(94,224,143,.3);}
+  .icon-btn:active{transform:scale(.94);}
+  .admin-amount{margin-top:8px; color:var(--tx2);}
+  .admin-amount strong{color:var(--okc);}
+  .admin-amount .warn{color:var(--warn);}
+  .admin-amount button{color:var(--ac2);}
+  .amount-edit input{background:var(--s2); border-color:var(--bd2); color:var(--tx); border-radius:10px;}
+  .amount-edit .admin-btn{padding:0 12px;}
+  @media (max-width:640px){ .admin-item{flex-direction:initial; align-items:initial;} }
+
+  /* formularios y pantallas de Turno / Cuenta / Horarios */
+  .manual-form, .settings{background:transparent; border:0; padding:0; margin-bottom:24px;}
+  .manual-form > h4, .push-box > h4{display:none;}
+  .settings h4{font-family:'Manrope', sans-serif; font-weight:700; font-size:18px;}
+  .settings h5{font:700 11px 'JetBrains Mono', monospace; letter-spacing:.12em; color:var(--tx3); margin:28px 0 10px;}
+  .manual-sub, .manual-hint{color:var(--tx2);}
+  .manual-hint.err{color:var(--bad);}
+  .field label{color:var(--tx3); font-size:11px; letter-spacing:.08em;}
+  .field input, .field textarea, .field select, .money-row input, .sched-cell select{background:var(--s1); border:1px solid var(--bd2); color:var(--tx); border-radius:12px;}
+  .field input:focus, .field select:focus, .money-row input:focus, .amount-edit input:focus{border-color:var(--ac); outline:none; box-shadow:0 0 0 3px rgba(78,143,214,.2);}
+  .field input::placeholder{color:#5d708a;}
+  .field input.invalid{border-color:var(--bad);}
+  .field-error{color:var(--bad);}
+  .manual-form .form-grid{gap:12px;}
+  @media (max-width:560px){ .manual-form .form-grid{grid-template-columns:1fr;} }
+  .btn{border-radius:12px; text-transform:none; letter-spacing:0; font-size:14.5px; font-weight:700; padding:13px 20px;}
+  .btn.dark{background:#E6EDF6; color:#0A1930; border-color:#E6EDF6;}
+  .btn.dark:hover{background:#fff; color:#0A1930; transform:none;}
+  .btn.dark:disabled, .btn.dark:disabled:hover{background:#E6EDF6; color:#0A1930;}
+  .btn.ghost, .manual-actions .btn.ghost{background:transparent; color:var(--tx); border-color:var(--bd2);}
+  .btn.ghost:hover{color:#fff; border-color:var(--ac2);}
+  .manual-actions{gap:10px;}
+  @media (max-width:560px){ .manual-actions .btn{flex:1; justify-content:center;} }
+  .push-state{border-radius:12px;}
+  .push-state.on{background:rgba(61,220,151,.1); color:var(--okc);}
+  .push-state.off{background:rgba(240,179,90,.1); color:var(--warn);}
+  .push-steps{color:var(--tx2);}
+  .push-box .field{max-width:none;}
+  .acct-list{display:flex; flex-direction:column; margin:16px 0 6px; border:1px solid var(--bd); border-radius:14px; background:var(--s1); overflow:hidden;}
+  .acct-row{display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%; padding:14px 16px; background:none; border:0; border-top:1px solid var(--bd); color:var(--tx); text-align:left;}
+  .acct-row:first-child{border-top:0;}
+  .acct-row[hidden] + .acct-row{border-top:0;}
+  .acct-row b{display:block; font:700 15px 'Manrope', sans-serif;}
+  .acct-row small{display:block; font-size:12.5px; color:var(--tx3); margin-top:1px;}
+  .acct-row em{font-style:normal; font-size:20px; color:var(--tx3);}
+  .acct-row:active{background:var(--s2);}
+  .acct-row.danger b{color:var(--bad);}
+  .acct-list.acct-out{margin-top:30px;}
+  .back-link{background:none; border:0; padding:0; margin:0 0 6px; color:var(--ac2); font:600 14px 'Manrope', sans-serif;}
+  .sched-wrap{border:1px solid var(--bd); border-radius:14px; background:var(--s1); padding:4px 8px;}
+  .sched-table th{color:var(--tx3);}
+  .sched-table td{border-top-color:var(--bd);}
+  .sched-table td.day{color:var(--tx);}
+  .sched-cell select{border-radius:8px;}
+  .sched-cell label{color:var(--tx3);}
+  .block-item{border-color:var(--bd); background:var(--s1); border-radius:12px;}
+  .block-item .when{color:var(--ac2);}
+  .block-item .why{color:var(--tx3);}
+  .money-row{color:var(--tx);}
+  .money-row input{border-radius:10px;}
+  .money-row small{color:var(--tx3);}
+
+  /* ingreso */
+  .admin-pin-screen{padding:64px 24px 40px;}
+  .admin-pin-screen h3{font-family:'Manrope', sans-serif; font-weight:800; letter-spacing:-.02em; color:#fff;}
+  #adminPinSub{color:var(--tx2) !important;}
+  .admin-pin-screen .btn.dark{margin-top:18px !important;}
 </style>
 </head>
 <body>
@@ -568,17 +757,9 @@
   <div class="admin-dashboard" id="adminDashboard" hidden>
     <div class="admin-header">
       <div>
-        <h3 style="font-size:24px;">Turnos reservados</h3>
-        <p class="eyebrow" id="adminStats" style="margin-top:6px;"></p>
-      </div>
-      <div class="admin-header-actions">
-        <button class="btn dark" id="adminNew" type="button">+ Cargar turno</button>
-        <button class="btn ghost cash-open" id="adminCashBtn" type="button">Caja</button>
-        <button class="btn ghost" id="adminSettings" type="button">Horarios</button>
-        <button class="btn ghost" id="adminPushBtn" type="button">Mi cuenta</button>
-        <button class="btn ghost" id="adminRefresh" type="button">Actualizar</button>
-        <button class="btn ghost" id="adminExport" type="button">Descargar Excel</button>
-        <button class="btn ghost" id="adminLock" type="button">Bloquear</button>
+        <p class="ph-kicker"><span class="cx-live" id="phLive"></span><span id="phDate"></span></p>
+        <h3 class="ph-title" id="phTitle">Agenda</h3>
+        <p class="ph-stats" id="adminStats"></p>
       </div>
     </div>
     <div class="install-tip" id="installTip" hidden>
@@ -611,6 +792,10 @@
     <section class="settings push-box" id="pushPanel" hidden>
       <h4>Mi cuenta</h4>
       <p class="manual-sub" id="meLine"></p>
+      <div class="acct-list">
+        <button type="button" class="acct-row" id="adminSettings"><span><b>Horarios, días bloqueados y precios</b><small>Lo que ven los clientes al reservar</small></span><em aria-hidden="true">›</em></button>
+        <button type="button" class="acct-row" id="adminExport"><span><b>Descargar Excel</b><small>Todos los turnos, por barbero</small></span><em aria-hidden="true">↓</em></button>
+      </div>
       <h5>Avisos en este celular</h5>
       <p class="manual-sub">Cuando entre o se cancele un turno, te llega una notificación a este celular. Sin Telegram ni otras apps.</p>
       <div id="pushBody"></div>
@@ -622,10 +807,13 @@
       </div>
       <p class="manual-hint" id="passHint"></p>
       <div class="manual-actions"><button type="button" class="btn dark" id="passSave">Cambiar contraseña</button></div>
+      <div class="acct-list acct-out">
+        <button type="button" class="acct-row danger" id="adminLock"><span><b>Cerrar sesión</b><small>Para entrar de nuevo se pide email y contraseña</small></span></button>
+      </div>
     </section>
 
     <section class="settings" id="settingsPanel" hidden>
-      <h4>Horarios y días bloqueados</h4>
+      <button type="button" class="back-link" id="settingsBack">‹ Mi cuenta</button>
       <p class="manual-sub">Lo que guardes acá se aplica en la página al instante: los clientes solo ven los horarios en que cada barbero atiende.</p>
 
       <h5>Horario de cada barbero</h5>
@@ -658,11 +846,26 @@
       </div>
     </section>
 
-    <section class="today" id="adminToday" aria-label="Agenda de hoy"></section>
+    <div class="agenda-view" id="agendaView">
+      <div class="admin-filters" id="adminFilters"></div>
+      <section class="today" id="adminToday" aria-label="Agenda de hoy"></section>
+      <div class="list-head">
+        <h4 class="list-title">Turnos</h4>
+        <label class="admin-history"><input type="checkbox" id="adminShowAll"> Ver atendidos y cancelados</label>
+      </div>
+      <div class="admin-list" id="adminList"></div>
+    </div>
 
-    <div class="admin-filters" id="adminFilters"></div>
-    <label class="admin-history"><input type="checkbox" id="adminShowAll"> Mostrar también atendidos y cancelados</label>
-    <div class="admin-list" id="adminList"></div>
+    <nav class="tabbar" id="tabbar" aria-label="Secciones del panel">
+      <button type="button" data-v="agenda" class="active" aria-current="page">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Agenda</span></button>
+      <button type="button" data-v="caja" id="adminCashBtn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Caja</span></button>
+      <button type="button" data-v="turno" id="adminNew" class="tab-add">
+        <i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></i><span>Turno</span></button>
+      <button type="button" data-v="cuenta" id="adminPushBtn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="4"/><path d="M4 20.5c1.4-3.6 4.4-5.5 8-5.5s6.6 1.9 8 5.5"/></svg><span>Cuenta</span></button>
+    </nav>
   </div>
 </main>
 
@@ -804,12 +1007,12 @@
   const adminFilters = document.getElementById('adminFilters');
   const adminList = document.getElementById('adminList');
   const adminExport = document.getElementById('adminExport');
-  const adminRefresh = document.getElementById('adminRefresh');
   const adminOffline = document.getElementById('adminOffline');
   const adminShowAll = document.getElementById('adminShowAll');
   const adminLock = document.getElementById('adminLock');
 
   let adminBarberFilter = 'all';
+  let VIEW = 'agenda', setView = () => {};
   // Cuenta que inició sesión: null = ve todo (dueño). socio: ve todo, arranca en lo suyo. barbero: solo lo suyo.
   let ME = null;
   async function loadMe(){
@@ -912,6 +1115,7 @@
   async function openDashboard(){
     adminPinScreen.style.display = 'none';
     adminDashboard.classList.remove('enter-head', 'enter-body');
+    setView('agenda'); renderHead();
     const loading = loadMe().then(() => loadAndRenderBookings());
     await playPanelIntro();
     adminDashboard.hidden = false;
@@ -966,6 +1170,7 @@
         return;
       }
       adminOffline.hidden = false;
+      renderHead();
       if (!adminBookingsCache.length){
         adminList.innerHTML = '<p class="admin-empty">No pudimos cargar los turnos. Revisá tu conexión: se reintenta solo.</p>';
       }
@@ -973,6 +1178,7 @@
     }
     if (seq !== loadSeq) return; // llegó una respuesta más nueva
     adminOffline.hidden = true;
+    renderHead();
     adminBookingsCache = rows;
     renderAdminFilters();
     renderAdminList();
@@ -1001,38 +1207,63 @@
       adminList.innerHTML = '<p class="admin-empty">No hay turnos próximos' + (adminBarberFilter === 'all' ? '' : ' para este barbero') + '.</p>';
       return;
     }
+    // los turnos van agrupados por día: la fecha se lee una vez y cada tarjeta queda corta
+    const byDay = (list) => {
+      let last = null;
+      list.forEach(b => {
+        if (b.date !== last){
+          last = b.date;
+          const h = document.createElement('p'); h.className = 'day-sep';
+          h.textContent = dayTitle(b);
+          adminList.appendChild(h);
+        }
+        adminList.appendChild(bookingItem(b));
+      });
+    };
     if (pending.length){
       const t = document.createElement('p'); t.className = 'admin-section-title';
-      t.textContent = 'Sin marcar · ¿vinieron? Marcalos como atendidos o cancelados';
+      t.innerHTML = '<b>Sin marcar · ' + pending.length + '</b>¿Vinieron? Marcalos como atendidos o “no vino”.';
       adminList.appendChild(t);
-      pending.slice().sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time)).forEach(b => adminList.appendChild(bookingItem(b)));
+      byDay(pending.slice().sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time)));
     }
     if (upcoming.length){
-      if (pending.length){ const t = document.createElement('p'); t.className = 'admin-section-title next'; t.textContent = adminShowAll.checked ? 'Turnos' : 'Próximos'; adminList.appendChild(t); }
-      upcoming.slice().sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time)).forEach(b => adminList.appendChild(bookingItem(b)));
+      if (pending.length){ const t = document.createElement('p'); t.className = 'admin-section-title next'; t.innerHTML = '<b>' + (adminShowAll.checked ? 'Turnos' : 'Próximos') + '</b>'; adminList.appendChild(t); }
+      byDay(upcoming.slice().sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time)));
     }
   }
+  function dayTitle(b){
+    const now = new Date();
+    const k = d => localDateKey(d);
+    const off = n => new Date(now.getFullYear(), now.getMonth(), now.getDate() + n);
+    const label = b.dateLabel || dateLabelFor(keyToDate(b.date));
+    if (b.date === k(now)) return 'Hoy · ' + label;
+    if (b.date === k(off(1))) return 'Mañana · ' + label;
+    if (b.date === k(off(-1))) return 'Ayer · ' + label;
+    return label;
+  }
+  const ICON_PHONE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h3.5l1.8 4.6-2.3 1.4a11 11 0 0 0 6 6l1.4-2.3L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5A16.5 16.5 0 0 1 3.5 5.6 1.5 1.5 0 0 1 5 4z"/></svg>';
+  const ICON_WA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-4A8 8 0 1 1 8.4 19L4 20z"/><path d="M9 8.6c0 3.3 2.9 6.3 6.3 6.4l1-1.4-1.9-1-0.9.9a4.6 4.6 0 0 1-2.4-2.4l.9-.9-1-1.9L9.6 8"/></svg>';
 
   function bookingItem(b){
     const item = document.createElement('div');
-    item.className = 'admin-item';
+    item.className = 'admin-item st-' + (isBookingOverdue(b) ? 'overdue' : b.status);
     const waPhone = waNumber(b.phone);
     const overdue = isBookingOverdue(b);
     const statusLabel = overdue ? 'Sin marcar' : (b.status === 'done' ? 'Atendido' : (b.status === 'cancelled' ? 'Cancelado' : 'Confirmado'));
 
     const main = document.createElement('div');
     main.className = 'admin-item-main';
+    const showBarber = !(ME && ME.role === 'barbero') && adminBarberFilter === 'all';
     main.innerHTML =
-      '<span class="admin-item-when">' + escapeHtml(b.dateLabel || b.date) + ' · ' + escapeHtml(b.time) + ' · ' + escapeHtml(b.barberName || '') + '</span>' +
+      '<span class="admin-item-when">' + escapeHtml(b.time) + '</span>' +
       '<span class="admin-item-name">' + escapeHtml(b.customerName || 'Sin nombre') + '</span>' +
       '<span class="admin-item-meta">' +
-        (b.phone ? '<a href="tel:'+escapeHtml(b.phone)+'">'+escapeHtml(b.phone)+'</a> · <a href="https://wa.me/'+encodeURIComponent(waPhone)+'" target="_blank" rel="noopener">WhatsApp</a>' : 'Sin teléfono') +
-        (b.note ? ' · ' + escapeHtml(b.note) : '') +
+        [showBarber ? escapeHtml(b.barberName || '') : '', b.note ? escapeHtml(b.note) : '', b.phone ? '' : 'Sin teléfono'].filter(Boolean).join(' · ') +
       '</span>';
     const badge = document.createElement('span');
     badge.className = 'admin-badge ' + (overdue ? 'overdue' : b.status);
     badge.textContent = statusLabel;
-    main.querySelector('.admin-item-when').appendChild(badge);
+    main.appendChild(badge);
 
     const actions = document.createElement('div');
     actions.className = 'admin-item-actions';
@@ -1047,28 +1278,40 @@
       const isFuture = b.date > localDateKey(new Date());
       const doneBtn = document.createElement('button');
       doneBtn.hidden = isFuture;
-      doneBtn.type = 'button'; doneBtn.className = 'admin-btn'; doneBtn.textContent = overdue ? 'Vino · atendido' : 'Marcar atendido';
+      doneBtn.type = 'button'; doneBtn.className = 'admin-btn ok'; doneBtn.textContent = overdue ? 'Vino' : 'Atendido';
       doneBtn.addEventListener('click', () => {
         if (priceFor(b.note) == null) askAmount(b, item, main); // tintura u otro servicio sin precio fijo
         else updateBookingStatus(b, 'done', item);
       });
       actions.appendChild(doneBtn);
       btn(overdue ? 'No vino' : 'Cancelar', 'danger', 'cancelled');
-      if (waPhone && !overdue){
-        const remindBtn = document.createElement('a');
-        remindBtn.className = 'admin-btn wa';
-        remindBtn.target = '_blank'; remindBtn.rel = 'noopener';
-        remindBtn.href = 'https://wa.me/' + waPhone + '?text=' + encodeURIComponent(reminderText(b));
-        remindBtn.textContent = 'Recordar por WhatsApp';
-        actions.appendChild(remindBtn);
-      }
     } else {
       btn('Deshacer', '', 'confirmed');
+    }
+    // llamar y WhatsApp: íconos chicos a la derecha (si está confirmado, el WhatsApp ya lleva el recordatorio escrito)
+    if (b.phone){
+      const icons = document.createElement('span'); icons.className = 'admin-icons';
+      const tel = document.createElement('a');
+      tel.className = 'icon-btn'; tel.href = 'tel:' + String(b.phone).replace(/[^0-9+]/g, '');
+      tel.setAttribute('aria-label', 'Llamar a ' + (b.customerName || 'el cliente') + ' · ' + b.phone); tel.title = b.phone;
+      tel.innerHTML = ICON_PHONE;
+      icons.appendChild(tel);
+      if (waPhone){
+        const wa = document.createElement('a');
+        wa.className = 'icon-btn wa'; wa.target = '_blank'; wa.rel = 'noopener';
+        const remind = b.status === 'confirmed' && !overdue;
+        wa.href = 'https://wa.me/' + waPhone + (remind ? '?text=' + encodeURIComponent(reminderText(b)) : '');
+        wa.setAttribute('aria-label', remind ? 'Recordarle el turno por WhatsApp' : 'Escribirle por WhatsApp');
+        wa.title = remind ? 'Recordar por WhatsApp' : 'WhatsApp';
+        wa.innerHTML = ICON_WA;
+        icons.appendChild(wa);
+      }
+      actions.appendChild(icons);
     }
     if (b.status === 'done'){
       const am = document.createElement('div');
       am.className = 'admin-amount';
-      am.innerHTML = b.amount != null ? 'Cobrado: <strong>' + money(b.amount) + '</strong>' : '<span style="color:#8a5416">Sin monto cargado</span>';
+      am.innerHTML = b.amount != null ? 'Cobrado <strong>' + money(b.amount) + '</strong>' : '<span class="warn">Sin monto cargado</span>';
       const ch = document.createElement('button'); ch.type = 'button'; ch.textContent = b.amount != null ? 'Cambiar' : 'Cargar monto';
       ch.addEventListener('click', () => askAmount(b, item, main));
       am.appendChild(ch);
@@ -1220,17 +1463,9 @@
       adminExport.textContent = original;
     }
   });
-  adminRefresh.addEventListener('click', async () => {
-    adminRefresh.disabled = true;
-    const original = adminRefresh.textContent;
-    adminRefresh.textContent = 'Actualizando…';
-    await loadAndRenderBookings();
-    adminRefresh.disabled = false;
-    adminRefresh.textContent = original;
-  });
   adminLock.addEventListener('click', async () => {
     stopAdminPolling();
-    adminBookingsCache = []; CASH = []; ME = null; adminBarberFilter = 'all'; adminList.innerHTML = ''; adminToday.innerHTML = ''; closeCash();
+    adminBookingsCache = []; CASH = []; ME = null; adminBarberFilter = 'all'; adminList.innerHTML = ''; adminToday.innerHTML = ''; closeCash(); setView('agenda');
     try { if (supabase) await supabase.auth.signOut(); } catch(err){ /* igual mostramos el login */ }
     showLoginScreen();
   });
@@ -1373,10 +1608,9 @@
         (adminBarberFilter === 'all' || b.barberId === adminBarberFilter))
       .sort((a, b) => toMin(a.time) - toMin(b.time));
     const next = upcoming[0];
-    const saludo = saludoSegunHora() + (myName() ? ', ' + myName() : '');
 
     const today = agendaCols(now, true, nowMin);
-    let html = '<div class="today-head"><h4>' + saludo + '</h4><span class="when">Hoy · ' + escapeHtml(dateLabelFor(now)) + ' · ' + plural(today.count) + '</span></div>';
+    let html = '<div class="today-head"><h4>Hoy</h4><span class="when">' + escapeHtml(dateLabelFor(now)) + ' · ' + plural(today.count) + '</span></div>';
     html += next
       ? '<p class="today-next">Próximo: <strong>' + escapeHtml(next.time) + ' · ' + escapeHtml(next.customerName || 'Sin nombre') + '</strong> con ' + escapeHtml(next.barberName || '') + '</p>'
       : '<p class="today-next">No quedan turnos pendientes por hoy.</p>';
@@ -1449,8 +1683,7 @@
     refreshManualTimes();
     mName.focus();
   }
-  function closeManualForm(){ manualForm.hidden = true; setHint(''); }
-  document.getElementById('adminNew').addEventListener('click', () => manualForm.hidden ? openManualForm() : closeManualForm());
+  function closeManualForm(){ manualForm.hidden = true; setHint(''); if (VIEW === 'turno') setView('agenda'); }
   document.getElementById('mCancel').addEventListener('click', closeManualForm);
   mBarber.addEventListener('change', refreshManualTimes);
   mDate.addEventListener('change', refreshManualTimes);
@@ -1640,14 +1873,16 @@
     } finally { bSave.disabled = false; }
   });
 
+  document.getElementById('settingsBack').addEventListener('click', () => setView('cuenta'));
   document.getElementById('adminSettings').addEventListener('click', () => {
-    if (!settingsPanel.hidden){ settingsPanel.hidden = true; return; }
     bDate.min = localDateKey(new Date());
     if (!bDate.value) bDate.value = localDateKey(new Date());
     hintIn(schedHint, ''); hintIn(blockHint, '');
     renderSchedTable(); renderBlockList(); renderMoneyForm(); hintIn(moneyHint, '');
+    pushPanel.hidden = true;
     settingsPanel.hidden = false;
-    settingsPanel.scrollIntoView({behavior:'smooth', block:'start'});
+    setTitle('Horarios y precios');
+    window.scrollTo(0, 0);
   });
 
   /* ================= CAJA: plata por barbero ================= */
@@ -1766,8 +2001,7 @@
     document.getElementById('cxTotal').dataset.v = 0;
     renderCash(); document.getElementById('cxClose').focus();
   }
-  function closeCash(){ cashOpen = false; cxEl.hidden = true; document.documentElement.classList.remove('cx-open'); }
-  document.getElementById('adminCashBtn').addEventListener('click', openCash);
+  function closeCash(){ cashOpen = false; cxEl.hidden = true; document.documentElement.classList.remove('cx-open'); markTab(VIEW); }
   document.getElementById('cxClose').addEventListener('click', closeCash);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && cashOpen) closeCash(); });
   document.getElementById('cxScope').addEventListener('click', e => { const x = e.target.closest('button'); if (x){ cashScope = x.dataset.s; cxSel = null; renderCash(); } });
@@ -1918,13 +2152,53 @@
       renderPush('Avisos desactivados en este celular.');
     } catch(e){ renderPush('No se pudo desactivar. Probá de nuevo.', true); }
   }
-  document.getElementById('adminPushBtn').addEventListener('click', () => {
-    if (!pushPanel.hidden){ pushPanel.hidden = true; return; }
+  function openAccount(){
     pushPanel.hidden = false; renderPush();
     document.getElementById('meLine').textContent = ME ? 'Entraste como ' + (myName() || 'dueño') + (ME.email ? ' · ' + ME.email : '') + '.' : '';
     hintIn(passHint, '');
-    pushPanel.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  /* ---------- Navegación de abajo: Agenda · Caja · Turno · Cuenta ---------- */
+  // Una sola pantalla a la vez, como una app. La agenda es la principal.
+  const tabbar = document.getElementById('tabbar');
+  const agendaView = document.getElementById('agendaView');
+  const VIEW_TITLE = { agenda: 'Agenda', turno: 'Nuevo turno', cuenta: 'Mi cuenta' };
+  function setTitle(t){ document.getElementById('phTitle').textContent = t; }
+  function markTab(v){
+    tabbar.querySelectorAll('button').forEach(x => {
+      const on = x.dataset.v === v;
+      x.classList.toggle('active', on);
+      if (on) x.setAttribute('aria-current', 'page'); else x.removeAttribute('aria-current');
+    });
+  }
+  setView = function(v){
+    if (cashOpen && v !== 'caja') closeCash();
+    VIEW = v;
+    adminDashboard.dataset.view = v;
+    agendaView.hidden = v !== 'agenda';
+    document.getElementById('adminStats').hidden = v !== 'agenda';
+    manualForm.hidden = true; pushPanel.hidden = true; settingsPanel.hidden = true;
+    setTitle(VIEW_TITLE[v] || '');
+    markTab(v);
+    if (v === 'turno') openManualForm();
+    if (v === 'cuenta') openAccount();
+    window.scrollTo(0, 0);
+  };
+  tabbar.addEventListener('click', e => {
+    const x = e.target.closest('button'); if (!x) return;
+    const v = x.dataset.v;
+    if (v === 'caja'){ if (cashOpen) closeCash(); else { openCash(); markTab('caja'); } return; }
+    if (v === VIEW && !cashOpen){ window.scrollTo({top:0, behavior:'smooth'}); return; } // tocar la pestaña en la que estás sube al principio
+    setView(v);
   });
+  // fecha de hoy y estado de la conexión arriba de todo
+  function renderHead(){
+    const now = new Date();
+    const off = !adminOffline.hidden;
+    document.getElementById('phLive').classList.toggle('off', off);
+    document.getElementById('phDate').textContent = off ? 'Sin conexión' : now.toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long'});
+  }
+  setInterval(() => { if (!adminDashboard.hidden) renderHead(); }, 30000);
 
   const passHint = document.getElementById('passHint');
   document.getElementById('passSave').addEventListener('click', async () => {
