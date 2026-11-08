@@ -1,0 +1,12 @@
+# Cloudflare Pages: cuánto tiempo guarda el navegador cada archivo.
+# Librerías y letras llevan la versión en el nombre: no cambian nunca, se guardan un año.
+/app/lib/*
+  Cache-Control: public, max-age=31536000, immutable
+/app/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+# Íconos y fotos de fondo: un día (si se cambia una foto, se renueva sola al día siguiente)
+/app/*
+  Cache-Control: public, max-age=86400
+# El service worker se revisa siempre, así las versiones nuevas llegan enseguida
+/sw-panel.js
+  Cache-Control: no-cache
