@@ -702,6 +702,23 @@
   .cx, .admin-filters, .sched-wrap{overscroll-behavior:contain;}
   /* el iPhone agranda la pantalla al tocar un campo con letra chica: con 16px no lo hace */
   @media (pointer:coarse), (hover:none), (max-width:900px){ input, select, textarea{font-size:16px !important;} }
+  /* ---------- Formularios prolijos en el iPhone ---------- */
+  /* campos sólidos (no se ve la foto a través) */
+  .field input, .field select, .field textarea, .money-row input, .sched-cell select, .amount-edit input{background:#122642;}
+  .field select:disabled{opacity:.6;}
+  /* el campo de fecha del iPhone no respeta el ancho y se sale de la pantalla: se lo iguala a los demás */
+  input[type="date"]{-webkit-appearance:none; appearance:none; display:block; width:100%; min-width:0; max-width:100%; min-height:50px; text-align:left; line-height:1.2;}
+  input[type="date"]::-webkit-date-and-time-value{text-align:left; margin:0;}
+  input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(.85); opacity:.8; cursor:pointer;}
+  .field select{-webkit-appearance:none; appearance:none; min-height:50px; padding-right:40px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23A9CBEE' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 14px center; background-size:18px;}
+  .field input, .field textarea{min-height:50px;}
+  .form-grid > .field{min-width:0;}
+  /* la foto se ve en la agenda; en Turno, Cuenta y Horarios se apaga para que todo se lea limpio */
+  .bg-photo.dim{opacity:0 !important;}
+  body.typing .tabbar{display:none;}
+  body.typing .admin-panel.open{padding-bottom:24px;}
 </style>
 </head>
 <body>
@@ -1068,6 +1085,8 @@
   const adminLock = document.getElementById('adminLock');
 
   let adminBarberFilter = 'all';
+  // celular o tablet (pantalla táctil): ahí no se abre el teclado solo ni se muestra la barra encima del teclado
+  const IS_TOUCH = matchMedia('(hover:none), (pointer:coarse)').matches || navigator.maxTouchPoints > 0;
   let VIEW = 'agenda', setView = () => {};
   // Cuenta que inició sesión: null = ve todo (dueño). socio: ve todo, arranca en lo suyo. barbero: solo lo suyo.
   let ME = null;
@@ -1094,7 +1113,7 @@
     adminPinScreen.style.display = 'flex';
     adminPassword.value = '';
     adminPinError.classList.remove('show');
-    setTimeout(() => adminEmail.focus(), 100);
+    if (!IS_TOUCH) setTimeout(() => adminEmail.focus(), 100);
   }
 
   async function handleLogin(){
@@ -1736,16 +1755,17 @@
     }
   }
   let timesReq = 0;
+  function emptyTimes(label){ mTime.innerHTML = '<option value="">' + label + '</option>'; mTime.disabled = true; }
   async function refreshManualTimes(){
     const req = ++timesReq;
-    mTime.innerHTML = '';
+    emptyTimes('Buscando…');
     mSave.disabled = true;
-    if (!mDate.value){ setHint('Elegí el día.'); return; }
+    if (!mDate.value){ emptyTimes('Elegí el día'); setHint('Elegí el día.'); return; }
     const d = keyToDate(mDate.value);
     const barber = BARBERS.find(b => b.id === mBarber.value);
-    if (isBlockedDay(mDate.value, barber.id)){ setHint('Ese día está bloqueado para ' + barber.name + ' (' + dateLabelFor(d) + '). Si querés cargarlo igual, primero quitá el bloqueo en "Horarios".', true); return; }
+    if (isBlockedDay(mDate.value, barber.id)){ emptyTimes('Día bloqueado'); setHint('Ese día está bloqueado para ' + barber.name + ' (' + dateLabelFor(d) + '). Si querés cargarlo igual, primero quitá el bloqueo en "Horarios".', true); return; }
     const times = getTimesForBarberDay(barber.id, DOW_SHORT[d.getDay()]);
-    if (!times.length){ setHint(barber.name + ' no atiende ese día (' + dateLabelFor(d) + ').', true); return; }
+    if (!times.length){ emptyTimes('No atiende ese día'); setHint(barber.name + ' no atiende ese día (' + dateLabelFor(d) + ').', true); return; }
     setHint('Buscando horarios libres…');
     const taken = await takenTimes(barber.id, mDate.value);
     if (req !== timesReq) return; // el dueño cambió de barbero o de día mientras se consultaba
@@ -1753,25 +1773,53 @@
     const now = new Date();
     const nowMin = mDate.value === localDateKey(now) ? now.getHours()*60 + now.getMinutes() : -1;
     const free = times.filter(t => !taken.has(t) && toMin(t) + STEP_MIN > nowMin);
-    if (!free.length){ setHint('No quedan horarios libres ese día con ' + barber.name + '.', true); return; }
+    if (!free.length){ emptyTimes('Sin horarios libres'); setHint('No quedan horarios libres ese día con ' + barber.name + '.', true); return; }
+    mTime.innerHTML = ''; mTime.disabled = false;
     free.forEach(t => { const o = document.createElement('option'); o.value = t; o.textContent = t; mTime.appendChild(o); });
-    setHint(free.length + ' horario(s) libre(s) el ' + dateLabelFor(d) + '.');
+    setHint((free.length === 1 ? '1 horario libre' : free.length + ' horarios libres') + ' el ' + dateLabelFor(d) + '.');
     mSave.disabled = false;
+  }
+  // ¿El barbero atiende ese día y todavía le quedan horarios? (para no abrir el formulario en un día cerrado)
+  function worksOn(barberId, key){
+    if (isBlockedDay(key, barberId)) return false;
+    const d = keyToDate(key);
+    const times = getTimesForBarberDay(barberId, DOW_SHORT[d.getDay()]);
+    if (!times.length) return false;
+    const now = new Date();
+    if (key === localDateKey(now)){
+      const nowMin = now.getHours()*60 + now.getMinutes();
+      return times.some(t => toMin(t) + STEP_MIN > nowMin);
+    }
+    return true;
+  }
+  function nextWorkDay(barberId, fromKey){
+    const d = keyToDate(fromKey);
+    for (let i = 0; i < 21; i++){
+      const k = localDateKey(new Date(d.getFullYear(), d.getMonth(), d.getDate() + i));
+      if (worksOn(barberId, k)) return k;
+    }
+    return fromKey;
   }
   function openManualForm(){
     manualForm.reset();
-    mDate.min = localDateKey(new Date());
-    mDate.value = localDateKey(new Date());
-    if (adminBarberFilter !== 'all') mBarber.value = adminBarberFilter;
+    const today = localDateKey(new Date());
+    mDate.min = today;
+    if (ME && ME.role === 'barbero' && ME.barber) mBarber.value = ME.barber;
+    else if (adminBarberFilter !== 'all') mBarber.value = adminBarberFilter;
     Array.from(mBarber.options).forEach(o => { o.hidden = o.disabled = !!(ME && ME.role === 'barbero' && o.value !== ME.barber); });
+    mDate.value = nextWorkDay(mBarber.value, today); // arranca en el próximo día que atiende (nunca en domingo o día cerrado)
     manualForm.hidden = false;
     adminFlash.hidden = true;
     refreshManualTimes();
-    mName.focus();
+    // en el celular no se abre el teclado solo: así la pantalla no salta al entrar
+    if (!IS_TOUCH) mName.focus();
   }
   function closeManualForm(){ manualForm.hidden = true; setHint(''); if (VIEW === 'turno') setView('agenda'); }
   document.getElementById('mCancel').addEventListener('click', closeManualForm);
-  mBarber.addEventListener('change', refreshManualTimes);
+  mBarber.addEventListener('change', () => {
+    if (mDate.value && !worksOn(mBarber.value, mDate.value)) mDate.value = nextWorkDay(mBarber.value, mDate.value);
+    refreshManualTimes();
+  });
   mDate.addEventListener('change', refreshManualTimes);
 
   manualForm.addEventListener('submit', async (e) => {
@@ -2261,6 +2309,7 @@
     if (cashOpen && v !== 'caja') closeCash();
     VIEW = v;
     adminDashboard.dataset.view = v;
+    bgPhoto.classList.toggle('dim', v !== 'agenda');
     agendaView.hidden = v !== 'agenda';
     document.getElementById('adminStats').hidden = v !== 'agenda';
     manualForm.hidden = true; pushPanel.hidden = true; settingsPanel.hidden = true;
@@ -2306,6 +2355,13 @@
   /* ---------- Sin zoom: refuerzo para el iPhone (Safari a veces ignora la configuración de la página) ---------- */
   ['gesturestart', 'gesturechange', 'gestureend'].forEach(t => document.addEventListener(t, e => e.preventDefault(), {passive:false}));
   document.addEventListener('touchmove', e => { if (e.touches.length > 1 || (e.scale && e.scale !== 1)) e.preventDefault(); }, {passive:false});
+
+  /* mientras se escribe en el celular, la barra de abajo se esconde (si no, el teclado la sube) */
+  if (IS_TOUCH){
+    const isField = el => el && el.matches && el.matches('input:not([type=checkbox]):not([type=radio]), select, textarea');
+    document.addEventListener('focusin', e => { if (isField(e.target)) document.body.classList.add('typing'); });
+    document.addEventListener('focusout', () => setTimeout(() => { if (!isField(document.activeElement)) document.body.classList.remove('typing'); }, 60));
+  }
 
   /* ---------- App en el celular ---------- */
   // Service worker: solo la cáscara del panel (nunca datos de clientes). Sin él, todo funciona igual.
