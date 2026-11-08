@@ -467,7 +467,7 @@
     --bg:#0A1930; --s1:rgba(18,38,66,.72); --s2:rgba(20,52,92,.55);
     --bd:rgba(169,203,238,.14); --bd2:rgba(169,203,238,.24);
     --tx:#EEF2F7; --tx2:#B9CDE4; --tx3:#8FA6C2;
-    --ac:#4E8FD6; --ac2:#A9CBEE; --okc:#5fd38a; --warn:#E8C77A; --bad:#F2A49C;
+    --ac:#4E8FD6; --ac2:#A9CBEE; --okc:#5fd38a; --warn:#EEF2F7; --bad:#F2A49C;
     --tab-h:64px;
   }
   body{background:var(--bg); color:var(--tx);
@@ -517,7 +517,7 @@
   .admin-flash.err{background:#3a1a22; color:#FBD9D5; border-color:rgba(179,38,30,.7);}
   @media (min-width:700px){ .admin-flash{bottom:96px;} }
   @keyframes toastIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;}}
-  .admin-offline{background:rgba(232,199,122,.1); color:var(--warn); border-color:rgba(232,199,122,.3); border-radius:10px;}
+  .admin-offline{background:rgba(238,242,247,.1); color:var(--warn); border-color:rgba(238,242,247,.3); border-radius:10px;}
   .install-tip{background:var(--s1); border:1px solid var(--bd); border-radius:14px;}
 
   /* filtros por barbero */
@@ -568,7 +568,7 @@
   .admin-badge.confirmed{background:rgba(78,143,214,.2); color:var(--ac2);}
   .admin-badge.done{background:rgba(95,211,138,.12); color:var(--okc);}
   .admin-badge.cancelled{background:rgba(169,203,238,.08); color:var(--tx3);}
-  .admin-badge.overdue{background:rgba(232,199,122,.14); color:var(--warn);}
+  .admin-badge.overdue{background:rgba(238,242,247,.14); color:var(--warn);}
   .admin-item-actions{display:flex; gap:8px; align-items:center; flex-wrap:nowrap;}
   .admin-item-actions:empty{display:none;}
   .admin-btn{height:36px; padding:0 14px; border-radius:10px; border:1px solid var(--bd2); background:transparent; color:var(--tx); font:600 13px 'Manrope', sans-serif; -webkit-tap-highlight-color:transparent;}
@@ -615,7 +615,7 @@
   @media (max-width:560px){ .manual-actions .btn{flex:1; justify-content:center;} }
   .push-state{border-radius:12px;}
   .push-state.on{background:rgba(95,211,138,.1); color:var(--okc);}
-  .push-state.off{background:rgba(232,199,122,.1); color:var(--warn);}
+  .push-state.off{background:rgba(238,242,247,.1); color:var(--warn);}
   .push-steps{color:var(--tx2);}
   .push-box .field{max-width:none;}
   .acct-list{display:flex; flex-direction:column; margin:16px 0 6px; border:1px solid var(--bd); border-radius:14px; background:var(--s1); overflow:hidden;}
