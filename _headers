@@ -4,8 +4,10 @@
   Cache-Control: public, max-age=31536000, immutable
 /app/fonts/*
   Cache-Control: public, max-age=31536000, immutable
-# Íconos y fotos de fondo: un día (si se cambia una foto, se renueva sola al día siguiente)
-/app/*
+# Fotos de fondo e íconos: un día (si se cambia una foto, se renueva sola al día siguiente)
+/app/fondos/*
+  Cache-Control: public, max-age=86400
+/app/*.png
   Cache-Control: public, max-age=86400
 # El service worker se revisa siempre, así las versiones nuevas llegan enseguida
 /sw-panel.js
