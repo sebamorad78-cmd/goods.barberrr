@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Panel del dueño — Goods Barber Studio</title>
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0A1930">
@@ -694,6 +694,14 @@
   /* en la app instalada no hace falta el link a la página */
   html.app .panel-back{display:none;}
   @media (display-mode: standalone){ .panel-back{display:none;} }
+  /* ---------- Sin zoom ni desplazamientos raros (como una app) ---------- */
+  html{-webkit-text-size-adjust:100%; text-size-adjust:100%; overflow-x:hidden; overscroll-behavior:none;}
+  body{overflow-x:clip; overscroll-behavior:none;}
+  /* solo se puede deslizar para recorrer: sin pellizcar para agrandar ni doble toque */
+  *, *::before, *::after{touch-action:pan-x pan-y;}
+  .cx, .admin-filters, .sched-wrap{overscroll-behavior:contain;}
+  /* el iPhone agranda la pantalla al tocar un campo con letra chica: con 16px no lo hace */
+  @media (pointer:coarse), (hover:none), (max-width:900px){ input, select, textarea{font-size:16px !important;} }
 </style>
 </head>
 <body>
@@ -2293,6 +2301,11 @@
       hintIn(passHint, /same|different/i.test((e && e.message) || '') ? 'Tiene que ser distinta a la anterior.' : 'No se pudo cambiar. Probá de nuevo.', true);
     } finally { btn.disabled = false; btn.textContent = 'Cambiar contraseña'; }
   });
+
+
+  /* ---------- Sin zoom: refuerzo para el iPhone (Safari a veces ignora la configuración de la página) ---------- */
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach(t => document.addEventListener(t, e => e.preventDefault(), {passive:false}));
+  document.addEventListener('touchmove', e => { if (e.touches.length > 1 || (e.scale && e.scale !== 1)) e.preventDefault(); }, {passive:false});
 
   /* ---------- App en el celular ---------- */
   // Service worker: solo la cáscara del panel (nunca datos de clientes). Sin él, todo funciona igual.
