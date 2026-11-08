@@ -14,9 +14,23 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Goods Panel">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;0,6..96,700;0,6..96,800;1,6..96,500&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+<!-- Letras guardadas en el propio goods.ar: sin depender de otros servidores -->
+<link rel="preload" href="/app/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+  @font-face{font-family:'Manrope'; font-style:normal; font-weight:300 800; font-display:swap; src:url(/app/fonts/manrope-latin.woff2) format('woff2');}
+  @font-face{font-family:'JetBrains Mono'; font-style:normal; font-weight:400 700; font-display:swap; src:url(/app/fonts/jetbrainsmono-latin.woff2) format('woff2');}
+  @font-face{font-family:'Baloo 2'; font-style:normal; font-weight:700 800; font-display:swap; src:url(/app/fonts/baloo2-latin.woff2) format('woff2');}
+  /* ---------- Rápido en el celular: sin efectos de vidrio esmerilado (el iPhone los recalcula en cada movimiento) ---------- */
+  body{background-attachment:scroll;}
+  .panel-top{-webkit-backdrop-filter:none; backdrop-filter:none; background:rgba(10,25,48,.94);}
+  body.has-photo .panel-top{background:rgba(10,25,48,.78);}
+  .tabbar{-webkit-backdrop-filter:none; backdrop-filter:none; background:rgba(10,25,48,.97);}
+  body.has-photo .today{-webkit-backdrop-filter:none; backdrop-filter:none; background:rgba(18,38,66,.86);}
+  body.has-photo .admin-chip:not(.active){-webkit-backdrop-filter:none; backdrop-filter:none; background:rgba(10,25,48,.72);}
+  /* la foto de fondo va en su propia capa: al deslizar no se vuelve a dibujar */
+  .bg-photo{transform:translateZ(0);}
+  .admin-list{contain:content;}
+</style>
 <style>
   :root{
     --ink:#0A1930;
@@ -45,7 +59,7 @@
   }
   img{max-width:100%;display:block;}
   a{color:inherit;text-decoration:none;}
-  h1,h2,h3,h4{font-family:'Bodoni Moda', serif;margin:0;font-weight:600;letter-spacing:-0.01em;}
+  h1,h2,h3,h4{font-family:'Manrope', sans-serif;margin:0;font-weight:600;letter-spacing:-0.01em;}
   .eyebrow{
     font-family:'JetBrains Mono', monospace;
     font-size:12px;
@@ -289,7 +303,7 @@
   .pi-icon{width:52px; height:70px; opacity:0; transform:scale(.82) translateY(6px); animation:piIcon .6s cubic-bezier(.2,.8,.2,1) .05s forwards;}
   .pi-word{margin-top:18px; font-family:'Baloo 2', sans-serif; font-weight:800; font-size:40px; color:var(--paper);
     opacity:0; transform:translateY(10px); animation:piText .5s ease .35s forwards;}
-  .pi-hello{margin-top:18px; font-family:'Bodoni Moda', serif; font-size:26px; color:var(--paper);
+  .pi-hello{margin-top:18px; font-family:'Manrope', sans-serif; font-weight:600; font-size:26px; color:var(--paper);
     opacity:0; transform:translateY(10px); animation:piText .5s ease .6s forwards;}
   .pi-date{margin-top:8px; font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:.24em; text-transform:uppercase;
     color:var(--blue-light); opacity:0; transform:translateY(8px); animation:piText .5s ease .8s forwards;}
@@ -948,10 +962,9 @@
 </main>
 
 <!-- Cliente de Supabase: conecta esta página a tu base de datos real -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-  onerror="var s=document.createElement('script'); s.src='https://unpkg.com/@supabase/supabase-js@2'; document.head.appendChild(s);"></script>
-<!-- Generador de archivos Excel (.xlsx) reales, con hojas, anchos de columna y encabezado con estilo -->
-<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+<script src="/app/lib/supabase-2.119.0.js"
+  onerror="var s=document.createElement('script'); s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js'; document.head.appendChild(s);"></script>
+<!-- El generador de Excel (pesado) se baja recién cuando se toca "Descargar Excel" -->
 <script>
 (function(){
   "use strict";
@@ -1099,7 +1112,9 @@
   async function loadMe(){
     ME = null;
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      // la sesión ya está guardada en el celular: no hace falta preguntarle al servidor quién es
+      const { data: { session } } = await supabase.auth.getSession();
+      const user = session && session.user;
       const email = String((user && user.email) || '').toLowerCase();
       const { data } = await withTimeout(supabase.from('staff').select('barber_id,role').eq('email', email).maybeSingle());
       if (data) ME = { barber: data.barber_id, role: data.role, email };
@@ -1153,7 +1168,7 @@
       return;
     }
     adminPinError.classList.remove('show');
-    await openDashboard();
+    await openDashboard(true);
   }
 
   let adminPollTimer = null;
@@ -1194,12 +1209,14 @@
     });
   }
 
-  async function openDashboard(){
+  async function openDashboard(withIntro){
     adminPinScreen.style.display = 'none';
     adminDashboard.classList.remove('enter-head', 'enter-body');
     setView('agenda'); renderHead();
-    const loading = loadMe().then(() => loadAndRenderBookings());
-    await playPanelIntro();
+    const me = loadMe();
+    const loading = loadAndRenderBookings(false, me);
+    // la entrada con el logo solo después de escribir la contraseña; al abrir la app ya con sesión, directo a la agenda
+    if (withIntro) await playPanelIntro();
     adminDashboard.hidden = false;
     adminDashboard.classList.add('enter-head');
     // la agenda y la lista entran cuando ya tienen los turnos cargados
@@ -1265,13 +1282,17 @@
   }
 
   let loadSeq = 0;
-  async function loadAndRenderBookings(silent){
+  let lastFullLoad = 0;
+  async function loadAndRenderBookings(silent, waitFor){
     const seq = ++loadSeq;
     if (!silent && !adminBookingsCache.length) adminList.innerHTML = '<p class="admin-empty">Cargando turnos…</p>';
     let rows;
     try {
-      // horarios, bloqueos y turnos se piden a la vez: con mala señal el aviso sale en el primer corte, no al final de tres esperas
-      [, rows] = await Promise.all([loadOwnerSettings(), fetchAllBookings(), loadMoney()]);
+      // los turnos se piden siempre; horarios, bloqueos y caja cambian poco: se renuevan cada 2 minutos (todo a la vez, nunca en fila)
+      const full = !silent || Date.now() - lastFullLoad > 120000;
+      [, rows] = await Promise.all([full ? loadOwnerSettings() : null, fetchAllBookings(), full ? loadMoney() : null]);
+      if (full) lastFullLoad = Date.now();
+      if (waitFor) await waitFor; // se dibuja recién cuando se sabe quién entró (cada barbero ve lo suyo)
     } catch(err){
       if (seq !== loadSeq) return;
       // sesión vencida o cerrada desde otro lado: se vuelve a pedir el ingreso
@@ -1452,19 +1473,20 @@
   async function updateBookingStatus(booking, newStatus, itemEl, amount){
     if (savingIds.has(booking.id)) return; // un toque de más no manda dos cambios
     savingIds.add(booking.id);
-    if (itemEl) itemEl.classList.add('busy');
-    const before = booking.status;
+    const before = { status: booking.status, amount: booking.amount };
+    // el cambio se ve al instante; si el servidor lo rechaza, se vuelve atrás y se avisa
+    booking.status = newStatus;
+    booking.amount = newStatus === 'done' ? (amount != null ? amount : priceFor(booking.note)) : null;
+    cashAddLocal(booking);
+    renderAdminList();
+    const quien = (booking.customerName || 'el cliente') + ' · ' + booking.time;
+    flash(newStatus === 'done' ? '✓ Atendido: ' + quien + (booking.amount != null ? ' · ' + money(booking.amount) : '') : newStatus === 'cancelled' ? 'Cancelado: ' + quien + '. El horario quedó libre en la página.' : '✓ Turno reactivado: ' + quien);
     try {
       await updateBookingStatusRemote(booking.id, newStatus, amount);
-      booking.status = newStatus; // se ve al instante, sin esperar la recarga
-      booking.amount = newStatus === 'done' ? (amount != null ? amount : priceFor(booking.note)) : null;
+    } catch(err){
+      booking.status = before.status; booking.amount = before.amount;
       cashAddLocal(booking);
       renderAdminList();
-      const quien = (booking.customerName || 'el cliente') + ' · ' + booking.time;
-      flash(newStatus === 'done' ? '✓ Atendido: ' + quien + (booking.amount != null ? ' · ' + money(booking.amount) : '') : newStatus === 'cancelled' ? 'Cancelado: ' + quien + '. El horario quedó libre en la página.' : '✓ Turno reactivado: ' + quien);
-    } catch(err){
-      booking.status = before;
-      if (itemEl) itemEl.classList.remove('busy');
       const dup = /duplicate key|bookings_un_turno_por_horario/.test((err && err.message) || '');
       flash(dup ? 'No se puede reactivar: ese horario ya lo tomó otro cliente.' :
         err && err.isTimeout ? 'La conexión está lenta y no se guardó el cambio. Probá de nuevo.' :
@@ -1543,8 +1565,21 @@
     return ws;
   }
 
+  // el generador de Excel pesa ~400 KB: se carga solo la primera vez que se pide un Excel
+  let xlsxLoading = null;
+  function loadXlsx(){
+    if (typeof XLSX !== 'undefined') return Promise.resolve();
+    if (!xlsxLoading) xlsxLoading = new Promise((ok, fail) => {
+      const tag = document.createElement('script');
+      tag.src = '/app/lib/xlsx-style-1.2.0.js';
+      tag.onload = () => typeof XLSX !== 'undefined' ? ok() : fail(new Error('xlsx'));
+      tag.onerror = () => { xlsxLoading = null; fail(new Error('xlsx')); };
+      document.head.appendChild(tag);
+    });
+    return xlsxLoading;
+  }
   async function downloadExcel(){
-    if (typeof XLSX === 'undefined'){
+    try { await loadXlsx(); } catch(e){
       flash('No se pudo cargar el generador de Excel. Revisá tu conexión e intentá de nuevo.', true);
       return;
     }
@@ -2169,6 +2204,7 @@
   const cxEl = document.getElementById('adminCash');
   function openCash(){
     cashOpen = true; cxEl.hidden = false; document.documentElement.classList.add('cx-open');
+    loadMoney().then(() => { if (cashOpen) renderCash(); }).catch(() => {}); // al abrir la caja, los números más nuevos
     document.getElementById('cxTotal').dataset.v = 0;
     renderCash(); document.getElementById('cxClose').focus();
   }
@@ -2435,12 +2471,12 @@
     try { localStorage.setItem('goodsPanelTip', 'no'); } catch(e){}
   });
   const _openDashboard = openDashboard;
-  openDashboard = async function(){ await _openDashboard(); showInstallTip(); };
+  openDashboard = async function(withIntro){ await _openDashboard(withIntro); showInstallTip(); };
 
   // Al abrir el panel: si ya hay sesión iniciada va directo a los turnos,
   // si no, muestra el login. Espera a que Supabase termine de conectar.
   (async () => {
-    for (let i = 0; i < 32 && !supabase; i++) await new Promise(r => setTimeout(r, 500));
+    for (let i = 0; i < 320 && !supabase; i++){ trySupabaseInit(); if (!supabase) await new Promise(r => setTimeout(r, 50)); }
     try {
       if (!supabase) throw new Error('Supabase no disponible');
       const { data: { session } } = await supabase.auth.getSession();
