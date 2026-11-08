@@ -246,7 +246,7 @@
   @keyframes brandGlow{0%,100%{filter:drop-shadow(0 0 0 rgba(169,203,238,0));} 30%{filter:drop-shadow(0 0 6px rgba(169,203,238,.55));}}
   @media (prefers-reduced-motion: reduce){ .panel-top .brand::after, .panel-top .brand-icon, .panel-top .brand-word{animation:none;} .panel-top .brand::after{display:none;} }
   /* aviso para instalar la app */
-  .install-tip[hidden], .cx[hidden], .admin-offline[hidden], .admin-flash[hidden]{display:none !important;}
+  [hidden]{display:none !important;} /* lo oculto no se ve nunca, aunque otro estilo diga lo contrario */
   .install-tip{display:flex; gap:14px; align-items:flex-start; margin-bottom:18px; padding:14px 16px; border-radius:8px;
     background:var(--ink); color:var(--paper); font-size:13.5px; line-height:1.5;}
   .install-tip img{width:40px; height:40px; border-radius:9px; flex-shrink:0;}
@@ -426,6 +426,8 @@
   .money-row small{color:#8b95a7;}
   @media (max-width:640px){ .money-form{grid-template-columns:1fr;} .cash-total strong{font-size:22px;} }
   .push-box .field{max-width:320px;}
+  .pass-form{display:grid; grid-template-columns:1fr 1fr; gap:10px; max-width:520px;}
+  @media (max-width:560px){ .pass-form{grid-template-columns:1fr;} }
   .push-state{display:flex; align-items:center; gap:10px; padding:12px 14px; border-radius:6px; font-size:14px; margin:6px 0 12px;}
   .push-state.on{background:rgba(76,175,80,0.12); color:#2e7d32;}
   .push-state.off{background:rgba(230,145,29,0.12); color:#8a5416;}
@@ -566,7 +568,7 @@
         <button class="btn dark" id="adminNew" type="button">+ Cargar turno</button>
         <button class="btn ghost cash-open" id="adminCashBtn" type="button">Caja</button>
         <button class="btn ghost" id="adminSettings" type="button">Horarios</button>
-        <button class="btn ghost" id="adminPushBtn" type="button">Avisos</button>
+        <button class="btn ghost" id="adminPushBtn" type="button">Mi cuenta</button>
         <button class="btn ghost" id="adminRefresh" type="button">Actualizar</button>
         <button class="btn ghost" id="adminExport" type="button">Descargar Excel</button>
         <button class="btn ghost" id="adminLock" type="button">Bloquear</button>
@@ -600,9 +602,19 @@
     </form>
 
     <section class="settings push-box" id="pushPanel" hidden>
-      <h4>Avisos en este celular</h4>
+      <h4>Mi cuenta</h4>
+      <p class="manual-sub" id="meLine"></p>
+      <h5>Avisos en este celular</h5>
       <p class="manual-sub">Cuando entre o se cancele un turno, te llega una notificación a este celular. Sin Telegram ni otras apps.</p>
       <div id="pushBody"></div>
+      <h5>Contraseña</h5>
+      <p class="manual-sub">Elegí una contraseña propia (mínimo 8 caracteres). La vas a usar para entrar desde cualquier celular.</p>
+      <div class="pass-form">
+        <div class="field"><label for="pass1">Nueva contraseña</label><input type="password" id="pass1" autocomplete="new-password" minlength="8"></div>
+        <div class="field"><label for="pass2">Repetila</label><input type="password" id="pass2" autocomplete="new-password" minlength="8"></div>
+      </div>
+      <p class="manual-hint" id="passHint"></p>
+      <div class="manual-actions"><button type="button" class="btn dark" id="passSave">Cambiar contraseña</button></div>
     </section>
 
     <section class="settings" id="settingsPanel" hidden>
@@ -791,6 +803,23 @@
   const adminLock = document.getElementById('adminLock');
 
   let adminBarberFilter = 'all';
+  // Cuenta que inició sesión: null = ve todo (dueño). socio: ve todo, arranca en lo suyo. barbero: solo lo suyo.
+  let ME = null;
+  async function loadMe(){
+    ME = null;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      const email = String((user && user.email) || '').toLowerCase();
+      const { data } = await withTimeout(supabase.from('staff').select('barber_id,role').eq('email', email).maybeSingle());
+      if (data) ME = { barber: data.barber_id, role: data.role, email };
+      else ME = { barber: null, role: 'dueno', email };
+    } catch(e){ ME = null; }
+    const limited = ME && ME.role === 'barbero';
+    adminBarberFilter = ME && ME.barber ? ME.barber : 'all';
+    document.getElementById('adminSettings').hidden = limited;
+    adminExport.hidden = limited;
+  }
+  const myName = () => ME && ME.barber ? ((BARBERS.find(b => b.id === ME.barber) || {}).name || '') : '';
   let adminBookingsCache = [];
 
   function showLoginScreen(){
@@ -876,7 +905,7 @@
   async function openDashboard(){
     adminPinScreen.style.display = 'none';
     adminDashboard.classList.remove('enter-head', 'enter-body');
-    const loading = loadAndRenderBookings();
+    const loading = loadMe().then(() => loadAndRenderBookings());
     await playPanelIntro();
     adminDashboard.hidden = false;
     adminDashboard.classList.add('enter-head');
@@ -895,6 +924,8 @@
 
   function renderAdminFilters(){
     adminFilters.innerHTML = '';
+    if (ME && ME.role === 'barbero'){ adminFilters.hidden = true; return; }
+    adminFilters.hidden = false;
     const allChip = document.createElement('button');
     allChip.type = 'button';
     allChip.className = 'admin-chip' + (adminBarberFilter === 'all' ? ' active' : '');
@@ -1189,7 +1220,7 @@
   });
   adminLock.addEventListener('click', async () => {
     stopAdminPolling();
-    adminBookingsCache = []; CASH = []; adminList.innerHTML = ''; adminToday.innerHTML = ''; closeCash();
+    adminBookingsCache = []; CASH = []; ME = null; adminBarberFilter = 'all'; adminList.innerHTML = ''; adminToday.innerHTML = ''; closeCash();
     try { if (supabase) await supabase.auth.signOut(); } catch(err){ /* igual mostramos el login */ }
     showLoginScreen();
   });
@@ -1332,7 +1363,7 @@
         (adminBarberFilter === 'all' || b.barberId === adminBarberFilter))
       .sort((a, b) => toMin(a.time) - toMin(b.time));
     const next = upcoming[0];
-    const saludo = saludoSegunHora();
+    const saludo = saludoSegunHora() + (myName() ? ', ' + myName() : '');
 
     const today = agendaCols(now, true, nowMin);
     let html = '<div class="today-head"><h4>' + saludo + '</h4><span class="when">Hoy · ' + escapeHtml(dateLabelFor(now)) + ' · ' + plural(today.count) + '</span></div>';
@@ -1402,6 +1433,7 @@
     mDate.min = localDateKey(new Date());
     mDate.value = localDateKey(new Date());
     if (adminBarberFilter !== 'all') mBarber.value = adminBarberFilter;
+    Array.from(mBarber.options).forEach(o => { o.hidden = o.disabled = !!(ME && ME.role === 'barbero' && o.value !== ME.barber); });
     manualForm.hidden = false;
     adminFlash.hidden = true;
     refreshManualTimes();
@@ -1806,7 +1838,8 @@
     try { const reg = await navigator.serviceWorker.getRegistration('/panel'); return reg ? await reg.pushManager.getSubscription() : null; }
     catch(e){ return null; }
   }
-  const PUSH_WHO = [['nicolas','Nicolás'],['tula','Franco'],['chino','Chino'],['lucho','Lucho'],['todos','Todos los turnos (dueño)']];
+  const PUSH_WHO_ALL = [['nicolas','Nicolás'],['tula','Franco'],['chino','Chino'],['lucho','Lucho'],['todos','Todos los turnos']];
+  let PUSH_WHO = PUSH_WHO_ALL;
   async function renderPush(msg, isErr){
     const standaloneNow = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
     if (!pushSupported || (isIOS && !standaloneNow)){
@@ -1817,6 +1850,8 @@
     }
     const sub = await currentSub();
     let who = null; try { who = localStorage.getItem('goodsPushWho'); } catch(e){}
+    PUSH_WHO = ME && ME.role === 'barbero' ? PUSH_WHO_ALL.filter(x => x[0] === ME.barber) : PUSH_WHO_ALL;
+    if (!who && ME && ME.barber) who = ME.barber;
     if (Notification.permission === 'denied'){
       pushBody.innerHTML = '<div class="push-state off">Los avisos están bloqueados en este celular.</div>' +
         '<p class="manual-sub">Para habilitarlos: Ajustes del iPhone → Notificaciones → Goods Panel → Permitir notificaciones. Después volvé acá.</p>';
@@ -1871,7 +1906,25 @@
   document.getElementById('adminPushBtn').addEventListener('click', () => {
     if (!pushPanel.hidden){ pushPanel.hidden = true; return; }
     pushPanel.hidden = false; renderPush();
+    document.getElementById('meLine').textContent = ME ? 'Entraste como ' + (myName() || 'dueño') + (ME.email ? ' · ' + ME.email : '') + '.' : '';
+    hintIn(passHint, '');
     pushPanel.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  const passHint = document.getElementById('passHint');
+  document.getElementById('passSave').addEventListener('click', async () => {
+    const a = document.getElementById('pass1'), b = document.getElementById('pass2'), btn = document.getElementById('passSave');
+    if (a.value.length < 8){ hintIn(passHint, 'La contraseña tiene que tener al menos 8 caracteres.', true); a.focus(); return; }
+    if (a.value !== b.value){ hintIn(passHint, 'Las dos contraseñas no coinciden.', true); b.focus(); return; }
+    btn.disabled = true; btn.textContent = 'Guardando…';
+    try {
+      const { error } = await withTimeout(supabase.auth.updateUser({ password: a.value }));
+      if (error) throw error;
+      a.value = b.value = '';
+      hintIn(passHint, '✓ Contraseña cambiada. La próxima vez entrá con la nueva.');
+    } catch(e){
+      hintIn(passHint, /same|different/i.test((e && e.message) || '') ? 'Tiene que ser distinta a la anterior.' : 'No se pudo cambiar. Probá de nuevo.', true);
+    } finally { btn.disabled = false; btn.textContent = 'Cambiar contraseña'; }
   });
 
   /* ---------- App en el celular ---------- */
