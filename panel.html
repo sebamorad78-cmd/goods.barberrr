@@ -30,6 +30,10 @@
   /* la foto de fondo va en su propia capa: al deslizar no se vuelve a dibujar */
   .bg-photo{transform:translateZ(0);}
   .admin-list{contain:content;}
+  /* ---------- Atendido automático ---------- */
+  .admin-badge.live{background:rgba(78,143,214,.35); color:#fff;}
+  .admin-item-main > .admin-auto{margin-top:6px; font-size:12.5px; color:var(--tx3);}
+  .admin-item-main > .admin-amount, .admin-item-main > .amount-edit, .admin-item-main > .admin-auto{grid-area:auto; grid-column:1 / -1;}
 </style>
 <style>
   :root{
@@ -1052,10 +1056,11 @@
     const now = new Date();
     const todayKey = localDateKey(now);
     const fromKey = localDateKey(new Date(now.getFullYear(), now.getMonth(), now.getDate() - PENDING_DAYS));
+    const weekKey = localDateKey(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7));
     const { data, error } = await withTimeout(supabase
       .from('bookings')
       .select('*')
-      .or('date.gte.' + todayKey + ',and(date.gte.' + fromKey + ',status.eq.confirmed)')
+      .or('date.gte.' + todayKey + ',and(date.gte.' + fromKey + ',status.eq.confirmed),and(date.gte.' + weekKey + ',status.eq.done,amount.is.null)')
       .order('date', {ascending:true})
       .order('time', {ascending:true}));
     if (error) throw error;
@@ -1226,11 +1231,14 @@
     startAdminPolling();
   }
 
-  function isBookingOverdue(b){
-    if (b.status !== 'confirmed') return false;
-    const dt = new Date(b.date + 'T' + (b.time || '00:00'));
-    return dt.getTime() < Date.now();
-  }
+  // Atendido automático: el servidor marca cada turno como atendido una hora después de su horario
+  // (salvo que antes se marque "No vino"). Acá solo se muestra en qué punto está cada turno.
+  const AUTO_MIN = 60;
+  const startMs = b => new Date(b.date + 'T' + (b.time || '00:00')).getTime();
+  function isInProgress(b){ return b.status === 'confirmed' && Date.now() >= startMs(b) && Date.now() < startMs(b) + AUTO_MIN * 60000; }
+  // ya pasó la hora y el servidor todavía no lo marcó (en unos minutos lo hace)
+  function isBookingOverdue(b){ return b.status === 'confirmed' && Date.now() >= startMs(b) + AUTO_MIN * 60000; }
+  function autoAtLabel(b){ const d = new Date(startMs(b) + AUTO_MIN * 60000); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }
 
   // Foto de fondo: la de cada barbero (la misma que en la página). El dueño ve el local
   // de noche, y si filtra por un barbero, la foto cambia a la de ese barbero.
@@ -1329,13 +1337,15 @@
     renderCash();
     const mine = adminBookingsCache.filter(b => adminBarberFilter === 'all' || b.barberId === adminBarberFilter);
     const pending = mine.filter(isBookingOverdue);
-    const upcoming = mine.filter(b => !isBookingOverdue(b) && (adminShowAll.checked || b.status === 'confirmed'));
+    // atendidos sin monto (tinturas u otros sin precio fijo): quedan a la vista hasta que se cargue lo cobrado
+    const needAmount = mine.filter(b => b.status === 'done' && b.amount == null);
+    const upcoming = mine.filter(b => !isBookingOverdue(b) && !(b.status === 'done' && b.amount == null) && (adminShowAll.checked || b.status === 'confirmed'));
     const confirmedCount = mine.filter(b => b.status === 'confirmed' && !isBookingOverdue(b)).length;
     adminStats.textContent = confirmedCount + (confirmedCount === 1 ? ' turno próximo' : ' turnos próximos') +
-      (pending.length ? ' · ' + pending.length + ' sin marcar' : '');
+      (pending.length ? ' · ' + pending.length + ' marcándose' : '') + (needAmount.length ? ' · ' + needAmount.length + ' sin monto' : '');
 
     adminList.innerHTML = '';
-    if (!pending.length && !upcoming.length){
+    if (!pending.length && !upcoming.length && !needAmount.length){
       adminList.innerHTML = '<p class="admin-empty">No hay turnos próximos' + (adminBarberFilter === 'all' ? '' : ' para este barbero') + '.</p>';
       return;
     }
@@ -1352,14 +1362,20 @@
         adminList.appendChild(bookingItem(b));
       });
     };
+    if (needAmount.length){
+      const t = document.createElement('p'); t.className = 'admin-section-title';
+      t.innerHTML = '<b>Falta cargar lo cobrado · ' + needAmount.length + '</b>Servicios sin precio fijo (como tintura): poné cuánto se cobró.';
+      adminList.appendChild(t);
+      byDay(needAmount.slice().sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time)));
+    }
     if (pending.length){
       const t = document.createElement('p'); t.className = 'admin-section-title';
-      t.innerHTML = '<b>Sin marcar · ' + pending.length + '</b>¿Vinieron? Marcalos como atendidos o “no vino”.';
+      t.innerHTML = '<b>Marcándose · ' + pending.length + '</b>En unos minutos se marcan solos como atendidos. Si alguno no vino, tocá “No vino”.';
       adminList.appendChild(t);
       byDay(pending.slice().sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time)));
     }
     if (upcoming.length){
-      if (pending.length){ const t = document.createElement('p'); t.className = 'admin-section-title next'; t.innerHTML = '<b>' + (adminShowAll.checked ? 'Turnos' : 'Próximos') + '</b>'; adminList.appendChild(t); }
+      if (pending.length || needAmount.length){ const t = document.createElement('p'); t.className = 'admin-section-title next'; t.innerHTML = '<b>' + (adminShowAll.checked ? 'Turnos' : 'Próximos') + '</b>'; adminList.appendChild(t); }
       byDay(upcoming.slice().sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time)));
     }
   }
@@ -1381,7 +1397,8 @@
     item.className = 'admin-item st-' + (isBookingOverdue(b) ? 'overdue' : b.status);
     const waPhone = waNumber(b.phone);
     const overdue = isBookingOverdue(b);
-    const statusLabel = overdue ? 'Sin marcar' : (b.status === 'done' ? 'Atendido' : (b.status === 'cancelled' ? 'Cancelado' : 'Confirmado'));
+    const inProgress = isInProgress(b);
+    const statusLabel = overdue ? 'Marcándose' : inProgress ? 'En curso' : (b.status === 'done' ? 'Atendido' : (b.status === 'cancelled' ? 'Cancelado' : 'Confirmado'));
 
     const main = document.createElement('div');
     main.className = 'admin-item-main';
@@ -1393,7 +1410,7 @@
         [showBarber ? escapeHtml(b.barberName || '') : '', b.note ? escapeHtml(b.note) : '', b.phone ? '' : 'Sin teléfono'].filter(Boolean).join(' · ') +
       '</span>';
     const badge = document.createElement('span');
-    badge.className = 'admin-badge ' + (overdue ? 'overdue' : b.status);
+    badge.className = 'admin-badge ' + (overdue ? 'overdue' : inProgress ? 'live' : b.status);
     badge.textContent = statusLabel;
     main.appendChild(badge);
 
@@ -1405,18 +1422,25 @@
       x.addEventListener('click', () => updateBookingStatus(b, status, item));
       actions.appendChild(x);
     };
-    if (b.status === 'confirmed'){
-      // un turno de otro día todavía no se puede marcar como atendido (evita sumar plata por error)
-      const isFuture = b.date > localDateKey(new Date());
+    const markDone = () => {
+      if (priceFor(b.note) == null) askAmount(b, item, main); // tintura u otro servicio sin precio fijo
+      else updateBookingStatus(b, 'done', item);
+    };
+    if (b.status === 'confirmed' && (inProgress || overdue)){
+      // ya empezó: se marca solo como atendido; acá se puede adelantar ("Vino") o avisar que no vino
       const doneBtn = document.createElement('button');
-      doneBtn.hidden = isFuture;
-      doneBtn.type = 'button'; doneBtn.className = 'admin-btn ok'; doneBtn.textContent = overdue ? 'Vino' : 'Atendido';
-      doneBtn.addEventListener('click', () => {
-        if (priceFor(b.note) == null) askAmount(b, item, main); // tintura u otro servicio sin precio fijo
-        else updateBookingStatus(b, 'done', item);
-      });
+      doneBtn.type = 'button'; doneBtn.className = 'admin-btn ok'; doneBtn.textContent = 'Vino';
+      doneBtn.addEventListener('click', markDone);
       actions.appendChild(doneBtn);
-      btn(overdue ? 'No vino' : 'Cancelar', 'danger', 'cancelled');
+      btn('No vino', 'danger', 'cancelled');
+      const auto = document.createElement('span'); auto.className = 'admin-auto';
+      auto.textContent = overdue ? 'Se está marcando como atendido.' : 'Se marca como atendido a las ' + autoAtLabel(b) + '.';
+      main.appendChild(auto);
+    } else if (b.status === 'confirmed'){
+      // todavía no empezó: solo se puede cancelar (el atendido llega solo después del horario)
+      btn('Cancelar', 'danger', 'cancelled');
+    } else if (b.status === 'done'){
+      btn('No vino', 'danger', 'cancelled'); // corrige un atendido automático de alguien que faltó
     } else {
       btn('Deshacer', '', 'confirmed');
     }
@@ -1480,7 +1504,7 @@
     cashAddLocal(booking);
     renderAdminList();
     const quien = (booking.customerName || 'el cliente') + ' · ' + booking.time;
-    flash(newStatus === 'done' ? '✓ Atendido: ' + quien + (booking.amount != null ? ' · ' + money(booking.amount) : '') : newStatus === 'cancelled' ? 'Cancelado: ' + quien + '. El horario quedó libre en la página.' : '✓ Turno reactivado: ' + quien);
+    flash(newStatus === 'done' ? '✓ Atendido: ' + quien + (booking.amount != null ? ' · ' + money(booking.amount) : '') : newStatus === 'cancelled' ? (startMs(booking) <= Date.now() ? 'No vino: ' + quien + '. No se cuenta en la caja.' : 'Cancelado: ' + quien + '. El horario quedó libre en la página.') : '✓ Turno reactivado: ' + quien);
     try {
       await updateBookingStatusRemote(booking.id, newStatus, amount);
     } catch(err){
